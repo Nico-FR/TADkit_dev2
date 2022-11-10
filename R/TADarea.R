@@ -1,0 +1,77 @@
+#' @title Annotations analysis around TAD boundaries
+#'
+#' @description For each TAD boundary (start or end), this function return all annotations that are in the desired window of the boundary.
+#' The main use of this function is to be combined with areaHist or areaCov functions.
+#' It is possible to use the start or the end of the TAD to analyze the distribution of annotations on both sides (note that it can be possible to use the center of the TAD).
+#' This function can be time consuming so it is recommended to test it in a subset of the tad.gr.
+#'
+#' @param tad.gr GRange file with TADs.
+#' @param annot.gr GRange file with genomic annotations.
+#' @param window.size Window (+/- value) in bp surrounding TAD boundary.
+#' @param tad.boundary TAD border to be analyzed, "start", "end", and "center" denoting what to use as an anchor. Default is the start of each TADs.
+#'
+#' @return GRange file with all annotations surronding all TAD boundary (starts or stops...). TAD boundaries are at the window.size position.
+#' @import GenomicRanges
+#' @import GenomeInfoDb
+#' @importFrom BiocGenerics strand end start width
+#' @import methods
+#' @export
+#'
+#' @examples
+#' # tad.gr with 2 TADs
+#' tad.gr <- dataframes2grange(
+#'   data.frame(chr = rep(1, 2), start = c(2e6, 4e6), end = c(3e6, 5e6)),
+#'   data.frame(chr = "1", size = 6e6)
+#' )
+#'
+#'
+#' # annot.gr with 3 genes
+#' annot.gr <- dataframes2grange(
+#'   data.frame(
+#'     chr = rep(1, 3),
+#'     start = c(1.5e6, 3.5e6, 5.5e6),
+#'     end = c(1.6e6, 3.6e6, 5.6e6),
+#'     type = c("a", "b", "c")
+#'   ),
+#'   data.frame(chr = "1", size = 6e6),
+#'   metadata.mcols = 4
+#' )
+#'
+#' TADarea(tad.gr = tad.gr, annot.gr = annot.gr, window.size = 2e6)
+TADarea <- function(tad.gr, annot.gr, window.size = 50e3, tad.boundary = "start") {
+  GenomeInfoDb::seqlengths(annot.gr) <- NA # remove seqlengths to prevent out-of-bound ranges
+  ##############################
+  # function to use: shift.R
+  ##############################
+  shift <- function(x, tad.gr, annot.gr, window.size) {
+    tad_1 <- tad.gr[x] # for each TAD boundary
+
+    # Annot.gr filtering within TAD boundary +/- window.size
+    data.gr <- annot.gr[
+      GenomeInfoDb::seqnames(annot.gr) == as.character(GenomeInfoDb::seqnames(tad_1)) # filter chr
+      & BiocGenerics::end(annot.gr) >= BiocGenerics::start(tad_1) - window.size # upstream limit
+      & BiocGenerics::start(annot.gr) <= BiocGenerics::start(tad_1) + window.size # downstream limit
+    ]
+
+    # shift annot.gr (so TADboundary is at window.size distance)
+    GenomicRanges::shift(data.gr, -BiocGenerics::start(tad_1) + window.size)
+  }
+
+  ##############################
+  # sapply function for each TAD border
+  ##############################
+  # resize the TADs according to start or stop
+  tad.gr <- GenomicRanges::resize(tad.gr, 1, fix = tad.boundary)
+  annot.gr$window.size <- window.size # add the window.size used
+
+  # sapply function for each TAD border
+  output <- unlist(methods::as(
+    sapply(1:length(tad.gr), shift,
+      tad.gr = tad.gr,
+      annot.gr = annot.gr,
+      window.size = window.size
+    ),
+    "GRangesList"
+  ))
+  return(output)
+}

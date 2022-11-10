@@ -1,0 +1,34 @@
+Package: TADkit
+Title: TAD visualisation and analysis
+Version: 0.0.2.9100
+Authors@R: 
+    person("Nicolas", "MARY", , "nicolas.mary@envt.fr", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-7304-5555 "))
+Description: Tools to analyzed the distributions of genomic annotations in relations to domain (i.e TADs or compartments). 
+  This package allow to plot coverage or distributions of any annotations (genes, DNA binding motifs like CTCF...) within or around domains.
+  Plot functions to visualized domains with other tracks (covegare, annotation and bedgraph datas). 
+  Plot functions allow to visualyzed domains in a genomic regions with datas generally associated with domain analysis. Those plot functions uses the Gviz package in order to facilitate the visualiizzation of this type of datas.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Imports: 
+    S4Vectors,
+    GenomicRanges,
+    IRanges,
+    GenomeInfoDb,
+    BiocGenerics,
+    Gviz,
+    rtracklayer,
+    methods,
+    ggplot2,
+    scales,
+    dplyr,
+    plyr,
+    magrittr,
+    utils,
+    tidyr
