@@ -29,20 +29,23 @@ PC1calling <- function(bedgraph) {
   }
 
   if (class(bedgraph)=="GRanges") {
-    grange = bedgraph %>% as.data.frame %>% dplyr::mutate(comp = dplyr::case_when(mcols(bedgraph)[,1] < 0 ~ 'B', S4Vectors::mcols(bedgraph)[,1] >= 0 ~ 'A', is.na(S4Vectors::mcols(bedgraph)[,1]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
+    grange = bedgraph %>% as.data.frame %>% dplyr::mutate(comp = dplyr::case_when(S4Vectors::mcols(bedgraph)[,1] < 0 ~ 'B', S4Vectors::mcols(bedgraph)[,1] >= 0 ~ 'A', is.na(S4Vectors::mcols(bedgraph)[,1]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
   }
 
 
-  gap = gaps(grange, start=2) + 1
-  gap$comp="AB"
-  grange=c(grange, gap) %>% sort()
+  gap = GenomicRanges::gaps(grange, start = 2)
+  if (length(gap) > 0) {
+    gap$comp = "AB"
+    grange = c(grange, gap + 1) %>% sort()
+  }
+
 
   data1 = S4Vectors::split(grange, grange$comp)
 
   if (length(data1$AB) > 0){
-    B = GenomicRanges::reduce(c(data1$B, GenomicRanges::reduce(data1$AB)[countOverlaps(GenomicRanges::reduce(data1$AB), data1$B) == 2]))
+    B = GenomicRanges::reduce(c(data1$B, GenomicRanges::reduce(data1$AB)[GenomicRanges::countOverlaps(GenomicRanges::reduce(data1$AB), data1$B) == 2]))
 
-    A = GenomicRanges::reduce(c(data1$A, GenomicRanges::reduce(data1$AB)[countOverlaps(GenomicRanges::reduce(data1$AB), data1$A) == 2]))
+    A = GenomicRanges::reduce(c(data1$A, GenomicRanges::reduce(data1$AB)[GenomicRanges::countOverlaps(GenomicRanges::reduce(data1$AB), data1$A) == 2]))
   }
 
   if (length(data1$AB) == 0){
