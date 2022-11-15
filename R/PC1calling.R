@@ -32,6 +32,11 @@ PC1calling <- function(bedgraph) {
     grange = bedgraph %>% as.data.frame %>% dplyr::mutate(comp = dplyr::case_when(mcols(bedgraph)[,1] < 0 ~ 'B', S4Vectors::mcols(bedgraph)[,1] >= 0 ~ 'A', is.na(S4Vectors::mcols(bedgraph)[,1]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
   }
 
+
+  gap = gaps(grange, start=2) + 1
+  gap$comp="AB"
+  grange=c(grange, gap) %>% sort()
+
   data1 = S4Vectors::split(grange, grange$comp)
 
   if (length(data1$AB) > 0){
