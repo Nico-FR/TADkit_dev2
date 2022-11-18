@@ -30,7 +30,7 @@ PC1calling <- function(bedgraph) {
 
   if (class(bedgraph)=="GRanges") {
     grange = bedgraph %>% as.data.frame %>% dplyr::mutate(comp = dplyr::case_when(S4Vectors::mcols(bedgraph)[,1] < 0 ~ 'B', S4Vectors::mcols(bedgraph)[,1] >= 0 ~ 'A', is.na(S4Vectors::mcols(bedgraph)[,1]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
-  }
+  } else {stop("Wrong input format")}
 
 
   gap = GenomicRanges::gaps(grange, start = 2)
