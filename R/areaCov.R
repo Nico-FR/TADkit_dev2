@@ -1,14 +1,14 @@
-#' @title Coverage plot of annotations around TAD boundaries
+#' @title Density plot of annotations around TAD boundaries
 #'
-#' @description Graph of the coverage of the genomic annotations around TAD boundaries (real distance).
+#' @description Graph of the density of the genomic annotations around TAD boundaries (real distance).
 #'
 #' @details This function take the output of TADarea function.
-#' If the cumulative size is significantly different between strands, it can be useful to normalized the depth between strand (using norm = TRUE).
+#' If the density is significantly different between strands, it can be useful to use relative density, ie normalizing using the zscore (using norm = TRUE).
 #'
 #' @param data.gr Output of TADarea function.
 #' @param annot.strand If TRUE (default): separate coverage according to their strands.
 #' @param bin.width Size of the sliding window to calculate the mean coverage. By default the size in 10 time smaller than window.size.
-#' @param norm Normalized coverage according to the total width of the considered strand. Default is FALSE.
+#' @param norm Normalized density using relative content (zscore of density). Default is FALSE.
 #'
 #' @return Return a ggplot graph
 #' @import S4Vectors
@@ -77,6 +77,7 @@ areaCov <- function(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE
     mean_cov.table.f$index <- c(1:(length(mean_cov.table.f$value)) - window.size + bin / 2)
     mean_cov.table.f$strand <- rep("+", length(mean_cov.table.f$value))
     mean_cov.table.f$zscore <- scale(mean_cov.table.f$value) # normalization using zscore
+    mean_cov.table.f$density <- mean_cov.table.f$value / data.gr$nb_boundary[1] # transforms coverage into density
 
     # coverage for - strand
     cov.rle <- IRanges::coverage(IRanges::ranges(data.gr[BiocGenerics::strand(data.gr) == "-"]),
@@ -87,6 +88,7 @@ areaCov <- function(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE
     mean_cov.table.r$index <- c(1:(length(mean_cov.table.r$value)) - window.size + bin / 2)
     mean_cov.table.r$strand <- rep("-", length(mean_cov.table.r$value))
     mean_cov.table.r$zscore <- scale(mean_cov.table.r$value) # normalization using zscore
+    mean_cov.table.r$density <- mean_cov.table.r$value / data.gr$nb_boundary[1] # transforms coverage into density
 
     # merge strands
     mean_cov.table <- rbind(mean_cov.table.r, mean_cov.table.f)
@@ -101,14 +103,15 @@ areaCov <- function(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE
     mean_cov.table$index <- c(1:(length(mean_cov.table$value)) - window.size + bin / 2)
     mean_cov.table$strand <- rep("*", length(mean_cov.table$value))
     mean_cov.table$zscore <- scale(mean_cov.table$value)
+    mean_cov.table$density <- mean_cov.table$value / data.gr$nb_boundary[1] # transforms coverage into density
   }
 
   data <- mean_cov.table # input for ggplot
-  names(data) <- c("coverage", "distance", "strand", "zscore")
+  names(data) <- c("coverage", "distance", "strand", "zscore", "density")
 
   # y values if norm = TRUE or FALSE
   if (isFALSE(norm)) {
-    p <- ggplot2::ggplot(data, ggplot2::aes(y = coverage, x = distance, color = strand))
+    p <- ggplot2::ggplot(data, ggplot2::aes(y = density, x = distance, color = strand))
   }
   if (isTRUE(norm)) {
     p <- ggplot2::ggplot(data, ggplot2::aes(y = zscore, x = distance, color = strand))
@@ -117,6 +120,7 @@ areaCov <- function(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE
   # ggplot to return
   return(p + ggplot2::geom_vline(ggplot2::aes(xintercept = 0), color = "red", size = 0.75, alpha = 0.75) +
     ggplot2::geom_line(alpha = 0.5, size = 1) +
+    ggplot2::xlab(data.gr$boundary_type[1]) +
     ggplot2::scale_color_manual(values = c("#1F78B4", "#33A02C")) +
     ggplot2::scale_x_continuous(
       labels = scales::unit_format(unit = "kb", scale = 1e-3),

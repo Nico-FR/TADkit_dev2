@@ -63,6 +63,8 @@ TADarea <- function(tad.gr, annot.gr, window.size = 50e3, tad.boundary = "start"
   # resize the TADs according to start or stop
   tad.gr <- GenomicRanges::resize(tad.gr, 1, fix = tad.boundary)
   annot.gr$window.size <- window.size # add the window.size used
+  annot.gr$nb_boundary <- length(tad.gr) # add nb domains
+  annot.gr$boundary_type <- tad.boundary
 
   # sapply function for each TAD border
   output <- unlist(methods::as(
