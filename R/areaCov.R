@@ -76,8 +76,7 @@ areaCov <- function(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE
     mean_cov.table.f <- as.data.frame(mean_cov.rle) # translate to data.frame
     mean_cov.table.f$index <- c(1:(length(mean_cov.table.f$value)) - window.size + bin / 2)
     mean_cov.table.f$strand <- rep("+", length(mean_cov.table.f$value))
-    mean_cov.table.f$corrected <- mean_cov.table.f$value /
-      sum(width(data.gr[BiocGenerics::strand(data.gr) == "+"])) # normalization per the total width of the annot.gr on strand +
+    mean_cov.table.f$zscore <- scale(mean_cov.table.f$value) # normalization using zscore
 
     # coverage for - strand
     cov.rle <- IRanges::coverage(IRanges::ranges(data.gr[BiocGenerics::strand(data.gr) == "-"]),
@@ -87,8 +86,7 @@ areaCov <- function(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE
     mean_cov.table.r <- as.data.frame(mean_cov.rle) # translate to data.frame
     mean_cov.table.r$index <- c(1:(length(mean_cov.table.r$value)) - window.size + bin / 2)
     mean_cov.table.r$strand <- rep("-", length(mean_cov.table.r$value))
-    mean_cov.table.r$corrected <- mean_cov.table.r$value /
-      sum(width(data.gr[BiocGenerics::strand(data.gr) == "-"])) # normalization per the total width of the annot.gr on strand -
+    mean_cov.table.r$zscore <- scale(mean_cov.table.r$value) # normalization using zscore
 
     # merge strands
     mean_cov.table <- rbind(mean_cov.table.r, mean_cov.table.f)
@@ -102,18 +100,18 @@ areaCov <- function(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE
     mean_cov.table <- as.data.frame(mean_cov.rle) # translate to data.frame
     mean_cov.table$index <- c(1:(length(mean_cov.table$value)) - window.size + bin / 2)
     mean_cov.table$strand <- rep("*", length(mean_cov.table$value))
-    mean_cov.table$corrected <- mean_cov.table$value / sum(width(data.gr))
+    mean_cov.table$zscore <- scale(mean_cov.table$value)
   }
 
   data <- mean_cov.table # input for ggplot
-  names(data) <- c("coverage", "distance", "strand", "norm_coverage")
+  names(data) <- c("coverage", "distance", "strand", "zscore")
 
   # y values if norm = TRUE or FALSE
   if (isFALSE(norm)) {
     p <- ggplot2::ggplot(data, ggplot2::aes(y = coverage, x = distance, color = strand))
   }
   if (isTRUE(norm)) {
-    p <- ggplot2::ggplot(data, ggplot2::aes(y = norm_coverage, x = distance, color = strand))
+    p <- ggplot2::ggplot(data, ggplot2::aes(y = zscore, x = distance, color = strand))
   }
 
   # ggplot to return
