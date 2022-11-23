@@ -1,6 +1,6 @@
 Package: TADkit
 Title: TAD visualisation and analysis
-Version: 0.0.2.9300
+Version: 0.0.3.0000
 Authors@R: 
     person("Nicolas", "MARY", , "nicolas.mary@envt.fr", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7304-5555 "))
