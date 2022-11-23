@@ -28,6 +28,7 @@
 #' @export
 #'
 #' @examples
+#' #to do
 #'
 domainDens <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, bin.width = 50e3, output = "plot") {
 
