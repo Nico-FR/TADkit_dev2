@@ -17,7 +17,6 @@
 #'
 #' @return list of GRanges
 #' @importFrom methods as
-#' @import S4Vectors
 #' @import GenomicRanges
 #' @import GenomeInfoDb
 #' @export
@@ -76,12 +75,12 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, extend = NULL, 
       GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind2)]] = GenomicRanges::mcols(ind2_ins.gr[bin_hit])[,1]
 
       # #add column to specify if there is a TAD in the other individual (+/- extend). "newTAD" means no TAD boundaries in the vicinity i.e. +/- extend_value.
-      S4Vectors::mcols(ind1_boundaries.gr)[[paste0("newTAD_",ind2)]] = ind1_boundaries.gr %outside% (ind2_boundaries.gr + extend - 1) # "minus 1" to count TAD with start(indiv1) = end(indiv2)+extend or end(indiv1) = start(indiv2)-extend as new TAD
+      GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("newTAD_",ind2)]] = ind1_boundaries.gr %outside% (ind2_boundaries.gr + extend - 1) # "minus 1" to count TAD with start(indiv1) = end(indiv2)+extend or end(indiv1) = start(indiv2)-extend as new TAD
 
       # Delta score
-      S4Vectors::mcols(ind1_boundaries.gr)[[paste0("delta_score_",ind2)]] =  S4Vectors::mcols(ind1_boundaries.gr)[[paste0("score_",ind1)]] - S4Vectors::mcols(ind1_boundaries.gr)[[paste0("score_",ind2)]]
+      GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("delta_score_",ind2)]] =  GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind1)]] - GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind2)]]
 
-      nb_newTAD = length(ind1_boundaries.gr[ S4Vectors::mcols(ind1_boundaries.gr)[[paste0("newTAD_",ind2)]]==TRUE])
+      nb_newTAD = length(ind1_boundaries.gr[ GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("newTAD_",ind2)]]==TRUE])
       nb_TAD = length(ind1_boundaries.gr)
       message(paste0(nb_newTAD , "/", nb_TAD," (", round(nb_newTAD / nb_TAD * 100), "%)"," new boundaries compared to ", ind2))
     }

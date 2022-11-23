@@ -32,7 +32,7 @@
 #'
 #' @return Plot with TADs and other tracks as a list of GenomeGraph tracks (see Gviz::plotTracks for details).
 #' @import GenomicRanges
-#' @import S4Vectors
+#' @importfrom S4Vectors aggregate
 #' @import IRanges
 #' @import GenomeInfoDb
 #' @importFrom BiocGenerics strand end start width
@@ -203,8 +203,8 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
       annotTrack <- NULL
 
       # Sanity check of annot.col
-      if (length(S4Vectors::mcols(annot.gr)) < annot.col) {
-        stop(paste0("Wrong annot.col number. There is only ", length(S4Vectors::mcols(annot.gr)), " column(s) with metadata."))
+      if (length(GenomicRanges::mcols(annot.gr)) < annot.col) {
+        stop(paste0("Wrong annot.col number. There is only ", length(GenomicRanges::mcols(annot.gr)), " column(s) with metadata."))
       }
 
       data1 <- annot.gr[GenomeInfoDb::seqnames(annot.gr) == chr &
@@ -219,7 +219,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
           width = BiocGenerics::width(data1),
           chromosome = as.character(chr),
           strand = BiocGenerics::strand(data1),
-          group = S4Vectors::mcols(data1)[,annot.col], groupAnnotation = "group",
+          group = GenomicRanges::mcols(data1)[,annot.col], groupAnnotation = "group",
           genome = "bosTau9", name = "Annot", col = "deepskyblue4",
           col.line = "darkblue", cex.feature = 0.5, cex.group = 0.7,
           just.group = "below"

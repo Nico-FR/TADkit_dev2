@@ -13,7 +13,7 @@
 #' @import GenomeInfoDb
 #' @importFrom BiocGenerics sort
 #' @importFrom dplyr mutate case_when
-#' @importFrom S4Vectors mcols split
+#' @importFrom S4Vectors split
 #' @import GenomicRanges
 #' @export
 #' @examples
@@ -29,7 +29,7 @@ PC1calling <- function(bedgraph) {
   }
 
   if (class(bedgraph)=="GRanges") {
-    grange = bedgraph %>% as.data.frame %>% dplyr::mutate(comp = dplyr::case_when(S4Vectors::mcols(bedgraph)[,1] < 0 ~ 'B', S4Vectors::mcols(bedgraph)[,1] >= 0 ~ 'A', is.na(S4Vectors::mcols(bedgraph)[,1]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
+    grange = bedgraph %>% as.data.frame %>% dplyr::mutate(comp = dplyr::case_when(GenomicRanges::mcols(bedgraph)[,1] < 0 ~ 'B', GenomicRanges::mcols(bedgraph)[,1] >= 0 ~ 'A', is.na(GenomicRanges::mcols(bedgraph)[,1]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
   } else {stop("Wrong input format")}
 
 

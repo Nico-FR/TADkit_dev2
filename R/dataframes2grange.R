@@ -15,7 +15,7 @@
 #'
 #' @return GRange file that contains chromosome size.
 #' @import GenomicRanges
-#' @import S4Vectors
+#' @import S4Vectors Rle
 #' @import IRanges
 #' @import GenomeInfoDb
 #' @importFrom BiocGenerics strand end start width

@@ -38,7 +38,6 @@
 #'
 #' @return Plot with TAD track(s) and other track(s) as a list of GenomeGraph tracks (see Gviz::plotTracks for details).
 #' @import GenomicRanges
-#' @import S4Vectors
 #' @import IRanges
 #' @import GenomeInfoDb
 #' @importFrom BiocGenerics strand end start width
@@ -158,7 +157,7 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
         seqnames = chr,
         ranges = IRanges::ranges(cov.gr),
         strand = "*",
-        score = S4Vectors::mcols(cov.gr)[1]
+        score = GenomicRanges::mcols(cov.gr)[1]
       )
 
       bigwigTrack <- Gviz::DataTrack(data.gr,
@@ -209,8 +208,8 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
         annotTrack <- NULL
 
         # Sanity check of annot.col
-        if (length(S4Vectors::mcols(annot.lst[[i]])) < annot.col) {
-          stop(paste0("wrong annot.col number. There is only ", length(S4Vectors::mcols(annot.lst[[i]])), " column(s) with metadata"))
+        if (length(GenomicRanges::mcols(annot.lst[[i]])) < annot.col) {
+          stop(paste0("wrong annot.col number. There is only ", length(GenomicRanges::mcols(annot.lst[[i]])), " column(s) with metadata"))
         }
 
         data1 <- annot.lst[[i]][GenomeInfoDb::seqnames(annot.lst[[i]]) == chr &
@@ -225,7 +224,7 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
             width = BiocGenerics::width(data1),
             chromosome = as.character(chr),
             strand = BiocGenerics::strand(data1),
-            group = S4Vectors::mcols(data1)[, annot.col], groupAnnotation = "group",
+            group = GenomicRanges::mcols(data1)[, annot.col], groupAnnotation = "group",
             genome = "bosTau9", name = names(annot.lst[i]), col = "deepskyblue4",
             col.line = "darkblue", cex.feature = 0.5, cex.group = 0.7,
             just.group = "below"
@@ -303,9 +302,9 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
 
         bedgraphTracks.temp <- Gviz::DataTrack(
           range = sort(data.gr), na.rm = T,
-          groups = names(S4Vectors::mcols(data.gr)),
+          groups = names(GenomicRanges::mcols(data.gr)),
           type = "l", lwd = 2, name = names(bedgraphPath.lst[l]),
-          col = col.lst[1:length(bedgraphPath.lst[[l]])][order(names(S4Vectors::mcols(data.gr)))]
+          col = col.lst[1:length(bedgraphPath.lst[[l]])][order(names(GenomicRanges::mcols(data.gr)))]
         )
 
         bedgraphTracks = append(bedgraphTracks, bedgraphTracks.temp)

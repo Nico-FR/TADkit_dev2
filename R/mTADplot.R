@@ -38,7 +38,6 @@
 #'
 #' @return Plot with TAD track(s) and other track(s) as a list of GenomeGraph tracks (see Gviz::plotTracks for details).
 #' @import GenomicRanges
-#' @import S4Vectors
 #' @import IRanges
 #' @import GenomeInfoDb
 #' @importFrom BiocGenerics strand end start width
@@ -150,7 +149,7 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
         seqnames = chr,
         ranges = IRanges::ranges(cov.gr),
         strand = "*",
-        score = S4Vectors::mcols(cov.gr)[1]
+        score = GenomicRanges::mcols(cov.gr)[1]
       )
 
       bigwigTrack <- Gviz::DataTrack(data.gr,
@@ -196,8 +195,8 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
         annotTrack <- NULL
 
         # Sanity check of annot.col
-        if (length(S4Vectors::mcols(annot.lst[[i]])) < annot.col) {
-          stop(paste0("Wrong annot.col number. There is only ", length(S4Vectors::mcols(annot.lst[[i]])), " column(s) with metadata."))
+        if (length(GenomicRanges::mcols(annot.lst[[i]])) < annot.col) {
+          stop(paste0("Wrong annot.col number. There is only ", length(GenomicRanges::mcols(annot.lst[[i]])), " column(s) with metadata."))
         }
 
         data1 <- annot.lst[[i]][GenomeInfoDb::seqnames(annot.lst[[i]]) == chr &
@@ -212,7 +211,7 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
             width = BiocGenerics::width(data1),
             chromosome = as.character(chr),
             strand = BiocGenerics::strand(data1),
-            group = S4Vectors::mcols(data1)[, annot.col], groupAnnotation = "group",
+            group = GenomicRanges::mcols(data1)[, annot.col], groupAnnotation = "group",
             genome = "bosTau9", name = names(annot.lst[i]), col = "deepskyblue4",
             col.line = "darkblue", cex.feature = 0.5, cex.group = 0.7,
             just.group = "below"

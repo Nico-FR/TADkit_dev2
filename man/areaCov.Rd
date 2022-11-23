@@ -2,7 +2,7 @@
 % Please edit documentation in R/areaCov.R
 \name{areaCov}
 \alias{areaCov}
-\title{Coverage plot of annotations around TAD boundaries}
+\title{Density plot of annotations around TAD boundaries}
 \usage{
 areaCov(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE)
 }
@@ -13,17 +13,17 @@ areaCov(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE)
 
 \item{bin.width}{Size of the sliding window to calculate the mean coverage. By default the size in 10 time smaller than window.size.}
 
-\item{norm}{Normalized coverage according to the total width of the considered strand. Default is FALSE.}
+\item{norm}{Normalized density using relative content (zscore of density). Default is FALSE.}
 }
 \value{
 Return a ggplot graph
 }
 \description{
-Graph of the coverage of the genomic annotations around TAD boundaries (real distance).
+Graph of the density of the genomic annotations around TAD boundaries (real distance).
 }
 \details{
 This function take the output of TADarea function.
-If the cumulative size is significantly different between strands, it can be useful to normalized the depth between strand (using norm = TRUE).
+If the density is significantly different between strands, it can be useful to use relative density, ie normalizing using the zscore (using norm = TRUE).
 }
 \examples{
 # create GRange with 1 TAD
