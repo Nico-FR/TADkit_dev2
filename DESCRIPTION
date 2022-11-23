@@ -27,8 +27,8 @@ Imports:
     methods,
     ggplot2,
     scales,
-    dplyr,
     plyr,
+    dplyr,
     magrittr,
     utils,
     tidyr

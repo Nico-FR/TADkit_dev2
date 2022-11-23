@@ -11,7 +11,7 @@
 #' @param norm Normalized density using relative content (zscore of density). Default is FALSE.
 #'
 #' @return Return a ggplot graph
-#' @importfrom S4Vectors runmean
+#' @importFrom S4Vectors runmean
 #' @import IRanges
 #' @importFrom BiocGenerics strand end start width
 #' @import ggplot2

@@ -16,8 +16,8 @@
 #' @return Return a S3 class object with 3 data frames.
 #' @import GenomeInfoDb
 #' @importFrom BiocGenerics strand end start width
-#' @importFrom plyr ddply
 #' @import GenomicRanges
+#' @import dplyr
 #' @export
 #' @examples
 #' # output <- geneTADtopo(tad.gr, gene.gr)

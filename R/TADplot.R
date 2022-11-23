@@ -32,7 +32,7 @@
 #'
 #' @return Plot with TADs and other tracks as a list of GenomeGraph tracks (see Gviz::plotTracks for details).
 #' @import GenomicRanges
-#' @importfrom S4Vectors aggregate
+#' @importFrom S4Vectors aggregate
 #' @import IRanges
 #' @import GenomeInfoDb
 #' @importFrom BiocGenerics strand end start width
