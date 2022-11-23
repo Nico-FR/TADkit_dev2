@@ -25,7 +25,6 @@
 #'
 #' @return Return a ggplot graph
 #' @import GenomeInfoDb
-#' @importFrom BiocGenerics strand end start width
 #' @importFrom plyr ddply
 #' @import ggplot2
 #' @import scales

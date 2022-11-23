@@ -15,7 +15,6 @@
 #'
 #' @return Return a S3 class object with 3 data frames.
 #' @import GenomeInfoDb
-#' @importFrom BiocGenerics strand end start width
 #' @import GenomicRanges
 #' @import dplyr
 #' @export

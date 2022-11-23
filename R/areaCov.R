@@ -13,7 +13,7 @@
 #' @return Return a ggplot graph
 #' @importFrom S4Vectors runmean
 #' @import IRanges
-#' @importFrom BiocGenerics strand end start width
+#' @import GenomicRanges
 #' @import ggplot2
 #' @import scales
 #' @export

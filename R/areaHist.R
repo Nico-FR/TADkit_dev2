@@ -18,7 +18,7 @@
 #'
 #' @return Return a ggplot graph
 #' @import GenomeInfoDb
-#' @importFrom BiocGenerics strand end start width
+#' @import GenomicRanges
 #' @import IRanges
 #' @import ggplot2
 #' @import scales
@@ -86,7 +86,7 @@ areaHist <- function(data.gr, annot.border = "center", annot.strand = TRUE, bin.
   # mesure distances from annotation features from TAD borders
   ###################################################################
   data2.gr$distance <- ifelse(
-    BiocGenerics::start(data2.gr) < window.size, # if start before TAD border
+    GenomicRanges::start(data2.gr) < window.size, # if start before TAD border
     -IRanges::distance(IRanges::IRanges(start = window.size), IRanges::ranges(data2.gr)), # negatives distances
     IRanges::distance(IRanges::IRanges(start = window.size), IRanges::ranges(data2.gr)) # else positive distances
   )

@@ -20,7 +20,7 @@
 #'
 #' @return Return a ggplot graphs
 #' @import GenomeInfoDb
-#' @import plyr
+#' @import dplyr
 #' @import ggplot2
 #' @import GenomicRanges
 #' @importFrom tidyr gather

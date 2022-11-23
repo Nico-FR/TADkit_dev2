@@ -40,7 +40,6 @@
 #' @import GenomicRanges
 #' @import IRanges
 #' @import GenomeInfoDb
-#' @importFrom BiocGenerics strand end start width
 #' @importFrom magrittr %>%
 #' @import dplyr
 #' @importFrom utils read.table
@@ -89,7 +88,7 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
     data <- tad.lst[[i]][GenomeInfoDb::seqnames(tad.lst[[i]]) == chr]
 
     Track <- Gviz::AnnotationTrack(
-      start = BiocGenerics::start(data),
+      start = GenomicRanges::start(data),
       width = BiocGenerics::width(data),
       chromosome = as.character(chr),
       id = if (!isTRUE(tad.id)) {paste0(round(BiocGenerics::width(data) / 1e3), "Kb")} else {names(data)},
@@ -189,13 +188,13 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
       if (is.null(annot.col)) {
         data1 <- annot.lst[[i]][GenomeInfoDb::seqnames(annot.lst[[i]]) == chr &
                                   BiocGenerics::end(annot.lst[[i]]) >= start &
-                                  BiocGenerics::start(annot.lst[[i]]) <= stop]
+                                  GenomicRanges::start(annot.lst[[i]]) <= stop]
 
         if (length(data1) == 0) {
           annotTrack <- NULL
         } else {
           annotTrack <- Gviz::AnnotationTrack(
-            start = BiocGenerics::start(data1),
+            start = GenomicRanges::start(data1),
             width = BiocGenerics::width(data1),
             chromosome = as.character(chr),
             strand = BiocGenerics::strand(data1),
@@ -214,13 +213,13 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
 
         data1 <- annot.lst[[i]][GenomeInfoDb::seqnames(annot.lst[[i]]) == chr &
                                   BiocGenerics::end(annot.lst[[i]]) >= start &
-                                  BiocGenerics::start(annot.lst[[i]]) <= stop]
+                                  GenomicRanges::start(annot.lst[[i]]) <= stop]
 
         if (length(data1) == 0) {
           annotTrack <- NULL
         } else {
           annotTrack <- Gviz::AnnotationTrack(
-            start = BiocGenerics::start(data1),
+            start = GenomicRanges::start(data1),
             width = BiocGenerics::width(data1),
             chromosome = as.character(chr),
             strand = BiocGenerics::strand(data1),
@@ -319,7 +318,7 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
   #####################################
   data = GenomicRanges::restrict(sort(unlist(methods::as(tad.lst, "GRangesList"))),
                   start = start, end = stop)
-  borders = unique(sort(c(BiocGenerics::start(data[GenomeInfoDb::seqnames(data) == chr]),start, BiocGenerics::end(data[GenomeInfoDb::seqnames(data) == chr]),stop)))
+  borders = unique(sort(c(GenomicRanges::start(data[GenomeInfoDb::seqnames(data) == chr]),start, BiocGenerics::end(data[GenomeInfoDb::seqnames(data) == chr]),stop)))
 
   ht <- Gviz::HighlightTrack(trackList = c(areaTrack, tadTracks,
                                            bedgraphTracks, bigwigTracks,

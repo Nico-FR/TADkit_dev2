@@ -13,7 +13,6 @@
 #' @return GRange file with all annotations surronding all TAD boundary (starts or stops...). TAD boundaries are at the window.size position.
 #' @import GenomicRanges
 #' @import GenomeInfoDb
-#' @importFrom BiocGenerics strand end start width
 #' @import methods
 #' @export
 #'
@@ -49,12 +48,12 @@ TADarea <- function(tad.gr, annot.gr, window.size = 50e3, tad.boundary = "start"
     # Annot.gr filtering within TAD boundary +/- window.size
     data.gr <- annot.gr[
       GenomeInfoDb::seqnames(annot.gr) == as.character(GenomeInfoDb::seqnames(tad_1)) # filter chr
-      & BiocGenerics::end(annot.gr) >= BiocGenerics::start(tad_1) - window.size # upstream limit
-      & BiocGenerics::start(annot.gr) <= BiocGenerics::start(tad_1) + window.size # downstream limit
+      & BiocGenerics::end(annot.gr) >= GenomicRanges::start(tad_1) - window.size # upstream limit
+      & GenomicRanges::start(annot.gr) <= GenomicRanges::start(tad_1) + window.size # downstream limit
     ]
 
     # shift annot.gr (so TADboundary is at window.size distance)
-    GenomicRanges::shift(data.gr, -BiocGenerics::start(tad_1) + window.size)
+    GenomicRanges::shift(data.gr, -GenomicRanges::start(tad_1) + window.size)
   }
 
   ##############################

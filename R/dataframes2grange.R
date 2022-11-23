@@ -18,7 +18,6 @@
 #' @importFrom S4Vectors Rle
 #' @import IRanges
 #' @import GenomeInfoDb
-#' @importFrom BiocGenerics strand end start width
 #' @export
 
 
