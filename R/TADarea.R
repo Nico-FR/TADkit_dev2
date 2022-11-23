@@ -48,7 +48,7 @@ TADarea <- function(tad.gr, annot.gr, window.size = 50e3, tad.boundary = "start"
     # Annot.gr filtering within TAD boundary +/- window.size
     data.gr <- annot.gr[
       GenomeInfoDb::seqnames(annot.gr) == as.character(GenomeInfoDb::seqnames(tad_1)) # filter chr
-      & BiocGenerics::end(annot.gr) >= GenomicRanges::start(tad_1) - window.size # upstream limit
+      & GenomicRanges::end(annot.gr) >= GenomicRanges::start(tad_1) - window.size # upstream limit
       & GenomicRanges::start(annot.gr) <= GenomicRanges::start(tad_1) + window.size # downstream limit
     ]
 
