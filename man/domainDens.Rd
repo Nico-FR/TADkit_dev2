@@ -40,3 +40,7 @@ For example:
 2- calculate the relative positions of each bin within his corresponding TAD,
 3- plot the smoothed bin density (and smoothed zscore bin density) according to relative positions.
 }
+\examples{
+#to do
+
+}

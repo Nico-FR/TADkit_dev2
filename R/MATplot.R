@@ -21,7 +21,7 @@
 #' @param bin.width bin width of the matrix in bp.
 #' @param matrix.colname logical. Does your matrix file (ie path) have column names (ie header)? Default = TRUE
 #' @param matrix.rowname logical. Does your matrix file (ie path) have row names? Default = TRUE
-#' @param matrix.sep the field separator character. Values on each line of the matrix file are separated by this character. Default = "\t" (ie tabulation).
+#' @param matrix.sep the field separator character. Values on each line of the matrix file are separated by this character. Default = '\\t' (ie tabulation).
 #' @param matrix.diag logical. Weather or not to plot diagonal of the matrix. Default = TRUE
 #' @param log2 logical. Weather or not to plot the log2 of the matrix values.
 #' @param scale.colors A character string indicating the color map option to use. Eight options are available (see viridis package:
@@ -78,7 +78,7 @@ MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.r
   #plot
   if (log2 == T) {mat = log2(mat)}
   melted_mat <- reshape2::melt(mat)
-  melted_mat$Var2 = (melted_mat$Var2 + from - 1) * -bin.width + bin.width / 2
+  melted_mat$Var2 = (melted_mat$Var2 + from - 1) * - bin.width + bin.width / 2
   melted_mat$Var1 = (melted_mat$Var1 + from - 1) * bin.width - bin.width / 2
   ggplot2::ggplot(data = melted_mat, ggplot2::aes(x = Var1, y = Var2, fill = value))+
     ggplot2::geom_tile()+viridis::scale_fill_viridis(na.value = "black", option = scale.colors)+

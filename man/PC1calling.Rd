@@ -7,13 +7,13 @@
 PC1calling(bedgraph)
 }
 \arguments{
-\item{bedgraph}{GRange file or bedgraph path for PC1 values.}
+\item{bedgraph}{GRange file or bedgraph path (4 columns: chr, star, end, pc1 score) for PC1 values.}
 }
 \value{
 grange
 }
 \description{
-From a score for each bin (i.e principal component 1), the function output a grange with compartment A for score >= 0 and compartment B for score < 0
+From a score for each bin (i.e principal component 1), the function output a Grange file with compartment A for score >= 0 and compartment B for score < 0
 }
 \details{
 From bedgraph as input (GRange object or path) output a GRange with the compartments.

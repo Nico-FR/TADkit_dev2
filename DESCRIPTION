@@ -31,4 +31,6 @@ Imports:
     dplyr,
     magrittr,
     utils,
-    tidyr
+    tidyr,
+    reshape2,
+    viridis
