@@ -1,13 +1,13 @@
 #' @title Compartments calling (A or B)
 #'
-#' @description From a score for each bin (i.e principal component 1), the function output a grange with compartment A for score >= 0 and compartment B for score < 0
+#' @description From a score for each bin (i.e principal component 1), the function output a Grange file with compartment A for score >= 0 and compartment B for score < 0
 #'
 #' @details From bedgraph as input (GRange object or path) output a GRange with the compartments.
 #' NA score are considered as part of a compartment A if they are between two compartments A (the other way around for B compartments).
 #' Otherwise (if NA are between compartment A and B) they are not called, thus leaving a gap between compartments.
 #'
 #'
-#' @param bedgraph GRange file or bedgraph path for PC1 values.
+#' @param bedgraph GRange file or bedgraph path (4 columns: chr, star, end, pc1 score) for PC1 values.
 #'
 #' @return grange
 #' @import GenomeInfoDb

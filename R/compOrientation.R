@@ -93,7 +93,7 @@ compOrientation <- function(bedgraph, gene.gr, expression.data.frame) {
   medianExp = data %>% dplyr::group_by(comp, chr) %>% dplyr::summarise(med_exp = median(exp)) %>% dplyr::arrange(chr) %>% tidyr::spread(., comp, med_exp) %>% as.data.frame()
   medianExp$to_be_inverted = ifelse(medianExp$A < medianExp$B, -1, 1)
 
-  message(paste0(length(medianExp[medianExp$to_be_inverted == -1,1]), "/", length(medianExp[,1]), " chromosomes has been reversed"))
+  message(paste0(length(medianExp[medianExp$to_be_inverted == -1,1]), "/", length(medianExp[,1]), " chromosomes have been reversed"))
 
   # if exp A == exp B ==> warning
   if (length((medianExp %>% filter(A == B))[,1])) {
