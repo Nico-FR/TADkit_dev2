@@ -24,7 +24,13 @@
 #' @param matrix.sep the field separator character. Values on each line of the matrix file are separated by this character. Default = '\\t' (ie tabulation).
 #' @param matrix.diag logical. Weather or not to plot diagonal of the matrix. Default = TRUE
 #' @param log2 logical. Weather or not to plot the log2 of the matrix values.
-#' @param scale.colors A character string indicating the color map option to use. Eight options are available (see viridis package:
+#' @param tad.upper.tri bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL
+#' @param tad.lower.tri bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL
+#' @param tad.upper.line bed files path, data frame or grange object with the TAD to plot as line in the upper parts of the matrix. Default is NULL
+#' @param tad.lower.line bed files path, data frame or grange object with the TAD to plot as line in the lower parts of the matrix. Default is NULL
+#' @param tad.line.col col number use to color tad.upper.line and tad.lower.line. Default is NULL
+#' @param tad.chr chromosome name to filter in TAD files. Default is NULL
+#' @param scale.colors A character string indicating the color map option to use. Eight options are available (see viridis package):
 #' "magma" (or "A")
 #' "inferno" (or "B")
 #' "plasma" (or "C")
@@ -44,7 +50,8 @@
 #' @examples
 
 
-MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.rowname = T, matrix.sep = "\t", matrix.diag = T, log2 = T, scale.colors = "H") {
+MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.rowname = T, matrix.sep = "\t", matrix.diag = T, log2 = T, scale.colors = "H",
+                    tad.upper.tri = NULL, tad.lower.tri = NULL, tad.chr = NULL) {
 
   ##############################"
   matrix="/home/nmary/Downloads/Bovin-669.ARS-UCD1.2.mapq_10.10000.chr1.matrix.gz"
@@ -52,6 +59,12 @@ MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.r
   start = 1e6 ; stop = 4e6
   matrix.colname = T ; matrix.rowname = T ; matrix.sep = "\t"
   log2 = T ; scale.colors = "H"; matrix.diag = T
+  tad.upper.tri = "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/Hicexplorer/Bovin-977.ARS-UCD1.2.mapq_10.10000_norm_custom_domains.bed"
+  tad.lower.tri = "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/Hicexplorer/Bovin-0197.ARS-UCD1.2.mapq_10.10000_norm_custom_domains.bed"
+  tad.upper.line = "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/dcHiC/Compartment/Bovin977.ARS-UCD1.2.mapq_10.50000_raw_dchic_oriented.bed"
+  tad.lower.line = "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/dcHiC/Compartment/Bovin0197.ARS-UCD1.2.mapq_10.50000_raw_dchic_oriented.bed"
+  tad.chr = "1"
+  tad.line.col = 4
   ##############################
 
 
@@ -75,18 +88,146 @@ MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.r
   if(!is.matrix(matrix)) {mat = matrix(as.matrix(df), nrow = length(df))} else {mat = matrix[from:to, from:to]}
   if(isFALSE(matrix.diag)) {diag(mat) <- NA}
 
-  #plot
+  # matrix plot
   if (log2 == T) {mat = log2(mat)}
   melted_mat <- reshape2::melt(mat)
   melted_mat$Var2 = (melted_mat$Var2 + from - 1) * - bin.width + bin.width / 2
   melted_mat$Var1 = (melted_mat$Var1 + from - 1) * bin.width - bin.width / 2
-  ggplot2::ggplot(data = melted_mat, ggplot2::aes(x = Var1, y = Var2, fill = value))+
-    ggplot2::geom_tile()+viridis::scale_fill_viridis(na.value = "black", option = scale.colors)+
-    ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6))+
-    ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6))+
+  p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = Var1, y = Var2, fill = value))+
+    viridis::scale_fill_viridis(na.value = "black", option = scale.colors)+
+    ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
+    ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
     ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
 
+
+  #upper tri
+  if (!is.null(tad.upper.tri)) {
+
+    if (is.character(tad.upper.tri)) {
+      tad = read.table(tad.upper.tri, h = F, sep = "\t")[,1:3]
+    }
+
+    if (class(tad.upper.tri) == "GRanges") {
+      tad = as.data.frame(tad.upper.tri)[,1:3]
+    }
+
+    if (is.data.frame(tad.upper.tri)) {
+      tad = tad.upper.tri[,1:3]
+    }
+
+    names(tad) = c("chr", "s", "e")
+    if (is.null(tad.chr)) {
+      tad <- dplyr::filter(tad, e > start, s < stop)} else {
+        tad <- dplyr::filter(tad, chr == tad.chr, e > start, s < stop)}
+
+    tad$e2 <- ifelse(tad$e >= stop, stop, tad$e)
+    tad$s2 <- ifelse(tad$s <= start, start, tad$s)
+
+    p = p + ggplot2::geom_segment(data = tad, ggplot2::aes(x = s, y = -s, xend = e2, yend = -s2), color = "red", size = 0.3)+
+      ggplot2::geom_segment(data = tad, ggplot2::aes(x = e2, y = -s2, xend = e, yend = -e), color = "red", size = 0.3)
+  }
+
+  #lower tri
+  if (!is.null(tad.lower.tri)) {
+
+    if (is.character(tad.lower.tri)) {
+      tad = read.table(tad.lower.tri, h = F, sep = "\t")[,1:3]
+    }
+
+    if (class(tad.lower.tri) == "GRanges") {
+      tad = as.data.frame(tad.lower.tri)[,1:3]
+    }
+
+    if (is.data.frame(tad.lower.tri)) {
+      tad = tad.lower.tri[,1:3]
+    }
+
+    names(tad) = c("chr", "s", "e")
+    if (is.null(tad.chr)) {
+      tad <- dplyr::filter(tad, e > start, s < stop)} else {
+        tad <- dplyr::filter(tad, chr == tad.chr, e > start, s < stop)}
+
+    tad$e2 <- ifelse(tad$e >= stop, stop, tad$e)
+    tad$s2 <- ifelse(tad$s <= start, start, tad$s)
+
+    p = p + ggplot2::geom_segment(data = tad, ggplot2::aes(x = s2, y = -e2, xend = e, yend = -e), color = "red", size = 0.3)+
+      ggplot2::geom_segment(data = tad, ggplot2::aes(x = s, y = -s, xend = s2, yend = -e2), color = "red", size = 0.3)
+  }
+
+
+  #upper line
+  if (!is.null(tad.upper.line)) {
+
+    if (is.character(tad.upper.line)) {
+      tad = read.table(tad.upper.line, h = F, sep = "\t")[, c(1:3, tad.line.col)]
+    }
+
+    if (class(tad.upper.line) == "GRanges") {
+      tad = as.data.frame(tad.upper.line)[, c(1:3, tad.line.col + 5)]
+    }
+
+    if (is.data.frame(tad.upper.line)) {
+      tad = tad.upper.line[, c(1:3, tad.line.col)]
+    }
+
+    if (is.null(tad.line.col)) {
+      tad$col = rep(c("1", "2"), length.out=nrow(tad))
+    }
+
+    names(tad) = c("chr", "s", "e", "col")
+    if (is.null(tad.chr)) {
+      tad <- dplyr::filter(tad, e > start, s < stop)} else {
+      tad <- dplyr::filter(tad, chr == tad.chr, e > start, s < stop)
+      }
+
+    tad$e2 <- ifelse(tad$e >= stop, stop, tad$e)
+    tad$s2 <- ifelse(tad$s <= start, start, tad$s)
+
+    p = p + ggplot2::geom_segment(data = tad, ggplot2::aes(x = s2, y = -start, xend = e2, yend = -start, col = col), size = 1.5)+
+      ggplot2::geom_segment(data = tad, ggplot2::aes(x = stop, y = -s2, xend = stop, yend = -e2, col = col), size = 1.5)
+  }
+
+  #lower line
+  if (!is.null(tad.lower.line)) {
+
+    if (is.character(tad.lower.line)) {
+      tad = read.table(tad.lower.line, h = F, sep = "\t")[, c(1:3, tad.line.col)]
+    }
+
+    if (class(tad.lower.line) == "GRanges") {
+      tad = as.data.frame(tad.lower.line)[, c(1:3, tad.line.col + 5)]
+    }
+
+    if (is.data.frame(tad.lower.line)) {
+      tad = tad.lower.line[, c(1:3, tad.line.col)]
+    }
+
+    if (is.null(tad.line.col)) {
+      tad$col = rep(c("1", "2"), length.out=nrow(tad))
+    }
+
+    names(tad) = c("chr", "s", "e", "col")
+    if (is.null(tad.chr)) {
+      tad <- dplyr::filter(tad, e > start, s < stop)} else {
+        tad <- dplyr::filter(tad, chr == tad.chr, e > start, s < stop)
+      }
+
+    tad$e2 <- ifelse(tad$e >= stop, stop, tad$e)
+    tad$s2 <- ifelse(tad$s <= start, start, tad$s)
+
+    if (is.null(tad.chr)) {
+      tad <- dplyr::filter(tad, e > start, s < stop)} else {
+        tad <- dplyr::filter(tad, chr == tad.chr, e > start, s < stop)}
+
+    p = p + ggplot2::geom_segment(data = tad, ggplot2::aes(x = start, y = -s2, xend = start, yend = -e2, col = col), size = 1)+
+      ggplot2::geom_segment(data = tad, ggplot2::aes(x = s2, y = -stop, xend = e2, yend = -stop, col = col), size = 1)
+  }
+
+  return(p)
 }
+
+
+
 
 
 
