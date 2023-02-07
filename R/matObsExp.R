@@ -16,11 +16,6 @@
 
 matObsExp <- function(matrix, matrix.colname = T, matrix.rowname = T, matrix.sep = "\t") {
 
-  ##############################"
-  matrix="/home/nmary/mnt/cytogene/Var_struc/Bovin/Contact_maps/Distiller_Arima/norm/dense/Bovin-669.ARS-UCD1.2.mapq_10.50000.chr28.matrix.gz"
-  matrix.colname = T ; matrix.rowname = F ; matrix.sep = "\t"
-  ##############################
-
   #read matrix
   #read matrix.path
   if(isTRUE(matrix.rowname)) matrix.col.skip <- 1 else matrix.col.skip <- NULL
