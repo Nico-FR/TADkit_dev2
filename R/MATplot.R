@@ -29,8 +29,11 @@
 #' @param tad.upper.line bed files path, data frame or grange object with the TAD to plot as line in the upper parts of the matrix. Default is NULL
 #' @param tad.lower.line bed files path, data frame or grange object with the TAD to plot as line in the lower parts of the matrix. Default is NULL
 #' @param tad.line.col col number use to color tad.upper.line and tad.lower.line. Default is NULL
+#' @param loop.upper.bedpe bedpe files path or data frame plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is NULL
 #' @param tad.chr chromosome name to filter in TAD files. Default is NULL
-#' @param scale.colors A character string indicating the color map option to use. Eight options are available (see viridis package):
+#' @param annotations.color color for loop and tri annotations. Default is "red".
+#' @param line.color colors for
+#' @param scale.colors A character string indicating the color map option to use. Eight options are available (see viridis package), default is "H":
 #' "magma" (or "A")
 #' "inferno" (or "B")
 #' "plasma" (or "C")
@@ -50,8 +53,9 @@
 #' @examples
 
 
-MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.rowname = T, matrix.sep = "\t", matrix.diag = T, log2 = T, scale.colors = "H",
-                    tad.upper.tri = NULL, tad.lower.tri = NULL, tad.chr = NULL) {
+MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.rowname = T, matrix.sep = "\t", matrix.diag = T, log2 = T,
+                    tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL,
+                    tad.chr = NULL, annotations.color = "red", line.colors = c("red", "bleu"), scale.colors = "H") {
 
   ##############################"
   matrix="/home/nmary/Downloads/Bovin-669.ARS-UCD1.2.mapq_10.10000.chr1.matrix.gz"
@@ -65,6 +69,9 @@ MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.r
   tad.lower.line = "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/dcHiC/Compartment/Bovin0197.ARS-UCD1.2.mapq_10.50000_raw_dchic_oriented.bed"
   tad.chr = "1"
   tad.line.col = 4
+  loop.bedpe = "/home/nmary/mnt/cytogene/Var_struc/Bovin/Analysis/dcHiC_downsampling_v2/DifferentialResult/poll_vs_unp_comp50k/fdr_result/differential.intra_compartmentLoops_corrected.bedpe"
+  annotations.color = "red"
+  line.colors = c("red", "blue")
   ##############################
 
 
@@ -123,8 +130,8 @@ MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.r
     tad$e2 <- ifelse(tad$e >= stop, stop, tad$e)
     tad$s2 <- ifelse(tad$s <= start, start, tad$s)
 
-    p = p + ggplot2::geom_segment(data = tad, ggplot2::aes(x = s, y = -s, xend = e2, yend = -s2), color = "red", size = 0.3)+
-      ggplot2::geom_segment(data = tad, ggplot2::aes(x = e2, y = -s2, xend = e, yend = -e), color = "red", size = 0.3)
+    p = p + ggplot2::geom_segment(data = tad, ggplot2::aes(x = s, y = -s, xend = e2, yend = -s2), color = annotations.color, size = 0.3)+
+      ggplot2::geom_segment(data = tad, ggplot2::aes(x = e2, y = -s2, xend = e, yend = -e), color = annotations.color, size = 0.3)
   }
 
   #lower tri
@@ -150,8 +157,8 @@ MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.r
     tad$e2 <- ifelse(tad$e >= stop, stop, tad$e)
     tad$s2 <- ifelse(tad$s <= start, start, tad$s)
 
-    p = p + ggplot2::geom_segment(data = tad, ggplot2::aes(x = s2, y = -e2, xend = e, yend = -e), color = "red", size = 0.3)+
-      ggplot2::geom_segment(data = tad, ggplot2::aes(x = s, y = -s, xend = s2, yend = -e2), color = "red", size = 0.3)
+    p = p + ggplot2::geom_segment(data = tad, ggplot2::aes(x = s2, y = -e2, xend = e, yend = -e), color = annotations.color, size = 0.3)+
+      ggplot2::geom_segment(data = tad, ggplot2::aes(x = s, y = -s, xend = s2, yend = -e2), color = annotations.color, size = 0.3)
   }
 
 
@@ -184,7 +191,8 @@ MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.r
     tad$s2 <- ifelse(tad$s <= start, start, tad$s)
 
     p = p + ggplot2::geom_segment(data = tad, ggplot2::aes(x = s2, y = -start, xend = e2, yend = -start, col = col), size = 1.5)+
-      ggplot2::geom_segment(data = tad, ggplot2::aes(x = stop, y = -s2, xend = stop, yend = -e2, col = col), size = 1.5)
+      ggplot2::geom_segment(data = tad, ggplot2::aes(x = stop, y = -s2, xend = stop, yend = -e2, col = col), size = 1.5)+
+      ggplot2::scale_colour_manual(values = line.colors)
   }
 
   #lower line
@@ -220,7 +228,29 @@ MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.r
         tad <- dplyr::filter(tad, chr == tad.chr, e > start, s < stop)}
 
     p = p + ggplot2::geom_segment(data = tad, ggplot2::aes(x = start, y = -s2, xend = start, yend = -e2, col = col), size = 1)+
-      ggplot2::geom_segment(data = tad, ggplot2::aes(x = s2, y = -stop, xend = e2, yend = -stop, col = col), size = 1)
+      ggplot2::geom_segment(data = tad, ggplot2::aes(x = s2, y = -stop, xend = e2, yend = -stop, col = col), size = 1)+
+      ggplot2::scale_colour_manual(values = line.colors)
+  }
+
+  #loop
+  if (!is.null(loop.bedpe)) {
+
+    if (is.character(loop.bedpe)) {
+      loop = read.table(loop.bedpe, h = F, sep = "\t")[,1:6]
+    }
+
+    if (is.data.frame(loop.bedpe)) {
+      loop = loop.bedpe[,1:6]
+    }
+
+    names(loop) = c("chr1", "start1", "end1", "chr2", "start2", "end2")
+    if (is.null(tad.chr)) {
+      loop <- dplyr::filter(loop, start1 >= start, end1 < stop, start2 > start, end2 < stop)} else {
+        loop <- dplyr::filter(loop, chr1 == tad.chr, chr2 == tad.chr, start1 >= start, end1 < stop, start2 > start, end2 < stop)}
+
+
+    p = p + ggplot2::geom_rect(data = loop, ggplot2::aes(xmin = start2, xmax = end2, ymin = -start1, ymax = -end1), fill = NA, color = annotations.color, size = 0.3)+
+      ggplot2::geom_rect(data = loop, ggplot2::aes(xmin = start1, xmax = end1, ymin = -start2, ymax = -end2), fill = NA, color = annotations.color, size = 0.3)
   }
 
   return(p)
