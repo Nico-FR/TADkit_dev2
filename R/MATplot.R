@@ -1,38 +1,24 @@
-#' @title Plot TADs for one individual
+#' @title Plot matrix with annotation
 #'
-#' @description TADplot use Gviz package to plot at least 2 tracks. The first one includes all the TADs from the specified chromosome. And the second one is a zoom in the defined area.
-#' Other tracks can be added like gene annotation or read depth data.
+#' @description MATplot allow to plot matrix files with 3 type of annotations:
+#' -domains (like TADs or compartments) plot as triangles or lines on the upper or/and lower part of the matrix.
+#' -interaction between bins (loop) plot as a square on the upper and lower part of the matrix.
 #'
-#' @details This create a plot with at least 2 tracks from TADs annotation (tad.gr).
-#'
-#' On the first track the alternating TADs are represented in grey and black while the interTAD regions are represented in white.
-#' The second track is a zoom in the area of interest. This area is extend to the border of the TADs on both sides.
-#'
-#' Another track from a bigwig file can be added like read depth sequencing (RNAseq...) as an histogram.
-#' The bin size of the histogram is 1Kb by default, the read depth is smoothed using the median value of each bin.
-#' If the chromosome name is different (between the bigwig and the chr parameter), it can be fix using the bigwig.chr parameter ("1" versus "chr1").
-#'
-#' Another track with any annotations can be added.
-#' This track can be group using factors in a specified column of the annot.gr files (metadata) otherwise the names of each annotation is used.
+#' @details The matrix datas can be R object (dataframe, matrix or array) or the path of the files. In that case you can specify is the files as column and row names.
+#' All bed files can be R object (dataframe or GRange) or the path of the files.
+#' All bedpe files can be a dataframe or the path of the files.
+#' Chromosome of bedpe and bed files can be filter using tad.chr parameter.
+#' Upper and lower line can be used to represent compartments A and B and colored accordingly using the tad.line.col parameter.
 #'
 #' @param matrix matrix object (data frame or matrix) or matrix path at matrix format (dense) for only one chromosome. The path can be gzip (ending by .gz)
 #' @param start start in bp of the area of interest.
 #' @param stop end in bp of the area of interest.
 #' @param bin.width bin width of the matrix in bp.
 #' @param matrix.colname logical. Does your matrix file (ie path) have column names (ie header)? Default = TRUE
-#' @param matrix.rowname logical. Does your matrix file (ie path) have row names? Default = TRUE
+#' @param matrix.rowname logical. Does your matrix file (ie path) have row names? Default = FALSE
 #' @param matrix.sep the field separator character. Values on each line of the matrix file are separated by this character. Default = '\\t' (ie tabulation).
-#' @param matrix.diag logical. Weather or not to plot diagonal of the matrix. Default = TRUE
-#' @param log2 logical. Weather or not to plot the log2 of the matrix values.
-#' @param tad.upper.tri bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL
-#' @param tad.lower.tri bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL
-#' @param tad.upper.line bed files path, data frame or grange object with the TAD to plot as line in the upper parts of the matrix. Default is NULL
-#' @param tad.lower.line bed files path, data frame or grange object with the TAD to plot as line in the lower parts of the matrix. Default is NULL
-#' @param tad.line.col col number use to color tad.upper.line and tad.lower.line. Default is NULL
-#' @param loop.upper.bedpe bedpe files path or data frame plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is NULL
-#' @param tad.chr chromosome name to filter in TAD files. Default is NULL
-#' @param annotations.color color for loop and tri annotations. Default is "red".
-#' @param line.color colors for
+#' @param matrix.diag logical. Weather or not to plot diagonal values of the matrix. Default = TRUE
+#' @param log2 logical. Use the log2 of the matrix values. Default is TRUE
 #' @param scale.colors A character string indicating the color map option to use. Eight options are available (see viridis package), default is "H":
 #' "magma" (or "A")
 #' "inferno" (or "B")
@@ -42,6 +28,16 @@
 #' "rocket" (or "F")
 #' "mako" (or "G")
 #' "turbo" (or "H")
+#' @param tad.upper.tri bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL
+#' @param tad.lower.tri bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL
+#' @param tad.upper.line bed files path, data frame or grange object with the TAD to plot as line in the upper parts of the matrix. Default is NULL
+#' @param tad.lower.line bed files path, data frame or grange object with the TAD to plot as line in the lower parts of the matrix. Default is NULL
+#' @param tad.line.col col number of the tad.line files that contain factors used to color tad.upper.line and tad.lower.line. Default is NULL
+#' @param loop.upper.bedpe bedpe files path or data frame to plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is NULL
+#' @param tad.chr chromosome name to filter bed and bedpe files. Default is NULL
+#' @param annotations.color color for loop and tri annotations. Default is "red".
+#' @param line.color colors for upper and lower lines.
+
 #'
 #' @return ggplot of the matrix.
 #' @import reshape2
@@ -53,9 +49,10 @@
 #' @examples
 
 
-MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.rowname = T, matrix.sep = "\t", matrix.diag = T, log2 = T,
-                    tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL,
-                    tad.chr = NULL, annotations.color = "red", line.colors = c("red", "bleu"), scale.colors = "H") {
+MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H",
+                    matrix.colname = T, matrix.rowname = F, matrix.sep = "\t", matrix.diag = T,
+                    tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL, tad.chr = NULL, annotations.color = "red",
+                    tad.upper.line = NULL, tad.lower.line = NULL, tad.line.col = NULL, line.colors = c("red", "blue")) {
 
   #bin to read
   from = start %/% bin.width + 1 ; to = stop %/% bin.width #nb bin
@@ -236,7 +233,7 @@ MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.r
       ggplot2::geom_rect(data = loop, ggplot2::aes(xmin = start1, xmax = end1, ymin = -start2, ymax = -end2), fill = NA, color = annotations.color, size = 0.3)
   }
 
-  return(p)
+  p
 }
 
 
