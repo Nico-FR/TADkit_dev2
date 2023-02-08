@@ -10,7 +10,7 @@
 #' @param matrix.colname logical. Does your matrix file (ie path) have column names (ie header)? Default = TRUE
 #' @param matrix.rowname logical. Does your matrix file (ie path) have row names? Default = TRUE
 #' @param matrix.sep the field separator character. Values on each line of the matrix file are separated by this character. Default = '\\t' (ie tabulation).
-#' @return matrix.
+#' @return matrix array
 #' @export
 #'
 
