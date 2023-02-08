@@ -14,24 +14,23 @@
 #' @export
 #'
 
-matObsExp <- function(matrix, matrix.colname = T, matrix.rowname = T, matrix.sep = "\t") {
+matObsExp <- function(matrix, matrix.colname = T, matrix.rowname = F, matrix.sep = "\t") {
 
-  #read matrix
-  #read matrix.path
   if(isTRUE(matrix.rowname)) matrix.col.skip <- 1 else matrix.col.skip <- NULL
 
-  if (is.character(matrix) & rev(strsplit(matrix, split = "\\.")[[1]])[1] == "gz")  {
-    df = read.table(gzfile(matrix), sep = matrix.sep, header = matrix.colname, row.names = matrix.col.skip)
+  #read matrix path in data.frame
+  if (is.character(matrix))  {
+    if (substr(matrix, nchar(matrix) - 2, nchar(matrix)) == ".gz") {
+      df = read.table(gzfile(matrix), sep = matrix.sep, header = matrix.colname, row.names = matrix.col.skip)
+    } else {
+      df = read.table(matrix, sep = matrix.sep, header = matrix.colname, row.names = matrix.col.skip)
+    }
   }
 
-  if (is.character(matrix) & !rev(strsplit(matrix, split = "\\.")[[1]])[1] == "gz")  {
-    df = read.table(matrix, sep = matrix.sep, header = matrix.colname, row.names = matrix.col.skip)
-  }
-
-  #read data frame matrix
+  #read data frame
   if (is.data.frame(matrix))  {df = matrix}
 
-  #create matrix
+  #read matrix or create one
   if(!is.matrix(matrix)) {mat = matrix(as.matrix(df), nrow = length(df))} else {mat = matrix}
 
   #mean diag

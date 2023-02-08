@@ -4,7 +4,8 @@
 #' -domains (like TADs or compartments) plot as triangles or lines on the upper or/and lower part of the matrix.
 #' -interaction between bins (loop) plot as a square on the upper and lower part of the matrix.
 #'
-#' @details The matrix datas can be R object (dataframe, matrix or array) or the path of the files. In that case you can specify is the files as column and row names.
+#' @details The matrix datas can be R object (dataframe, matrix or array) or the path of the files.
+#' In that case you can specify is the files as column and row names usely used to write the bin numbers or coordonates.
 #' All bed files can be R object (dataframe or GRange) or the path of the files.
 #' All bedpe files can be a dataframe or the path of the files.
 #' Chromosome of bedpe and bed files can be filter using tad.chr parameter.
@@ -19,7 +20,8 @@
 #' @param matrix.sep the field separator character. Values on each line of the matrix file are separated by this character. Default = '\\t' (ie tabulation).
 #' @param matrix.diag logical. Weather or not to plot diagonal values of the matrix. Default = TRUE
 #' @param log2 logical. Use the log2 of the matrix values. Default is TRUE
-#' @param scale.colors A character string indicating the color map option to use. Eight options are available (see viridis package), default is "H":
+#' @param scale.colors A character string indicating the color map option to use. Eight colors palettes are available from viridis package. Another palette "OE" is made for data centered on 0 (ie log2(observed/expected) matrix). Default is "H":
+#' "ObsExp" (or "OE")
 #' "magma" (or "A")
 #' "inferno" (or "B")
 #' "plasma" (or "C")
@@ -61,18 +63,21 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   matrix.row.skip <- ifelse(matrix.colname == T,  from, from - 1)
   if(isTRUE(matrix.rowname)) matrix.col.skip <- 1 else matrix.col.skip <- NULL
 
-  #read matrix
-  if (is.character(matrix) & rev(strsplit(matrix, split = "\\.")[[1]])[1] == "gz")  {
-    df = read.table(gzfile(matrix), sep = matrix.sep, h = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
-  }
+  #read matrix path in data.frame
+  if (is.character(matrix))  {
+    if (substr(matrix, nchar(matrix) - 2, nchar(matrix)) == ".gz") {
+      df = read.table(gzfile(matrix), sep = matrix.sep, h = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
+    } else {
+      df = read.table(matrix, sep = matrix.sep, h = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
+    }
+    }
 
-  if (is.character(matrix) & !rev(strsplit(matrix, split = "\\.")[[1]])[1] == "gz")  {
-    df = read.table(matrix, sep = matrix.sep, h = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
-  }
-
+  #read data frame
   if (is.data.frame(matrix))  {df = matrix[from:to, from:to]}
 
+  #read matrix or create one
   if(!is.matrix(matrix)) {mat = matrix(as.matrix(df), nrow = length(df))} else {mat = matrix[from:to, from:to]}
+
   if(isFALSE(matrix.diag)) {diag(mat) <- NA}
 
   # matrix plot
@@ -80,11 +85,21 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   melted_mat <- reshape2::melt(mat)
   melted_mat$Var2 = (melted_mat$Var2 + from - 1) * - bin.width + bin.width / 2
   melted_mat$Var1 = (melted_mat$Var1 + from - 1) * bin.width - bin.width / 2
-  p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = Var1, y = Var2, fill = value))+
-    viridis::scale_fill_viridis(na.value = "black", option = scale.colors)+
-    ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
-    ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
-    ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
+
+  if (scale.colors == "OE" | scale.colors == "ObsExp") {
+    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = Var1, y = Var2, fill = value))+
+      ggplot2::scale_fill_gradient2(low = "blue", high = "red",midpoint = 0, mid="white", na.value = "white")+
+      ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
+      ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
+      ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
+
+  } else {
+    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = Var1, y = Var2, fill = value))+
+      viridis::scale_fill_viridis(na.value = "black", option = scale.colors)+
+      ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
+      ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
+      ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
+  }
 
 
   #upper tri
