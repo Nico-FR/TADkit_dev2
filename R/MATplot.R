@@ -57,37 +57,20 @@ MATplot <- function(matrix, start, stop, bin.width, matrix.colname = T, matrix.r
                     tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL,
                     tad.chr = NULL, annotations.color = "red", line.colors = c("red", "bleu"), scale.colors = "H") {
 
-  ##############################"
-  matrix="/home/nmary/Downloads/Bovin-669.ARS-UCD1.2.mapq_10.10000.chr1.matrix.gz"
-  bin.width = 10e3
-  start = 1e6 ; stop = 4e6
-  matrix.colname = T ; matrix.rowname = T ; matrix.sep = "\t"
-  log2 = T ; scale.colors = "H"; matrix.diag = T
-  tad.upper.tri = "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/Hicexplorer/Bovin-977.ARS-UCD1.2.mapq_10.10000_norm_custom_domains.bed"
-  tad.lower.tri = "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/Hicexplorer/Bovin-0197.ARS-UCD1.2.mapq_10.10000_norm_custom_domains.bed"
-  tad.upper.line = "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/dcHiC/Compartment/Bovin977.ARS-UCD1.2.mapq_10.50000_raw_dchic_oriented.bed"
-  tad.lower.line = "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/dcHiC/Compartment/Bovin0197.ARS-UCD1.2.mapq_10.50000_raw_dchic_oriented.bed"
-  tad.chr = "1"
-  tad.line.col = 4
-  loop.bedpe = "/home/nmary/mnt/cytogene/Var_struc/Bovin/Analysis/dcHiC_downsampling_v2/DifferentialResult/poll_vs_unp_comp50k/fdr_result/differential.intra_compartmentLoops_corrected.bedpe"
-  annotations.color = "red"
-  line.colors = c("red", "blue")
-  ##############################
+  #bin to read
+  from = start %/% bin.width + 1 ; to = stop %/% bin.width #nb bin
 
-
-  #sanity check
+  #bin to read for matrix.path
+  matrix.row.skip <- ifelse(matrix.colname == T,  from, from - 1)
+  if(isTRUE(matrix.rowname)) matrix.col.skip <- 1 else matrix.col.skip <- NULL
 
   #read matrix
-  from = start %/% bin.width + 1 ; to = stop %/% bin.width #nb bin
-  matrix.row.skip <- ifelse(matrix.colname == T,  1, 0)
-  matrix.col.skip <- ifelse(matrix.rowname == T,  1, 0)
-
   if (is.character(matrix) & rev(strsplit(matrix, split = "\\.")[[1]])[1] == "gz")  {
-    df = read.table(gzfile(matrix), sep = matrix.sep, h = F, row.names = matrix.col.skip, skip = matrix.row.skip + from - 1)[1:(to - from + 1), from:to]
+    df = read.table(gzfile(matrix), sep = matrix.sep, h = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
   }
 
   if (is.character(matrix) & !rev(strsplit(matrix, split = "\\.")[[1]])[1] == "gz")  {
-    df = read.table(matrix, sep = matrix.sep, h = F, row.names = matrix.col.skip, skip = matrix.row.skip + from - 1)[1:(to - from + 1), from:to]
+    df = read.table(matrix, sep = matrix.sep, h = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
   }
 
   if (is.data.frame(matrix))  {df = matrix[from:to, from:to]}

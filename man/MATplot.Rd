@@ -9,12 +9,20 @@ MATplot(
   start,
   stop,
   bin.width,
+  scale.colors = "H",
   matrix.colname = T,
-  matrix.rowname = T,
+  matrix.rowname = F,
   matrix.sep = "\\t",
   matrix.diag = T,
   log2 = T,
-  scale.colors = "H"
+  tad.upper.tri = NULL,
+  tad.lower.tri = NULL,
+  loop.bedpe = NULL,
+  annotations.color = "red",
+  tad.upper.line = NULL,
+  tad.lower.line = NULL,
+  line.colors = c("red", "bleu"),
+  tad.chr = NULL
 )
 }
 \arguments{
@@ -26,17 +34,7 @@ MATplot(
 
 \item{bin.width}{bin width of the matrix in bp.}
 
-\item{matrix.colname}{logical. Does your matrix file (ie path) have column names (ie header)? Default = TRUE}
-
-\item{matrix.rowname}{logical. Does your matrix file (ie path) have row names? Default = TRUE}
-
-\item{matrix.sep}{the field separator character. Values on each line of the matrix file are separated by this character. Default = '\\t' (ie tabulation).}
-
-\item{matrix.diag}{logical. Weather or not to plot diagonal of the matrix. Default = TRUE}
-
-\item{log2}{logical. Weather or not to plot the log2 of the matrix values.}
-
-\item{scale.colors}{A character string indicating the color map option to use. Eight options are available (see viridis package:
+\item{scale.colors}{A character string indicating the color map option to use. Eight options are available (see viridis package), default is "H":
 "magma" (or "A")
 "inferno" (or "B")
 "plasma" (or "C")
@@ -45,6 +43,34 @@ MATplot(
 "rocket" (or "F")
 "mako" (or "G")
 "turbo" (or "H")}
+
+\item{matrix.colname}{logical. Does your matrix file (ie path) have column names (ie header)? Default = TRUE}
+
+\item{matrix.rowname}{logical. Does your matrix file (ie path) have row names? Default = FALSE}
+
+\item{matrix.sep}{the field separator character. Values on each line of the matrix file are separated by this character. Default = '\\t' (ie tabulation).}
+
+\item{matrix.diag}{logical. Weather or not to plot diagonal of the matrix. Default = TRUE}
+
+\item{log2}{logical. Weather or not to plot the log2 of the matrix values.}
+
+\item{tad.upper.tri}{bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL}
+
+\item{tad.lower.tri}{bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL}
+
+\item{annotations.color}{color for loop and tri annotations. Default is "red".}
+
+\item{tad.upper.line}{bed files path, data frame or grange object with the TAD to plot as line in the upper parts of the matrix. Default is NULL}
+
+\item{tad.lower.line}{bed files path, data frame or grange object with the TAD to plot as line in the lower parts of the matrix. Default is NULL}
+
+\item{line.colors}{column number use to color tad.upper.line and tad.lower.line. Default is NULL}
+
+\item{tad.chr}{chromosome name to filter in TAD files. Default is NULL}
+
+\item{loop.upper.bedpe}{bedpe files path or data frame plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is NULL}
+
+\item{line.color}{colors for}
 }
 \value{
 ggplot of the matrix.
