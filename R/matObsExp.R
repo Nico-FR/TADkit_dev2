@@ -1,7 +1,7 @@
 #' @title observed / expected matrix
 #'
-#' @description For each bin of the matrix (interactions) this function return a ratio: observed / expected.
-#' The input file path must be in a matrix format (ie. array with as many rows and columns than the number of bin).
+#' @description For each bin of the matrix (interaction coutn observed) this function return a ratio: observed / expected.
+#' The input file path must be in a matrix format (ie. array with as many rows and columns than the number of bin). Only the upper part of the matrix is used.
 #' The output can be plot with MATplot function with log2=T
 #'
 #' @details The expected interaction corresponds to the average of the interactions according to the bin distances.
@@ -21,11 +21,11 @@ matObsExp <- function(matrix, matrix.colname = T, matrix.rowname = T, matrix.sep
   if(isTRUE(matrix.rowname)) matrix.col.skip <- 1 else matrix.col.skip <- NULL
 
   if (is.character(matrix) & rev(strsplit(matrix, split = "\\.")[[1]])[1] == "gz")  {
-    df = read.table(gzfile(matrix), sep = matrix.sep, h = matrix.colname, row.names = matrix.col.skip)
+    df = read.table(gzfile(matrix), sep = matrix.sep, header = matrix.colname, row.names = matrix.col.skip)
   }
 
   if (is.character(matrix) & !rev(strsplit(matrix, split = "\\.")[[1]])[1] == "gz")  {
-    df = read.table(matrix, sep = matrix.sep, h = matrix.colname, row.names = matrix.col.skip)
+    df = read.table(matrix, sep = matrix.sep, header = matrix.colname, row.names = matrix.col.skip)
   }
 
   #read data frame matrix
