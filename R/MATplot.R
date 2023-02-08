@@ -162,9 +162,10 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
     }
 
     names(tad) = c("chr", "s", "e", "col")
+    tad$col = as.factor(tad$col)
     if (is.null(tad.chr)) {
       tad <- dplyr::filter(tad, e > start, s < stop)} else {
-      tad <- dplyr::filter(tad, chr == tad.chr, e > start, s < stop)
+        tad <- dplyr::filter(tad, chr == tad.chr, e > start, s < stop)
       }
 
     tad$e2 <- ifelse(tad$e >= stop, stop, tad$e)
@@ -195,6 +196,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
     }
 
     names(tad) = c("chr", "s", "e", "col")
+    tad$col = as.factor(tad$col)
     if (is.null(tad.chr)) {
       tad <- dplyr::filter(tad, e > start, s < stop)} else {
         tad <- dplyr::filter(tad, chr == tad.chr, e > start, s < stop)
