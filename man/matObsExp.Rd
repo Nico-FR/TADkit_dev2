@@ -4,7 +4,7 @@
 \alias{matObsExp}
 \title{observed / expected matrix}
 \usage{
-matObsExp(matrix, matrix.colname = T, matrix.rowname = T, matrix.sep = "\\t")
+matObsExp(matrix, matrix.colname = T, matrix.rowname = F, matrix.sep = "\\t")
 }
 \arguments{
 \item{matrix}{R object (data frame or matrix) or the matrix file path (in matrix format) for only one chromosome. The path can be gzip file (ending by .gz)}
@@ -16,11 +16,11 @@ matObsExp(matrix, matrix.colname = T, matrix.rowname = T, matrix.sep = "\\t")
 \item{matrix.sep}{the field separator character. Values on each line of the matrix file are separated by this character. Default = '\\t' (ie tabulation).}
 }
 \value{
-matrix.
+matrix array
 }
 \description{
-For each bin of the matrix (interactions) this function return a ratio: observed / expected.
-The input file path must be in a matrix format (ie. array with as many rows and columns than the number of bin).
+For each bin of the matrix (interaction coutn observed) this function return a ratio: observed / expected.
+The input file path must be in a matrix format (ie. array with as many rows and columns than the number of bin). Only the upper part of the matrix is used.
 The output can be plot with MATplot function with log2=T
 }
 \details{

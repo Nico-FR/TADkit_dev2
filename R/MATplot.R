@@ -1,17 +1,17 @@
-#' @title Plot matrix with annotation
+#' @title Plot matrix with annotations
 #'
-#' @description MATplot allow to plot matrix files with 3 type of annotations:
-#' -domains (like TADs or compartments) plot as triangles or lines on the upper or/and lower part of the matrix.
-#' -interaction between bins (loop) plot as a square on the upper and lower part of the matrix.
+#' @description MATplot allow to plot matrix with 3 type of annotations:
+#' -domains (e.g. TADs or compartments) are plot as triangles or lines on the upper or/and lower part of the matrix.
+#' -interaction between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
 #'
-#' @details The matrix datas can be R object (dataframe, matrix or array) or the path of the files.
-#' In that case you can specify is the files as column and row names usely used to write the bin numbers or coordonates.
-#' All bed files can be R object (dataframe or GRange) or the path of the files.
-#' All bedpe files can be a dataframe or the path of the files.
-#' Chromosome of bedpe and bed files can be filter using tad.chr parameter.
-#' Upper and lower line can be used to represent compartments A and B and colored accordingly using the tad.line.col parameter.
+#' @details The matrix data can be R object (dataframe, matrix or array) or the path of the files. The matrix format has as many rows as columns and this number corresponds to the number of bin of the chromosome.
+#' For the path of the matrix file, you can specify if the files as column and row names. These are generally used to specify the bin number or the coordinates of each bin.
+#' All domains (TADs or compartments) are bed files (3 columns) and can be R object (dataframe or GRange) or the path of the files.
+#' For tad.lines, another column can be used to specify compartment A or B and read with the line.colors parameter and colored with line.colors parameter.
+#' Loop are stored in bedpe files (6 columns) and can be a dataframe or the path of the file.
+#' Chromosome of domain and loop datas can be filter using tad.chr parameter.
 #'
-#' @param matrix matrix object (data frame or matrix) or matrix path at matrix format (dense) for only one chromosome. The path can be gzip (ending by .gz)
+#' @param matrix matrix object (data frame or matrix) or matrix path for only one chromosome. The path can be gzip (ending by .gz). The matrix has as many rows as columns and this number corresponds to the number of bin of the chromosome.
 #' @param start start in bp of the area of interest.
 #' @param stop end in bp of the area of interest.
 #' @param bin.width bin width of the matrix in bp.
@@ -35,13 +35,13 @@
 #' @param tad.upper.line bed files path, data frame or grange object with the TAD to plot as line in the upper parts of the matrix. Default is NULL
 #' @param tad.lower.line bed files path, data frame or grange object with the TAD to plot as line in the lower parts of the matrix. Default is NULL
 #' @param tad.line.col col number of the tad.line files that contain factors used to color tad.upper.line and tad.lower.line. Default is NULL
-#' @param loop.upper.bedpe bedpe files path or data frame to plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is NULL
+#' @param loop.bedpe bedpe files path or data frame to plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is NULL
 #' @param tad.chr chromosome name to filter bed and bedpe files. Default is NULL
 #' @param annotations.color color for loop and tri annotations. Default is "red".
-#' @param line.color colors for upper and lower lines.
+#' @param line.colors colors for upper and lower lines.
 
 #'
-#' @return ggplot of the matrix.
+#' @return ggplot
 #' @import reshape2
 #' @import viridis
 #' @import scales
@@ -49,7 +49,6 @@
 #' @export
 #'
 #' @examples
-
 
 MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H",
                     matrix.colname = T, matrix.rowname = F, matrix.sep = "\t", matrix.diag = T,
@@ -66,9 +65,9 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   #read matrix path in data.frame
   if (is.character(matrix))  {
     if (substr(matrix, nchar(matrix) - 2, nchar(matrix)) == ".gz") {
-      df = read.table(gzfile(matrix), sep = matrix.sep, h = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
+      df = read.table(gzfile(matrix), sep = matrix.sep, header = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
     } else {
-      df = read.table(matrix, sep = matrix.sep, h = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
+      df = read.table(matrix, sep = matrix.sep, header = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
     }
     }
 
@@ -88,7 +87,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
 
   if (scale.colors == "OE" | scale.colors == "ObsExp") {
     p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = Var1, y = Var2, fill = value))+
-      ggplot2::scale_fill_gradient2(low = "blue", high = "red",midpoint = 0, mid="white", na.value = "white")+
+      ggplot2::scale_fill_gradient2(low = "blue", high ="red",midpoint = 0, mid="white", na.value = "white")+
       ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
       ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
       ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
@@ -106,7 +105,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   if (!is.null(tad.upper.tri)) {
 
     if (is.character(tad.upper.tri)) {
-      tad = read.table(tad.upper.tri, h = F, sep = "\t")[,1:3]
+      tad = read.table(tad.upper.tri, header = F, sep = "\t")[,1:3]
     }
 
     if (class(tad.upper.tri) == "GRanges") {
@@ -133,7 +132,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   if (!is.null(tad.lower.tri)) {
 
     if (is.character(tad.lower.tri)) {
-      tad = read.table(tad.lower.tri, h = F, sep = "\t")[,1:3]
+      tad = read.table(tad.lower.tri, header = F, sep = "\t")[,1:3]
     }
 
     if (class(tad.lower.tri) == "GRanges") {
@@ -161,7 +160,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   if (!is.null(tad.upper.line)) {
 
     if (is.character(tad.upper.line)) {
-      tad = read.table(tad.upper.line, h = F, sep = "\t")[, c(1:3, tad.line.col)]
+      tad = read.table(tad.upper.line, header = F, sep = "\t")[, c(1:3, tad.line.col)]
     }
 
     if (class(tad.upper.line) == "GRanges") {
@@ -195,7 +194,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   if (!is.null(tad.lower.line)) {
 
     if (is.character(tad.lower.line)) {
-      tad = read.table(tad.lower.line, h = F, sep = "\t")[, c(1:3, tad.line.col)]
+      tad = read.table(tad.lower.line, header = F, sep = "\t")[, c(1:3, tad.line.col)]
     }
 
     if (class(tad.lower.line) == "GRanges") {
@@ -233,7 +232,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   if (!is.null(loop.bedpe)) {
 
     if (is.character(loop.bedpe)) {
-      loop = read.table(loop.bedpe, h = F, sep = "\t")[,1:6]
+      loop = read.table(loop.bedpe, header = F, sep = "\t")[,1:6]
     }
 
     if (is.data.frame(loop.bedpe)) {
