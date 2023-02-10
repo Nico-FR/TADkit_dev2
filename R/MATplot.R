@@ -109,7 +109,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
     }
 
     if (class(tad.upper.tri) == "GRanges") {
-      tad = as.data.frame(tad.upper.tri)[,1:3]
+      tad = as.data.frame(tad.upper.tri, row.names = NULL)[,1:3]
     }
 
     if (is.data.frame(tad.upper.tri)) {
@@ -136,7 +136,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
     }
 
     if (class(tad.lower.tri) == "GRanges") {
-      tad = as.data.frame(tad.lower.tri)[,1:3]
+      tad = as.data.frame(tad.lower.tri, row.names = NULL)[,1:3]
     }
 
     if (is.data.frame(tad.lower.tri)) {
@@ -164,7 +164,18 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
     }
 
     if (class(tad.upper.line) == "GRanges") {
-      tad = as.data.frame(tad.upper.line)[, c(1:3, tad.line.col + 5)]
+
+      if (is.null(tad.line.col)) {
+        tad = as.data.frame(tad.upper.line, row.names = NULL)[, c(1:3)]
+      } else {
+        temp = as.data.frame(tad.upper.line, row.names = NULL)
+
+        if (length(temp) < (tad.line.col + 5)) {
+          stop(paste0("There is only ", length(temp) - 5, " column(s) with metadata in tad.upper.line input but you select column ", tad.line.col))
+        }
+
+        tad = temp[, c(1:3, tad.line.col + 5)]
+      }
     }
 
     if (is.data.frame(tad.upper.line)) {
@@ -198,7 +209,18 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
     }
 
     if (class(tad.lower.line) == "GRanges") {
-      tad = as.data.frame(tad.lower.line)[, c(1:3, tad.line.col + 5)]
+
+      if (is.null(tad.line.col)) {
+        tad = as.data.frame(tad.lower.line, row.names = NULL)[, c(1:3)]
+      } else {
+        temp = as.data.frame(tad.lower.line, row.names = NULL)
+
+        if (length(temp) < (tad.line.col + 5)) {
+          stop(paste0("There is only ", length(temp) - 5, " column(s) with metadata in tad.lower.line input but you select column ", tad.line.col))
+        }
+
+        tad = temp[, c(1:3, tad.line.col + 5)]
+      }
     }
 
     if (is.data.frame(tad.lower.line)) {

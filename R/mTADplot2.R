@@ -64,7 +64,7 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
   ##############################
   # Ideotrack
   ##############################
-  d1 = data.frame(chrom = paste0("chr", gsub('chr','', names(GenomeInfoDb::seqlengths(tad_bovin.lst[[1]])))),
+  d1 = data.frame(chrom = paste0("chr", gsub('chr','', names(GenomeInfoDb::seqlengths(tad.lst[[1]])))),
                   chromStart = 0,
                   chromEnd = GenomeInfoDb::seqlengths(tad.lst[[1]]),
                   name = "", gieStain = "gneg")

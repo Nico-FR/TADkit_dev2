@@ -79,7 +79,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
     chrom = paste0("chr", gsub('chr','', chr)),
     chromStart = GenomicRanges::start(data2),
     chromEnd = BiocGenerics::end(data2),
-    name = names(data2),
+    name = paste0("n", 1:length(data2[,1])),
     gieStain = data2$gieStain
   )
 
