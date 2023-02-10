@@ -75,14 +75,14 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
 
   data2 <- sort(c(data, gaps))
   d1 <- data.frame(
-    chrom = paste0("chr", chr),
+    chrom = paste0("chr", gsub('chr','', "chr1")),
     chromStart = GenomicRanges::start(data2),
     chromEnd = BiocGenerics::end(data2),
     name = names(data2),
     gieStain = data2$gieStain
   )
 
-  ideoTrack <- Gviz::IdeogramTrack(genome = "bosTau9", chromosome = chr, fontsize = 10, ucscChromosomeNames = T, bands = d1)
+  ideoTrack <- Gviz::IdeogramTrack(genome = "custom", chromosome = chr, fontsize = 10, ucscChromosomeNames = T, bands = d1)
 
   ##############################
   # tadTrack

@@ -64,13 +64,13 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
   ##############################
   # Ideotrack
   ##############################
-  d1 = data.frame(chrom = paste0("chr",names(GenomeInfoDb::seqlengths(tad.lst[[1]]))),
+  d1 = data.frame(chrom = paste0("chr", gsub('chr','', names(GenomeInfoDb::seqlengths(tad_bovin.lst[[1]])))),
                   chromStart = 0,
                   chromEnd = GenomeInfoDb::seqlengths(tad.lst[[1]]),
                   name = "", gieStain = "gneg")
 
   ideoTrack <-
-    Gviz::IdeogramTrack(genome = "bosTau9", chromosome = chr,
+    Gviz::IdeogramTrack(genome = "custom", chromosome = chr,
                         fontsize = 10, ucscChromosomeNames = T, bands = d1)
   areaTrack <- Gviz::GenomeAxisTrack(
     add53 = T,
