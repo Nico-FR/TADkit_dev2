@@ -1,6 +1,6 @@
 Package: TADkit
 Title: TAD matix visualisation tool kit
-Version: 0.0.4.0000
+Version: 0.0.4.0010
 Authors@R: 
     person("Nicolas", "MARY", , "nicolas.mary@envt.fr", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7304-5555 "))
