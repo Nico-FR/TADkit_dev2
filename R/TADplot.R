@@ -71,7 +71,8 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
 
   gaps <- GenomicRanges::gaps(data)
   gaps <- gaps[GenomeInfoDb::seqnames(gaps) == chr & BiocGenerics::strand(gaps) == "*"]
-  gaps$gieStain <- "gpos1" # color for interTAD
+  if (length(gaps) != 0) {gaps$gieStain <- "gpos1"} # color for interTAD
+
 
   data2 <- sort(c(data, gaps))
   d1 <- data.frame(
