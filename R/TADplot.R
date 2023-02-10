@@ -75,7 +75,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
 
   data2 <- sort(c(data, gaps))
   d1 <- data.frame(
-    chrom = paste0("chr", gsub('chr','', "chr1")),
+    chrom = paste0("chr", gsub('chr','', chr)),
     chromStart = GenomicRanges::start(data2),
     chromEnd = BiocGenerics::end(data2),
     name = names(data2),
