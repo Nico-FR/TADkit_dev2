@@ -71,5 +71,5 @@ coolFetch <- function(path, resolution, chrom) {
     x = interactions[which(id2 < chrom_hi)]
 
     # sparseMatrix requires 1-based indices
-    return(sparseMatrix(i=i+1, j=j+1, x = interactions))
+    return(sparseMatrix(i=i+1, j=j+1, x = x))
 }
