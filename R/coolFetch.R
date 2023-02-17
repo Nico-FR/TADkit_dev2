@@ -3,6 +3,7 @@
 #' @description Using the Indexes provided byt the cooler data model :
 #'       https://cooler.readthedocs.io/en/latest/schema.html,
 #'     extract the intra-chromosomal counts for a given chromosome
+#'     If balance=TRUE returns the normalized counts
 #'
 #' @details
 
@@ -10,21 +11,21 @@
 #' @param resolution the desired resolution
 #' @param chrom the selected chromosome
 #'
-#' @return a sparse matrix
-#' @importFrom methods as
+#' @return a sparse matrix: an object sparseMatrix
 #' @import Matrix
 #' @import rhdf5
 #' @export
 #'
 #'
-coolFetch <- function(path, resolution, chrom) {
+coolFetch <- function(path, chrom, binSize=NA, balance=FALSE) {
     message("\nParsing '", path, "'.")
 
     uri <- function(path) {
+        if (!is.numeric(binSize)) return(path)
         return(
             paste(
                 "resolutions",
-                format(resolution, scientific = FALSE),
+                format(binSize, scientific = FALSE),
                 path,
                 sep = "/"
             )
@@ -32,7 +33,7 @@ coolFetch <- function(path, resolution, chrom) {
     }
 
     # The list of avalaible chromosomes
-    chromosomes = h5read(file = path, name = uri("chroms/name"))
+    chromosomes = rhdf5::h5read(file = path, name = uri("chroms/name"))
 
     if (!(chrom %in% chromosomes)) {
        stop("\n '", chrom, "' is not a valid chromosome")
@@ -42,7 +43,7 @@ coolFetch <- function(path, resolution, chrom) {
     cid = match(chrom, chromosomes)
 
     # chrom_offset: which row in the bin table each chromosome first appears (0-based)
-    chrom_offset = h5read(file = path, name = uri("indexes/chrom_offset"))
+    chrom_offset = rhdf5::h5read(file = path, name = uri("indexes/chrom_offset"))
     # chrom_lo: first occurence of chrom in the bin table 0-based
     chrom_lo = chrom_offset[cid] + 1   # 1-based
     # chrom_hi : last occurence of next chrom in the bin table 0-based)
@@ -51,15 +52,15 @@ coolFetch <- function(path, resolution, chrom) {
     chrom_hi = chrom_offset[cid + 1]
 
     # bin1_offset:  which row in the pixel table each bin1 ID first appears.
-    bin1_offset = h5read(file = path, name = uri("indexes/bin1_offset"))
+    bin1_offset = rhdf5::h5read(file = path, name = uri("indexes/bin1_offset"))
     # lo first occurence of bin number chrom_lo in the pixel table (0-based)
     lo = bin1_offset[chrom_lo] + 1  # 1-based
     # hi first occurence of bin number chrom_hi + 1 in the pixels table (0-based)
     hi = bin1_offset[chrom_hi + 1]  # 1-based => last line with chrom_hi
 
     # chrom intra-chromosomal interactions
-    id1 = h5read(file = path, name = uri("pixels/bin1_id"), index=list(lo:hi))
-    id2 = h5read(file = path, name = uri("pixels/bin2_id"), index=list(lo:hi))
+    id1 = rhdf5::h5read(file = path, name = uri("pixels/bin1_id"), index=list(lo:hi))
+    id2 = rhdf5::h5read(file = path, name = uri("pixels/bin2_id"), index=list(lo:hi))
     interactions = h5read(file = path, name = uri("pixels/count"), index=list(lo:hi))
 
     # Now we limit the interactions to intrachromosome interactions
@@ -70,6 +71,17 @@ coolFetch <- function(path, resolution, chrom) {
     j = id2[which(id2 < chrom_hi)] - chrom_lo + 1
     x = interactions[which(id2 < chrom_hi)]
 
-    # sparseMatrix requires 1-based indices
-    return(sparseMatrix(i=i+1, j=j+1, x = x))
+    m = sparseMatrix(i=i+1, j=j+1, x = x)
+
+    if (balance) {
+      # Fetch the weights corresponding to the chromosome
+      w = rhdf5::h5read(file = path, name = uri("bins/weight"), index=list(chrom_lo:chrom_hi))
+      # cell by cell multiplication by the cell weight (product of the bin's weight)
+      balanced_m = m * (w %*% t(w))
+      # Back to upper traingular matrix and sparse matrix
+      balanced_m[!upper.tri(balanced_m)] <- 0
+      return(as(balanced_mbalanced_m, "sparseMatrix"))
+    } else {
+      return(m)
+    }
 }
