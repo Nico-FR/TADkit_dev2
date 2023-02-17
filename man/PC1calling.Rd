@@ -13,7 +13,7 @@ PC1calling(bedgraph)
 grange
 }
 \description{
-From a score for each bin (i.e principal component 1), the function output a Grange file with compartment A for score >= 0 and compartment B for score < 0
+From a score for each bin (i.e principal component), the function output a Grange file with compartment A for score >= 0 and compartment B for score < 0
 }
 \details{
 From bedgraph as input (GRange object or path) output a GRange with the compartments.

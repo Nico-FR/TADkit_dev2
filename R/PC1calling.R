@@ -1,6 +1,6 @@
 #' @title Compartments calling (A or B)
 #'
-#' @description From a score for each bin (i.e principal component 1), the function output a Grange file with compartment A for score >= 0 and compartment B for score < 0
+#' @description From a score for each bin (i.e principal component), the function output a Grange file with compartment A for score >= 0 and compartment B for score < 0
 #'
 #' @details From bedgraph as input (GRange object or path) output a GRange with the compartments.
 #' NA score are considered as part of a compartment A if they are between two compartments A (the other way around for B compartments).

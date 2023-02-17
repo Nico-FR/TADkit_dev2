@@ -16,13 +16,13 @@ geneTADtopo(tad.gr, gene.gr, ifoverlap = "best", expression.data.frame = NULL)
 (2)"real" to select the TAD in which the start of annotations are located,
 (3)"best" to select the TAD in which annotations have the best overlay.}
 
-\item{expression.data.frame}{Data frame with expression data (raw counts...). The first two columns should be used to identify the genes. The 1st one must use the same gene id than names(gene.gr), ie unique ID. The 2nd can be used with usual gene names. Others columns give expression count, one column per sample/experiment.}
+\item{expression.data.frame}{Data frame with expression data (raw counts...). The first two columns should be used to identify the genes. The 1st one must use the same gene id than names(gene.gr), i.e unique ID. The 2nd can be used with usual gene names. Others columns give expression count, one column per sample/experiment.}
 }
 \value{
 Return a S3 class object with 3 data frames.
 }
 \description{
-For each domain (i.e TAD) the function return a data frame with the numbers, names and strands of genes. It also return some statistics which can be plotted using plot(output).
+For each domain (e.g TAD) the function return a data frame with the numbers, names and strands of genes. It also return some statistics which can be plotted using plot(output).
 }
 \details{
 Return a S3 object with 3 dataframes. The second and the third dataframe can be plotted using the plot function

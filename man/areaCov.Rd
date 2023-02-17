@@ -23,7 +23,7 @@ Graph of the density of the genomic annotations around TAD boundaries (real dist
 }
 \details{
 This function take the output of TADarea function.
-If the density is significantly different between strands, it can be useful to use relative density, ie normalizing using the zscore (using norm = TRUE).
+If the density is significantly different between strands, it can be useful to use relative density (i.e normalized using the zscore with norm = TRUE parameter).
 }
 \examples{
 # create GRange with 1 TAD

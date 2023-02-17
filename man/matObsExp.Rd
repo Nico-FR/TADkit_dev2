@@ -4,25 +4,25 @@
 \alias{matObsExp}
 \title{observed / expected matrix}
 \usage{
-matObsExp(matrix, matrix.colname = T, matrix.rowname = F, matrix.sep = "\\t")
+matObsExp(matrix, matrix.colname = T, matrix.rowname = T, matrix.sep = "\\t")
 }
 \arguments{
-\item{matrix}{R object (data frame or matrix) or the matrix file path (in matrix format) for only one chromosome. The path can be gzip file (ending by .gz)}
+\item{matrix}{R object (data frame or matrix) or the matrix file path (in full matrix format) for only one chromosome. The path can be gzip file (ending by .gz)}
 
-\item{matrix.colname}{logical. Does your matrix file (ie path) have column names (ie header)? Default = TRUE}
+\item{matrix.colname}{logical. Does your matrix file path have column names (i.e header)? Default = TRUE}
 
-\item{matrix.rowname}{logical. Does your matrix file (ie path) have row names? Default = TRUE}
+\item{matrix.rowname}{logical. Does your matrix file path have row names? Default = TRUE}
 
-\item{matrix.sep}{the field separator character. Values on each line of the matrix file are separated by this character. Default = '\\t' (ie tabulation).}
+\item{matrix.sep}{the field separator character of the matrix file path. Default = '\\t' (i.e tabulation).}
 }
 \value{
 matrix array
 }
 \description{
-For each bin of the matrix (interaction coutn observed) this function return a ratio: observed / expected.
-The input file path must be in a matrix format (ie. array with as many rows and columns than the number of bin). Only the upper part of the matrix is used.
-The output can be plot with MATplot function with log2=T
+For each bin of the matrix (interaction count observed) this function return a ratio: observed / expected.
+The input file path must be in a matrix format (i.e array with as many rows and columns than the number of bin). Only the upper part of the matrix is used.
+The output can be plot with MATplot function with log2=T and scale.colors = "ObsExp" parameters.
 }
 \details{
-The expected interaction corresponds to the average of the interactions according to the bin distances.
+The expected number of interaction corresponds to the average of the interaction counts according to the bin distances.
 }

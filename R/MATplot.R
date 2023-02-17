@@ -4,23 +4,23 @@
 #' -domains (e.g. TADs or compartments) are plot as triangles or lines on the upper or/and lower part of the matrix.
 #' -interaction between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
 #'
-#' @details The matrix data can be R object (dataframe, matrix or array) or the path of the files. The matrix format has as many rows as columns and this number corresponds to the number of bin of the chromosome.
-#' For the path of the matrix file, you can specify if the files as column and row names. These are generally used to specify the bin number or the coordinates of each bin.
+#' @details The matrix input can be R object (dataframe, matrix or array) or the path of the files. The matrix format has as many rows as columns and this number corresponds to the number of bin of the chromosome.
+#' For the path of the matrix file, you can specify if the files as column and row names. These are generally used to specify bin numbers or bin coordinates.
 #' All domains (TADs or compartments) are bed files (3 columns) and can be R object (dataframe or GRange) or the path of the files.
-#' For tad.lines, another column can be used to specify compartment A or B and read with the line.colors parameter and colored with line.colors parameter.
+#' For tad.lines, another column can be used to specify different classes of domains (e.g compartment A or B). To use those domain classes, specify the column number (of the tad.upper.line and tad.lower.line inputs) with tad.line.col parameter and a custom set of colors with line.colors parameter.
 #' Loop are stored in bedpe files (6 columns) and can be a dataframe or the path of the file.
 #' Chromosome of domain and loop datas can be filter using tad.chr parameter.
 #'
-#' @param matrix matrix object (data frame or matrix) or matrix path for only one chromosome. The path can be gzip (ending by .gz). The matrix has as many rows as columns and this number corresponds to the number of bin of the chromosome.
+#' @param matrix matrix object (data frame or full matrix) or matrix path for only one chromosome. The path can be gzip (ending by .gz). The matrix has as many rows as columns and this number corresponds to the number of bin of the chromosome.
 #' @param start start in bp of the area of interest.
 #' @param stop end in bp of the area of interest.
 #' @param bin.width bin width of the matrix in bp.
-#' @param matrix.colname logical. Does your matrix file (ie path) have column names (ie header)? Default = TRUE
-#' @param matrix.rowname logical. Does your matrix file (ie path) have row names? Default = FALSE
-#' @param matrix.sep the field separator character. Values on each line of the matrix file are separated by this character. Default = '\\t' (ie tabulation).
+#' @param matrix.colname logical. Does your matrix file path have column names (i.e header)? Default = TRUE
+#' @param matrix.rowname logical. Does your matrix file path have row names? Default = TRUE
+#' @param matrix.sep the field separator character of the matrix file path. Default = '\\t' (i.e tabulation).
 #' @param matrix.diag logical. Weather or not to plot diagonal values of the matrix. Default = TRUE
 #' @param log2 logical. Use the log2 of the matrix values. Default is TRUE
-#' @param scale.colors A character string indicating the color map option to use. Eight colors palettes are available from viridis package. Another palette "OE" is made for data centered on 0 (ie log2(observed/expected) matrix). Default is "H":
+#' @param scale.colors A character string indicating the color map option to use. Eight colors palettes are available from viridis package. Another palette "OE" is made for data centered on 0 (i.e log2 of observed/expected matrix). Default is "H":
 #' "ObsExp" (or "OE")
 #' "magma" (or "A")
 #' "inferno" (or "B")
@@ -38,7 +38,7 @@
 #' @param loop.bedpe bedpe files path or data frame to plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is NULL
 #' @param tad.chr chromosome name to filter bed and bedpe files. Default is NULL
 #' @param annotations.color color for loop and tri annotations. Default is "red".
-#' @param line.colors colors for upper and lower lines.
+#' @param line.colors colors for upper and lower lines. Default is red and blue.
 
 #'
 #' @return ggplot
@@ -51,7 +51,7 @@
 #' @examples
 
 MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H",
-                    matrix.colname = T, matrix.rowname = F, matrix.sep = "\t", matrix.diag = T,
+                    matrix.colname = T, matrix.rowname = T, matrix.sep = "\t", matrix.diag = T,
                     tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL, tad.chr = NULL, annotations.color = "red",
                     tad.upper.line = NULL, tad.lower.line = NULL, tad.line.col = NULL, line.colors = c("red", "blue")) {
 

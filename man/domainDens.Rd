@@ -18,7 +18,7 @@ domainDens(
 
 \item{annot.gr}{GRange file with genomic annotations (genes, repeat elements...).}
 
-\item{domain.col}{Column number (metadata columns) used to separate domains (e.g. column to differentiate between compartments A and B). By default, domain.col = NULL.}
+\item{domain.col}{Column number (metadata columns) used to separate domain classes (e.g. column to differentiate compartments A and B). By default, domain.col = NULL.}
 
 \item{annot.col}{Column number (metadata columns) used to separate annotations. By default, annot.col = NULL. Use "strand" in order to separate annotations according to their strands.}
 
@@ -30,15 +30,15 @@ domainDens(
 Return a ggplot graphs
 }
 \description{
-Distribution of annotations density (e.g. genes) within domains (e.g. TADs, compartments...).
+Distribution of annotations density (e.g. density  of genes) within domains (e.g. TADs, compartments...).
 This function calculates the density per bin of annotations and measures the relative position of each bin within each domain
 }
 \details{
-As an exemple, this function take all TAD domains and calculate the density of annotations .
+As an example, this function take all TAD domains and calculate the density of annotations.
 For example:
-1- calculates the density of genes per bin of 10kb,
+1- calculate the density of annotations per bin,
 2- calculate the relative positions of each bin within his corresponding TAD,
-3- plot the smoothed bin density (and smoothed zscore bin density) according to relative positions.
+3- plot the smoothed bin density (and zscore bin density) according to relative positions.
 }
 \examples{
 #to do
