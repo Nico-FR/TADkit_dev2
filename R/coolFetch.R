@@ -80,7 +80,7 @@ coolFetch <- function(path, chrom, binSize=NA, balance=FALSE) {
       balanced_m = m * (w %*% t(w))
       # Back to upper traingular matrix and sparse matrix
       balanced_m[!upper.tri(balanced_m)] <- 0
-      return(as(balanced_mbalanced_m, "sparseMatrix"))
+      return(as(balanced_m, "sparseMatrix"))
     } else {
       return(m)
     }
