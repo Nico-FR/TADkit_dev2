@@ -74,12 +74,24 @@ coolFetch <- function(path, chrom, binSize=NA, balance=FALSE) {
     m = sparseMatrix(i=i+1, j=j+1, x = x)
 
     if (balance) {
+      message("\nBalancing")
       # Fetch the weights corresponding to the chromosome
-      w = rhdf5::h5read(file = path, name = uri("bins/weight"), index=list(chrom_lo:chrom_hi))
-      # cell by cell multiplication by the cell weight (product of the bin's weight)
+      bins <- data.table::data.table(
+         chromosome = rhdf5::h5read(file = path, name = uri("bins/chrom")),
+         start = rhdf5::h5read(file = path, name = uri("bins/start")),
+         end = rhdf5::h5read(file = path, name = uri("bins/end")),
+         weight = rhdf5::h5read(file = path, name = uri("bins/weight"))
+      )
+      # all indexes, id1, id2 are 0-based, hence we set index as 0-based
+      bins[, index := seq_len(nrow(bins)) - 1]
+      # restricting weights to the actual bins under consideration
+      min_id1 = min(id1[which(id2 < chrom_hi)])
+      max_id2 = max(id2[which(id2 < chrom_hi)])
+      w = bins[index>=min_id1 & index<=max_id2]$weight
+      #cell by cell multiplication by the cell weight (product of the bin's weight)
       balanced_m = m * (w %*% t(w))
       # Back to upper traingular matrix and sparse matrix
-      balanced_m[!upper.tri(balanced_m)] <- 0
+      balanced_m[!upper.tri(balanced_m, diag=TRUE)] <- 0
       return(as(balanced_m, "sparseMatrix"))
     } else {
       return(m)
