@@ -86,11 +86,11 @@ coolFetch <- function(path, chr, bin.width = NA, balance = FALSE) {
          weight = rhdf5::h5read(file = path, name = uri("bins/weight"))
       )
       # all indexes, id1, id2 are 0-based, hence we set index as 0-based
-      bins[, index := seq_len(nrow(bins)) - 1]
+      bins$index = 0:(nrow(bins) - 1)
       # restricting weights to the actual bins under consideration
       min_id1 = min(id1[which(id2 < chrom_hi)])
       max_id2 = max(id2[which(id2 < chrom_hi)])
-      w = bins[index >= min_id1 & index <= max_id2]$weight
+      w = bins$weight[bins$index >= min_id1 & bins$index <= max_id2]
       #cell by cell multiplication by the cell weight (product of the bin's weight)
       balanced_m = m * (w %*% t(w))
       # Back to upper traingular matrix and sparse matrix
