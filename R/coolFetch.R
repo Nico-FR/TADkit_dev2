@@ -3,29 +3,32 @@
 #' @description Using the Indexes provided byt the cooler data model :
 #'       https://cooler.readthedocs.io/en/latest/schema.html,
 #'     extract the intra-chromosomal counts for a given chromosome
-#'     If balance=TRUE returns the normalized counts
+#'     If balance = TRUE returns the normalized counts
 #'
 #' @details
-
-#' @param path  the full path of the mcool file
-#' @param resolution the desired resolution
-#' @param chrom the selected chromosome
+#'
+#' @param path the full path of the cool or mcool file
+#' @param bin.width bin width (i.e resolution) of the mcool matrix in bp
+#' @param chr the selected chromosome
+#' @param balance logical. Weather or not to use balanced counts instead of raw counts. Default = FALSE
 #'
 #' @return a sparse matrix: an object sparseMatrix
 #' @import Matrix
-#' @import rhdf5
+#' @importFrom rhdf5 h5read
+#' @importFrom methods as
 #' @export
 #'
 #'
-coolFetch <- function(path, chrom, binSize=NA, balance=FALSE) {
+coolFetch <- function(path, chr, bin.width = NA, balance = FALSE) {
     message("\nParsing '", path, "'.")
 
+  #mcool path
     uri <- function(path) {
-        if (!is.numeric(binSize)) return(path)
+        if (!is.numeric(bin.width)) return(path)
         return(
             paste(
                 "resolutions",
-                format(binSize, scientific = FALSE),
+                format(bin.width, scientific = FALSE),
                 path,
                 sep = "/"
             )
@@ -35,12 +38,12 @@ coolFetch <- function(path, chrom, binSize=NA, balance=FALSE) {
     # The list of avalaible chromosomes
     chromosomes = rhdf5::h5read(file = path, name = uri("chroms/name"))
 
-    if (!(chrom %in% chromosomes)) {
-       stop("\n '", chrom, "' is not a valid chromosome")
+    if (!(chr %in% chromosomes)) {
+       stop("\n '", chr, "' is not a valid chromosome")
    }
 
     # Index of chrom in the chromosome list
-    cid = match(chrom, chromosomes)
+    cid = match(chr, chromosomes)
 
     # chrom_offset: which row in the bin table each chromosome first appears (0-based)
     chrom_offset = rhdf5::h5read(file = path, name = uri("indexes/chrom_offset"))
@@ -59,9 +62,9 @@ coolFetch <- function(path, chrom, binSize=NA, balance=FALSE) {
     hi = bin1_offset[chrom_hi + 1]  # 1-based => last line with chrom_hi
 
     # chrom intra-chromosomal interactions
-    id1 = rhdf5::h5read(file = path, name = uri("pixels/bin1_id"), index=list(lo:hi))
-    id2 = rhdf5::h5read(file = path, name = uri("pixels/bin2_id"), index=list(lo:hi))
-    interactions = h5read(file = path, name = uri("pixels/count"), index=list(lo:hi))
+    id1 = rhdf5::h5read(file = path, name = uri("pixels/bin1_id"), index = list(lo:hi))
+    id2 = rhdf5::h5read(file = path, name = uri("pixels/bin2_id"), index = list(lo:hi))
+    interactions = h5read(file = path, name = uri("pixels/count"), index = list(lo:hi))
 
     # Now we limit the interactions to intrachromosome interactions
     # hence removing bins starting from chrom_hi
@@ -71,7 +74,7 @@ coolFetch <- function(path, chrom, binSize=NA, balance=FALSE) {
     j = id2[which(id2 < chrom_hi)] - chrom_lo + 1
     x = interactions[which(id2 < chrom_hi)]
 
-    m = sparseMatrix(i=i+1, j=j+1, x = x)
+    m = Matrix::sparseMatrix(i = i + 1, j = j + 1, x  =  x)
 
     if (balance) {
       message("\nBalancing")
@@ -87,12 +90,12 @@ coolFetch <- function(path, chrom, binSize=NA, balance=FALSE) {
       # restricting weights to the actual bins under consideration
       min_id1 = min(id1[which(id2 < chrom_hi)])
       max_id2 = max(id2[which(id2 < chrom_hi)])
-      w = bins[index>=min_id1 & index<=max_id2]$weight
+      w = bins[index >= min_id1 & index <= max_id2]$weight
       #cell by cell multiplication by the cell weight (product of the bin's weight)
       balanced_m = m * (w %*% t(w))
       # Back to upper traingular matrix and sparse matrix
-      balanced_m[!upper.tri(balanced_m, diag=TRUE)] <- 0
-      return(as(balanced_m, "sparseMatrix"))
+      balanced_m[!upper.tri(balanced_m, diag = TRUE)] <- 0
+      return(methods::as(balanced_m, "sparseMatrix"))
     } else {
       return(m)
     }
