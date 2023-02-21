@@ -1,6 +1,6 @@
 Package: TADkit
 Title: TAD matix visualisation tool kit
-Version: 0.0.4.0200
+Version: 0.0.5.0000
 Authors@R: 
     person("Nicolas", "MARY", , "nicolas.mary@envt.fr", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7304-5555 "))
@@ -30,4 +30,6 @@ Imports:
     utils,
     tidyr,
     reshape2,
-    viridis
+    viridis,
+    Matrix,
+    rhdf5
