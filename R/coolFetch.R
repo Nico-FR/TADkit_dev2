@@ -12,7 +12,7 @@
 #' @param chr the selected chromosome
 #' @param balance logical. Weather or not to use balanced counts instead of raw counts. Default = FALSE
 #'
-#' @return a sparse matrix: an object sparseMatrix
+#' @return a dgCMatrix object: upper triangular and sparse Matrix
 #' @import Matrix
 #' @importFrom rhdf5 h5read
 #' @importFrom methods as
@@ -79,7 +79,7 @@ coolFetch <- function(path, chr, bin.width = NA, balance = FALSE) {
     if (balance) {
       message("\nBalancing")
       # Fetch the weights corresponding to the chromosome
-      bins <- data.table::data.table(
+      bins <- data.frame(
          chromosome = rhdf5::h5read(file = path, name = uri("bins/chrom")),
          start = rhdf5::h5read(file = path, name = uri("bins/start")),
          end = rhdf5::h5read(file = path, name = uri("bins/end")),
@@ -95,7 +95,6 @@ coolFetch <- function(path, chr, bin.width = NA, balance = FALSE) {
       mat_weight = Matrix::triu((w %*% t(w)))
       mat_weight[is.na(mat_weight)] <- 0 #remove NaN
       #cell by cell multiplication by the matrix weight
-      balanced_m = m * mat_weight
       return(m * mat_weight)
     } else {
       return(m)

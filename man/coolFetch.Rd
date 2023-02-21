@@ -16,7 +16,7 @@ coolFetch(path, chr, bin.width = NA, balance = FALSE)
 \item{balance}{logical. Weather or not to use balanced counts instead of raw counts. Default = FALSE}
 }
 \value{
-a sparse matrix: an object sparseMatrix
+a dgCMatrix object: upper triangular and sparse Matrix
 }
 \description{
 Using the Indexes provided byt the cooler data model :
