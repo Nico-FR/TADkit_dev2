@@ -91,11 +91,12 @@ coolFetch <- function(path, chr, bin.width = NA, balance = FALSE) {
       min_id1 = min(id1[which(id2 < chrom_hi)])
       max_id2 = max(id2[which(id2 < chrom_hi)])
       w = bins$weight[bins$index >= min_id1 & bins$index <= max_id2]
-      #cell by cell multiplication by the cell weight (product of the bin's weight)
-      balanced_m = m * (w %*% t(w))
-      # Back to upper traingular matrix and sparse matrix
-      balanced_m[!upper.tri(balanced_m, diag = TRUE)] <- 0
-      return(methods::as(balanced_m, "sparseMatrix"))
+      #upper matrix weight for balancing
+      mat_weight = Matrix::triu((w %*% t(w)))
+      mat_weight[is.na(mat_weight)] <- 0 #remove NaN
+      #cell by cell multiplication by the matrix weight
+      balanced_m = m * mat_weight
+      return(m * mat_weight)
     } else {
       return(m)
     }
