@@ -4,20 +4,23 @@
 \alias{coolFetch}
 \title{Fetch a chromosome of a mcool file}
 \usage{
-coolFetch(path, resolution, chrom)
+coolFetch(path, chr, bin.width = NA, balance = FALSE)
 }
 \arguments{
-\item{path}{the full path of the mcool file}
+\item{path}{the full path of the cool or mcool file}
 
-\item{resolution}{the desired resolution}
+\item{chr}{the selected chromosome}
 
-\item{chrom}{the selected chromosome}
+\item{bin.width}{bin width (i.e resolution) of the mcool matrix in bp}
+
+\item{balance}{logical. Weather or not to use balanced counts instead of raw counts. Default = FALSE}
 }
 \value{
-a sparse matrix
+a dgCMatrix object: upper triangular and sparse Matrix
 }
 \description{
 Using the Indexes provided byt the cooler data model :
 https://cooler.readthedocs.io/en/latest/schema.html,
 extract the intra-chromosomal counts for a given chromosome
+If balance = TRUE returns the normalized counts
 }
