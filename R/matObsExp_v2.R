@@ -31,9 +31,9 @@ matObsExp_v2 <- function(matrix) {
   mean_diag = sapply(1:(ncol(mat) - 1),
                      function (x){mean(diag(mat[,x:ncol(mat)]), na.rm = T)})
 
-  mat_expected = methods::as(stats::toeplitz(c(mean_diag, mat[1,ncol(mat)])), "dgCMatrix") #create expected matrix
+  mat_expected = stats::toeplitz(c(mean_diag, mat[1,ncol(mat)])) #create expected matrix
 
-  return(Matrix::triu(mat / mat_expected))
+  return(Matrix::triu(methods::as(mat / mat_expected, "dgCMatrix")))
   }
 
 
