@@ -4,25 +4,19 @@
 \alias{matObsExp}
 \title{observed / expected matrix}
 \usage{
-matObsExp(matrix, matrix.colname = T, matrix.rowname = T, matrix.sep = "\\t")
+matObsExp(matrix)
 }
 \arguments{
-\item{matrix}{R object (data frame or matrix) or the matrix file path (in full matrix format) for only one chromosome. The path can be gzip file (ending by .gz)}
-
-\item{matrix.colname}{logical. Does your matrix file path have column names (i.e header)? Default = TRUE}
-
-\item{matrix.rowname}{logical. Does your matrix file path have row names? Default = TRUE}
-
-\item{matrix.sep}{the field separator character of the matrix file path. Default = '\\t' (i.e tabulation).}
+\item{matrix}{a dgCMatrix or matrix object}
 }
 \value{
-matrix array
+a dgCMatrix object: upper triangular and sparse Matrix
 }
 \description{
 For each bin of the matrix (interaction count observed) this function return a ratio: observed / expected.
-The input file path must be in a matrix format (i.e array with as many rows and columns than the number of bin). Only the upper part of the matrix is used.
+The input matrix must be a dgCMatrix or matrix object (i.e array with as many rows and columns than the number of bin). Only the upper part of the matrix is used.
 The output can be plot with MATplot function with log2=T and scale.colors = "ObsExp" parameters.
 }
 \details{
-The expected number of interaction corresponds to the average of the interaction counts according to the bin distances.
+The expected number of interaction corresponds to the average of the interaction counts according to the bin distances (NB: bins with zero counts are not considered).
 }
