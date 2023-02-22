@@ -2,22 +2,18 @@
 #'
 #' @description MATplot allow to plot matrix with 3 type of annotations:
 #' -domains (e.g. TADs or compartments) are plot as triangles or lines on the upper or/and lower part of the matrix.
-#' -interaction between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
+#' -interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
 #'
-#' @details The matrix input can be R object (dataframe, matrix or array) or the path of the files. The matrix format has as many rows as columns and this number corresponds to the number of bin of the chromosome.
-#' For the path of the matrix file, you can specify if the files as column and row names. These are generally used to specify bin numbers or bin coordinates.
-#' All domains (TADs or compartments) are bed files (3 columns) and can be R object (dataframe or GRange) or the path of the files.
+#' @details The matrix input must be a dgCMatrix or matrix object for one chromosome.
+#' All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (dataframe or GRange) or the path of the files.
 #' For tad.lines, another column can be used to specify different classes of domains (e.g compartment A or B). To use those domain classes, specify the column number (of the tad.upper.line and tad.lower.line inputs) with tad.line.col parameter and a custom set of colors with line.colors parameter.
-#' Loop are stored in bedpe files (6 columns) and can be a dataframe or the path of the file.
-#' Chromosome of domain and loop datas can be filter using tad.chr parameter.
+#' Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a dataframe or the path of the file.
+#' Chromosome domains and loops can be filter using tad.chr parameter.
 #'
 #' @param matrix matrix object (data frame or full matrix) or matrix path for only one chromosome. The path can be gzip (ending by .gz). The matrix has as many rows as columns and this number corresponds to the number of bin of the chromosome.
 #' @param start start in bp of the area of interest.
 #' @param stop end in bp of the area of interest.
 #' @param bin.width bin width of the matrix in bp.
-#' @param matrix.colname logical. Does your matrix file path have column names (i.e header)? Default = TRUE
-#' @param matrix.rowname logical. Does your matrix file path have row names? Default = TRUE
-#' @param matrix.sep the field separator character of the matrix file path. Default = '\\t' (i.e tabulation).
 #' @param matrix.diag logical. Weather or not to plot diagonal values of the matrix. Default = TRUE
 #' @param log2 logical. Use the log2 of the matrix values. Default is TRUE
 #' @param scale.colors A character string indicating the color map option to use. Eight colors palettes are available from viridis package. Another palette "OE" is made for data centered on 0 (i.e log2 of observed/expected matrix). Default is "H":
@@ -50,50 +46,54 @@
 #'
 #' @examples
 
-MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H",
-                    matrix.colname = T, matrix.rowname = T, matrix.sep = "\t", matrix.diag = T,
+MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H", matrix.diag = T,
                     tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL, tad.chr = NULL, annotations.color = "red",
                     tad.upper.line = NULL, tad.lower.line = NULL, tad.line.col = NULL, line.colors = c("red", "blue")) {
+
+
+  matrix = matObsExp_v2(coolFetch(path = path, chr = 1, bin.width = 50e3, balance = F))
+  start = 1e6;  stop = 10e6 ;  bin.width = 50e3
+  bin.width = 50e3 ; log2 = T; scale.colors = "OE"; matrix.diag = T;
+  tad.upper.tri = NULL; tad.lower.tri = NULL; loop.bedpe = NULL; tad.chr = NULL; annotations.color = "red";
+  tad.upper.line = NULL; tad.lower.line = NULL; tad.line.col = NULL; line.colors = c("red", "blue")
+
+  matrix[1:5,1:5]
+  mat[1:5,1:5]
+
+  #sanity check
+  if(isFALSE(class(matrix)[1] %in% c("dgCMatrix", "matrix"))) {
+    stop("input matrix is not a matrix or dgCMatrix object")}
 
   #bin to read
   from = start %/% bin.width + 1 ; to = stop %/% bin.width #nb bin
 
-  #bin to read for matrix.path
-  matrix.row.skip <- ifelse(matrix.colname == T,  from, from - 1)
-  if(isTRUE(matrix.rowname)) matrix.col.skip <- 1 else matrix.col.skip <- NULL
+  #filter matrix area
+  mat = Matrix::triu(matrix[from:to, from:to])
+  mat[Matrix::triu(mat == 0)] <- NA
 
-  #read matrix path in data.frame
-  if (is.character(matrix))  {
-    if (substr(matrix, nchar(matrix) - 2, nchar(matrix)) == ".gz") {
-      df = read.table(gzfile(matrix), sep = matrix.sep, header = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
-    } else {
-      df = read.table(matrix, sep = matrix.sep, header = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
-    }
-    }
+  #get log2
+  if (log2 == T) {mat@x = log2(mat@x)}
 
-  #read data frame
-  if (is.data.frame(matrix))  {df = matrix[from:to, from:to]}
+  #melt matrix
+  upper_mat = Matrix::summary(Matrix::triu(mat, 1))
+  diag_mat = data.frame(i = 1:nrow(mat), j = 1:nrow(mat), x = Matrix::diag(mat))
+  lower_mat = Matrix::summary(Matrix::tril(t(mat), -1))
 
-  #read matrix or create one
-  if(!is.matrix(matrix)) {mat = matrix(as.matrix(df), nrow = length(df))} else {mat = matrix[from:to, from:to]}
+  #diag
+  if(matrix.diag) {melted_mat = rbind(upper_mat, lower_mat, diag_mat)} else {melted_mat = rbind(upper_mat, lower_mat)}
 
-  if(isFALSE(matrix.diag)) {diag(mat) <- NA}
-
-  # matrix plot
-  if (log2 == T) {mat = log2(mat)}
-  melted_mat <- reshape2::melt(mat)
-  melted_mat$Var2 = (melted_mat$Var2 + from - 1) * - bin.width + bin.width / 2
-  melted_mat$Var1 = (melted_mat$Var1 + from - 1) * bin.width - bin.width / 2
+  melted_mat$j = (melted_mat$j + from - 1) * - bin.width + bin.width / 2
+  melted_mat$i = (melted_mat$i + from - 1) * bin.width - bin.width / 2
 
   if (scale.colors == "OE" | scale.colors == "ObsExp") {
-    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = Var1, y = Var2, fill = value))+
+    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = i, y = j, fill = x))+
       ggplot2::scale_fill_gradient2(low = "blue", high ="red",midpoint = 0, mid="white", na.value = "white")+
       ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
       ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
       ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
 
   } else {
-    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = Var1, y = Var2, fill = value))+
+    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = i, y = j, fill = x))+
       viridis::scale_fill_viridis(na.value = "black", option = scale.colors)+
       ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
       ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
