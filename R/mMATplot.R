@@ -1,15 +1,14 @@
 #' @title Plot 2 matrix with annotations
 #'
-#' @description Same as MATplot function but mMATplot allow to plot 2 matrices on the upper or lower part of the matrix.
+#' @description Same as MATplot function but mMATplot allow to plot 2 differents matrices on the upper and lower part of the plot.
 #' -domains (e.g. TADs or compartments) are plot as triangles or lines on the upper or/and lower part of the matrix.
-#' -interaction between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
+#' -interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
 #'
-#' @details The matrix input can be R object (dataframe, matrix or array) or the path of the files. The matrix format has as many rows as columns and this number corresponds to the number of bin of the chromosome.
-#' For the path of the matrix file, you can specify if the files as column and row names. These are generally used to specify bin numbers or bin coordinates.
-#' All domains (TADs or compartments) are bed files (3 columns) and can be R object (dataframe or GRange) or the path of the files.
+#' @details The matrix input must be a dgCMatrix or a matrix object for only one chromosome (see coolFetch function to read cool files).
+#' All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (dataframe or GRange) or the path of the files.
 #' For tad.lines, another column can be used to specify different classes of domains (e.g compartment A or B). To use those domain classes, specify the column number (of the tad.upper.line and tad.lower.line inputs) with tad.line.col parameter and a custom set of colors with line.colors parameter.
-#' Loop are stored in bedpe files (6 columns) and can be a dataframe or the path of the file.
-#' Chromosome of domain and loop datas can be filter using tad.chr parameter.
+#' Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a dataframe or the path of the file.
+#' Chromosome domains and loops can be filter using tad.chr parameter.
 #'
 #' @param matrix.upper matrix object (data frame or full matrix) or matrix path for only one chromosome. The path can be gzip (ending by .gz).
 #' @param matrix.lower matrix object (data frame or matrix) or matrix path for only one chromosome. The path can be gzip (ending by .gz).
@@ -41,7 +40,7 @@
 
 #'
 #' @return ggplot
-#' @import reshape2
+#' @import Matrix
 #' @import viridis
 #' @import scales
 #' @import ggplot2

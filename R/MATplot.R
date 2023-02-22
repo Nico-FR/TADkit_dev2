@@ -1,10 +1,10 @@
 #' @title Plot matrix with annotations
 #'
-#' @description MATplot allow to plot matrix with 3 type of annotations:
+#' @description MATplot allow to plot matrix with 3 types of annotations:
 #' -domains (e.g. TADs or compartments) are plot as triangles or lines on the upper or/and lower part of the matrix.
 #' -interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
 #'
-#' @details The matrix input must be a dgCMatrix or matrix object for one chromosome.
+#' @details The matrix input must be a dgCMatrix or a matrix object for only one chromosome (see coolFetch function to read cool files).
 #' All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (dataframe or GRange) or the path of the files.
 #' For tad.lines, another column can be used to specify different classes of domains (e.g compartment A or B). To use those domain classes, specify the column number (of the tad.upper.line and tad.lower.line inputs) with tad.line.col parameter and a custom set of colors with line.colors parameter.
 #' Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a dataframe or the path of the file.
@@ -38,7 +38,7 @@
 
 #'
 #' @return ggplot
-#' @import reshape2
+#' @import Matrix
 #' @import viridis
 #' @import scales
 #' @import ggplot2
@@ -49,18 +49,6 @@
 MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H", matrix.diag = T,
                     tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL, tad.chr = NULL, annotations.color = "red",
                     tad.upper.line = NULL, tad.lower.line = NULL, tad.line.col = NULL, line.colors = c("red", "blue")) {
-
-
-  #mcool = coolFetch(path = path, chr = 1, bin.width = 50e3, balance = F) ; class(mcool)
-  #matrix = matObsExp_v2(mcool) ; class(matrix)
-  #start = 1e6;  stop = 10e6 ;  bin.width = 50e3
-  #bin.width = 50e3 ; log2 = T; scale.colors = "OE"; matrix.diag = T;
-  #tad.upper.tri = NULL; tad.lower.tri = NULL; loop.bedpe = NULL; tad.chr = NULL; annotations.color = "red";
-  #tad.upper.line = NULL; tad.lower.line = NULL; tad.line.col = NULL; line.colors = c("red", "blue")
-
-  #class(matrix)
-  #matrix[1:5,1:5]
-  #mat[1:5,1:5]
 
   #sanity check
   if(isFALSE(class(matrix)[1] %in% c("dgCMatrix", "matrix"))) {
