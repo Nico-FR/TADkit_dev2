@@ -20,12 +20,12 @@ matObsExp_v2 <- function(matrix) {
     stop("input matrix is not a matrix or dgCMatrix object")}
 
   #using dgcmatrix object
-  mat = Matrix::triu(matrix)
-  mat[Matrix::triu(mat == 0)] <- NA
+  #mat = Matrix::triu(matrix)
+  #mat[Matrix::triu(mat == 0)] <- NA
 
   #using matrix
-  #mat =  matrix(matrix, nrow = nrow(matrix), ncol = ncol(matrix))
-  #mat[mat == 0] <- NA
+  mat =  matrix(matrix, nrow = nrow(matrix), ncol = ncol(matrix))
+  mat[mat == 0] <- NA
 
   #mean diag
   mean_diag = sapply(1:(ncol(mat) - 1),
