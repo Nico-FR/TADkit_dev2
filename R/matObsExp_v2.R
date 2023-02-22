@@ -33,7 +33,11 @@ matObsExp_v2 <- function(matrix) {
 
   mat_expected = stats::toeplitz(c(mean_diag, mat[1,ncol(mat)])) #create expected matrix
 
-  return(Matrix::triu(methods::as(mat / mat_expected, "dgCMatrix")))
+  output = matrix / mat_expected
+
+  return(
+    if(class(output) == "matrix") {as(output, "dgCMatrix")} else {output}
+    )
   }
 
 
