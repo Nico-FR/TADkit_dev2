@@ -16,11 +16,8 @@
 #' @param start start in bp of the area of interest.
 #' @param stop end in bp of the area of interest.
 #' @param bin.width bin width of the matrix in bp.
-#' @param matrix.colname logical. Does your matrix file (ie path) have column names (ie header)? Default = TRUE
-#' @param matrix.rowname logical. Does your matrix file path have row names? Default = TRUE
 #' @param matrix.upper.txt text to write on the upper part of the plot
 #' @param matrix.lower.txt text to write on the lower part of the plot
-#' @param matrix.sep the field separator character of the matrix file path. Default = '\\t' (i.e tabulation).
 #' @param log2 logical. Use the log2 of the matrix values. Default is TRUE
 #' @param scale.colors A character string indicating the color map option to use. Eight colors palettes are available from viridis package. Another palette "OE" is made for data centered on 0 (i.e log2 of observed/expected matrix). Default is "H":
 #' "ObsExp" (or "OE")
@@ -53,7 +50,6 @@
 #' @examples
 
 mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = T, scale.colors = "H",
-                    matrix.colname = T, matrix.rowname = T, matrix.sep = "\t",
                     matrix.upper.txt = NULL, matrix.lower.txt = NULL,
                     tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL, tad.chr = NULL, annotations.color = "red",
                     tad.upper.line = NULL, tad.lower.line = NULL, tad.line.col = NULL, line.colors = c("red", "blue")) {
@@ -63,70 +59,53 @@ mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = 
 
   ####################
   #mat1
-  #bin to read for matrix.path
-  matrix.row.skip <- ifelse(matrix.colname == T,  from, from - 1)
-  if(isTRUE(matrix.rowname)) matrix.col.skip <- 1 else matrix.col.skip <- NULL
+  if(isFALSE(class(matrix.upper)[1] %in% c("dgCMatrix", "matrix"))) {
+    stop("input matrix is not a matrix or dgCMatrix object")}
 
-  #read matrix path in data.frame
-  if (is.character(matrix.upper))  {
-    if (substr(matrix.upper, nchar(matrix.upper) - 2, nchar(matrix.upper)) == ".gz") {
-      df = read.table(gzfile(matrix.upper), sep = matrix.sep, header = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
-    } else {
-      df = read.table(matrix.upper, sep = matrix.sep, header = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
-    }
-  }
+  #filter matrix area
+  mat1 = Matrix::triu(matrix.upper[from:to, from:to])
+  mat1[Matrix::triu(mat1 == 0)] <- NA
 
-  #read data frame
-  if (is.data.frame(matrix.upper))  {df = matrix[from:to, from:to]}
+  #get log2
+  if (log2 == T) {mat1@x = log2(mat1@x)}
 
-  #read matrix or create one
-  if(!is.matrix(matrix.upper)) {mat.upper = matrix(as.matrix(df), nrow = length(df))} else {mat.upper = matrix.upper[from:to, from:to]}
-  diag(mat.upper) <- NA
+  #melt matrix
+  upper_mat = Matrix::summary(Matrix::triu(mat1, 1))
   ####################
-
-  #create empty matrix
-  mat = matrix(ncol=ncol(mat.upper),nrow=ncol(mat.upper))
-
-  #write upper matrix
-  mat[upper.tri(mat)] = mat.upper[upper.tri(mat.upper)]
 
   ####################
   #mat2
-  #read matrix path in data.frame
-  if (is.character(matrix.lower))  {
-    if (substr(matrix.lower, nchar(matrix.lower) - 2, nchar(matrix.lower)) == ".gz") {
-      df = read.table(gzfile(matrix.lower), sep = matrix.sep, header = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
-    } else {
-      df = read.table(matrix.lower, sep = matrix.sep, header = F, row.names = matrix.col.skip, skip = matrix.row.skip)[1:(to - from + 1), from:to]
-    }
-  }
+  if(isFALSE(class(matrix.lower)[1] %in% c("dgCMatrix", "matrix"))) {
+    stop("input matrix is not a matrix or dgCMatrix object")}
 
-  #read data frame
-  if (is.data.frame(matrix.lower))  {df = matrix[from:to, from:to]}
+  #filter matrix area
+  mat2 = Matrix::triu(matrix.lower[from:to, from:to])
+  mat2[Matrix::triu(mat2 == 0)] <- NA
 
-  #read matrix or create one
-  if(!is.matrix(matrix.lower)) {mat.lower = matrix(as.matrix(df), nrow = length(df))} else {mat.lower = matrix.lower[from:to, from:to]}
-  diag(mat.lower) <- NA
+  #get log2
+  if (log2 == T) {mat2@x = log2(mat2@x)}
+
+  #melt matrix
+  lower_mat = Matrix::summary(Matrix::tril(t(mat2), -1))
+
   ####################
 
-  #write lower matrix
-  mat[lower.tri(mat)] = mat.lower[lower.tri(mat.lower)]
+  #merge matrices
+  melted_mat = rbind(upper_mat, lower_mat)
 
-  # matrix plot
-  if (log2 == T) {mat = log2(mat)}
-  melted_mat <- reshape2::melt(t(mat))
-  melted_mat$Var2 = (melted_mat$Var2 + from - 1) * - bin.width + bin.width / 2
-  melted_mat$Var1 = (melted_mat$Var1 + from - 1) * bin.width - bin.width / 2
+  #add genomic coordinates
+  melted_mat$j = (melted_mat$j + from - 1) * - bin.width + bin.width / 2
+  melted_mat$i = (melted_mat$i + from - 1) * bin.width - bin.width / 2
 
   if (scale.colors == "OE" | scale.colors == "ObsExp") {
-    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = Var1, y = Var2, fill = value))+
+    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = i, y = j, fill = x))+
       ggplot2::scale_fill_gradient2(low = "blue", high = "red",midpoint = 0, mid="white", na.value = "white")+
       ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
       ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
       ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
 
   } else {
-    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = Var1, y = Var2, fill = value))+
+    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = i, y = j, fill = x))+
       viridis::scale_fill_viridis(na.value = "black", option = scale.colors)+
       ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
       ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+

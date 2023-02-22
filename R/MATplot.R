@@ -51,14 +51,16 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
                     tad.upper.line = NULL, tad.lower.line = NULL, tad.line.col = NULL, line.colors = c("red", "blue")) {
 
 
-  matrix = matObsExp_v2(coolFetch(path = path, chr = 1, bin.width = 50e3, balance = F))
-  start = 1e6;  stop = 10e6 ;  bin.width = 50e3
-  bin.width = 50e3 ; log2 = T; scale.colors = "OE"; matrix.diag = T;
-  tad.upper.tri = NULL; tad.lower.tri = NULL; loop.bedpe = NULL; tad.chr = NULL; annotations.color = "red";
-  tad.upper.line = NULL; tad.lower.line = NULL; tad.line.col = NULL; line.colors = c("red", "blue")
+  #mcool = coolFetch(path = path, chr = 1, bin.width = 50e3, balance = F) ; class(mcool)
+  #matrix = matObsExp_v2(mcool) ; class(matrix)
+  #start = 1e6;  stop = 10e6 ;  bin.width = 50e3
+  #bin.width = 50e3 ; log2 = T; scale.colors = "OE"; matrix.diag = T;
+  #tad.upper.tri = NULL; tad.lower.tri = NULL; loop.bedpe = NULL; tad.chr = NULL; annotations.color = "red";
+  #tad.upper.line = NULL; tad.lower.line = NULL; tad.line.col = NULL; line.colors = c("red", "blue")
 
-  matrix[1:5,1:5]
-  mat[1:5,1:5]
+  #class(matrix)
+  #matrix[1:5,1:5]
+  #mat[1:5,1:5]
 
   #sanity check
   if(isFALSE(class(matrix)[1] %in% c("dgCMatrix", "matrix"))) {
@@ -82,6 +84,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   #diag
   if(matrix.diag) {melted_mat = rbind(upper_mat, lower_mat, diag_mat)} else {melted_mat = rbind(upper_mat, lower_mat)}
 
+  #add genomic coordinates
   melted_mat$j = (melted_mat$j + from - 1) * - bin.width + bin.width / 2
   melted_mat$i = (melted_mat$i + from - 1) * bin.width - bin.width / 2
 
