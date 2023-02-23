@@ -34,6 +34,9 @@ coolFetch <- function(path, chr, bin.width = NA, balance = FALSE) {
             )
         )
     }
+    #TODO: add message for unavailable resolution and available resolution
+    #command to get available resolutions (it must be possible to make it simpler):
+    #(rhdf5::h5ls(path) %>% filter(group == "/resolutions"))$name %>% as.numeric %>% sort %>% format(scientific = FALSE) %>% paste0(collapse = ", ")
 
     # The list of avalaible chromosomes
     chromosomes = rhdf5::h5read(file = path, name = uri("chroms/name"))
