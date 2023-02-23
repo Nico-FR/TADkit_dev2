@@ -29,9 +29,7 @@ mTADplot(
 
 \item{chr}{Chromosome name to plot.}
 
-\item{start}{Start of the area of interest.}
-
-\item{stop}{End of the area of interest.}
+\item{start, stop}{region of interest in base pair.}
 
 \item{tad.id}{Default is FALSE to write the size of each TAD instead of their names.}
 

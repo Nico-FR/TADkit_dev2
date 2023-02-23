@@ -24,32 +24,30 @@ MATplot(
 )
 }
 \arguments{
-\item{matrix}{matrix object (data frame or full matrix) or matrix path for only one chromosome. The path can be gzip (ending by .gz). The matrix has as many rows as columns and this number corresponds to the number of bin of the chromosome.}
+\item{matrix}{matrix object (of class "dgCMatrix" or "matrix") for only one chromosome.}
 
-\item{start}{start in bp of the area of interest.}
+\item{start, stop}{region of interest in base pair.}
 
-\item{stop}{end in bp of the area of interest.}
-
-\item{bin.width}{bin width of the matrix in bp.}
+\item{bin.width}{bin width of the matrix in base pair.}
 
 \item{log2}{logical. Use the log2 of the matrix values. Default is TRUE}
 
 \item{scale.colors}{A character string indicating the color map option to use. Eight colors palettes are available from viridis package. Another palette "OE" is made for data centered on 0 (i.e log2 of observed/expected matrix). Default is "H":
-"ObsExp" (or "OE")
-"magma" (or "A")
-"inferno" (or "B")
-"plasma" (or "C")
-"viridis" (or "D")
-"cividis" (or "E")
-"rocket" (or "F")
-"mako" (or "G")
-"turbo" (or "H")}
+\itemize{
+\item "ObsExp" (or "OE"),
+\item "magma" (or "A"),
+\item "inferno" (or "B"),
+\item "plasma" (or "C"),
+\item "viridis" (or "D"),
+\item "cividis" (or "E"),
+\item "rocket" (or "F"),
+\item "mako" (or "G"),
+\item "turbo" (or "H").
+}}
 
 \item{matrix.diag}{logical. Weather or not to plot diagonal values of the matrix. Default = TRUE}
 
-\item{tad.upper.tri}{bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL}
-
-\item{tad.lower.tri}{bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL}
+\item{tad.upper.tri, tad.lower.tri}{bed files path, data frame or grange object with the TAD to plot as triangle in the upper or lower part of the matrix. Default is NULL.}
 
 \item{loop.bedpe}{bedpe files path or data frame to plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is NULL}
 
@@ -57,11 +55,9 @@ MATplot(
 
 \item{annotations.color}{color for loop and tri annotations. Default is "red".}
 
-\item{tad.upper.line}{bed files path, data frame or grange object with the TAD to plot as line in the upper parts of the matrix. Default is NULL}
+\item{tad.upper.line, tad.lower.line}{bed files path, data frame or grange object with the TAD to plot as line in the upper or lower parts of the matrix. Default is NULL.}
 
-\item{tad.lower.line}{bed files path, data frame or grange object with the TAD to plot as line in the lower parts of the matrix. Default is NULL}
-
-\item{tad.line.col}{col number of the tad.line files that contain factors used to color tad.upper.line and tad.lower.line. Default is NULL}
+\item{tad.line.col}{column number of the tad.line files that contain factors used to color tad.upper.line and tad.lower.line. Default is NULL.}
 
 \item{line.colors}{colors for upper and lower lines. Default is red and blue.}
 }

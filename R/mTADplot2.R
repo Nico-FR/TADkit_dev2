@@ -17,10 +17,9 @@
 #' It is also possible to put a list containing another list of bedgraph. In this case, each list will be represented in a different track.
 #'
 #'
-#' @param tad.lst List of GRange object with TADs. It must have chromosomes lengths (see dataframes2grange function).
+#' @param tad.lst List of GRange object with domains. Those files must have chromosomes lengths (see dataframes2grange function).
 #' @param chr Chromosome name to plot.
-#' @param start Start of the area of interest.
-#' @param stop End of the area of interest.
+#' @param start,stop region of interest in base pair.
 #' @param tad.id Default is FALSE to write the size of each TAD instead of their names.
 #' @param bigwigPath.lst List of path for the bigwig file(s) plotted as histogram. Default = NULL (ie no track is plotted).
 #' @param bigwig.binsize Bin sizes for the histogram of the bigwig track. Default = 1e3.

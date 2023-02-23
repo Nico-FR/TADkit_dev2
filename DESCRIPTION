@@ -1,11 +1,12 @@
 Package: TADkit
-Title: TAD matix visualisation tool kit
+Title: TAD and matrix visualisation tool kit
 Version: 0.0.5.2000
 Authors@R: 
-    person("Nicolas", "MARY", , "nicolas.mary@envt.fr", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-7304-5555 "))
-Description: Tools to visualized domains with many other tracks (covegares, annotations and bedgraph datas) and to plot matrix with few tracks (domains and loops). Tools to analyzed: Distributions of genomic annotations in relations to domain (i.e TADs or compartments).Create observed / expected matrix...
-License: GPL (>= 3)
+    person("Nicolas", "MARY", , "nicolas.mary@envt.fr", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-7304-5555 "))
+URL: https://github.com/Nico-FR/TADkit
+BugReports: https://github.com/Nico-FR/TADkit/issues
+Description: Tools to plot domains (e.g Topological Associated Domain) with other tracks (covegares, annotations and bedgraph datas) and to plot matrix with few tracks (domains and loops). 
+    Tools to analyzed: Distributions of genomic annotations in relations to domains...
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
@@ -33,3 +34,7 @@ Imports:
     viridis,
     Matrix,
     rhdf5
+Depends: 
+    R (>= 2.10)
+LazyData: true
+License: MIT + file LICENSE

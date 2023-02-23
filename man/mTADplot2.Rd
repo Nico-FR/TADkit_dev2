@@ -25,13 +25,11 @@ mTADplot2(
 )
 }
 \arguments{
-\item{tad.lst}{List of GRange object with TADs. It must have chromosomes lengths (see dataframes2grange function).}
+\item{tad.lst}{List of GRange object with domains. Those files must have chromosomes lengths (see dataframes2grange function).}
 
 \item{chr}{Chromosome name to plot.}
 
-\item{start}{Start of the area of interest.}
-
-\item{stop}{End of the area of interest.}
+\item{start, stop}{region of interest in base pair.}
 
 \item{tad.id}{Default is FALSE to write the size of each TAD instead of their names.}
 

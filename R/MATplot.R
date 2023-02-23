@@ -10,27 +10,24 @@
 #' Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a dataframe or the path of the file.
 #' Chromosome domains and loops can be filter using tad.chr parameter.
 #'
-#' @param matrix matrix object (data frame or full matrix) or matrix path for only one chromosome. The path can be gzip (ending by .gz). The matrix has as many rows as columns and this number corresponds to the number of bin of the chromosome.
-#' @param start start in bp of the area of interest.
-#' @param stop end in bp of the area of interest.
-#' @param bin.width bin width of the matrix in bp.
+#' @param matrix matrix object (of class "dgCMatrix" or "matrix") for only one chromosome.
+#' @param start,stop region of interest in base pair.
+#' @param bin.width bin width of the matrix in base pair.
 #' @param matrix.diag logical. Weather or not to plot diagonal values of the matrix. Default = TRUE
 #' @param log2 logical. Use the log2 of the matrix values. Default is TRUE
 #' @param scale.colors A character string indicating the color map option to use. Eight colors palettes are available from viridis package. Another palette "OE" is made for data centered on 0 (i.e log2 of observed/expected matrix). Default is "H":
-#' "ObsExp" (or "OE")
-#' "magma" (or "A")
-#' "inferno" (or "B")
-#' "plasma" (or "C")
-#' "viridis" (or "D")
-#' "cividis" (or "E")
-#' "rocket" (or "F")
-#' "mako" (or "G")
-#' "turbo" (or "H")
-#' @param tad.upper.tri bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL
-#' @param tad.lower.tri bed files path, data frame or grange object with the TAD to plot as triangle in the upper part of the matrix. Default is NULL
-#' @param tad.upper.line bed files path, data frame or grange object with the TAD to plot as line in the upper parts of the matrix. Default is NULL
-#' @param tad.lower.line bed files path, data frame or grange object with the TAD to plot as line in the lower parts of the matrix. Default is NULL
-#' @param tad.line.col col number of the tad.line files that contain factors used to color tad.upper.line and tad.lower.line. Default is NULL
+#' * "ObsExp" (or "OE"),
+#' * "magma" (or "A"),
+#' * "inferno" (or "B"),
+#' * "plasma" (or "C"),
+#' * "viridis" (or "D"),
+#' * "cividis" (or "E"),
+#' * "rocket" (or "F"),
+#' * "mako" (or "G"),
+#' * "turbo" (or "H").
+#' @param tad.upper.tri,tad.lower.tri bed files path, data frame or grange object with the TAD to plot as triangle in the upper or lower part of the matrix. Default is NULL.
+#' @param tad.upper.line,tad.lower.line bed files path, data frame or grange object with the TAD to plot as line in the upper or lower parts of the matrix. Default is NULL.
+#' @param tad.line.col column number of the tad.line files that contain factors used to color tad.upper.line and tad.lower.line. Default is NULL.
 #' @param loop.bedpe bedpe files path or data frame to plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is NULL
 #' @param tad.chr chromosome name to filter bed and bedpe files. Default is NULL
 #' @param annotations.color color for loop and tri annotations. Default is "red".

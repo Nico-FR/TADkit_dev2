@@ -15,11 +15,10 @@
 #' Another track with any annotations can be added.
 #' This track can be group using factors in a specified column of the annot.gr files (metadata) otherwise the names of each annotation is used.
 #'
-#' @param tad.gr GRange object with TADs. This file must have chromosomes lengths (see dataframes2grange function).
+#' @param tad.gr GRange object with domains. This file must have chromosomes lengths (see dataframes2grange function).
 #' @param chr Chromosome name to plot.
-#' @param start Start of the area of interest.
-#' @param stop End of the area of interest.
-#' @param tad.id Default is FASLE to write the size of each TAD instead of their names.
+#' @param start,stop region of interest in base pair.
+#' @param tad.id Logical. Default is FASLE to write the size of each TAD instead of their names.
 #' @param bigwig.path Path for the bigwig file plotted as histogram. Default = NULL (ie no track is plotted).
 #' @param annot.gr GRange file with genomic annotations. Default = NULL (ie no track is plotted).
 #' @param bigwig.binsize Bin sizes for the histogram of the bigwig track. Default = 1e3.

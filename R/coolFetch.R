@@ -8,7 +8,7 @@
 #' @details
 #'
 #' @param path the full path of the cool or mcool file
-#' @param bin.width bin width (i.e resolution) of the mcool matrix in bp
+#' @param bin.width bin width (i.e resolution) of the mcool matrix in bp. It must not be used for cool file.
 #' @param chr the selected chromosome
 #' @param balance logical. Weather or not to use balanced counts instead of raw counts. Default = FALSE
 #'
@@ -39,7 +39,7 @@ coolFetch <- function(path, chr, bin.width = NA, balance = FALSE) {
     chromosomes = rhdf5::h5read(file = path, name = uri("chroms/name"))
 
     if (!(chr %in% chromosomes)) {
-       stop("\n '", chr, "' is not a valid chromosome")
+       stop("\n '", chr, "' is not a valid chromosome.", "\nChromosomes available are: ", paste0(chromosomes, collapse = ", "), ".")
    }
 
     # Index of chrom in the chromosome list
@@ -74,7 +74,7 @@ coolFetch <- function(path, chr, bin.width = NA, balance = FALSE) {
     j = id2[which(id2 < chrom_hi)] - chrom_lo + 1
     x = interactions[which(id2 < chrom_hi)]
 
-    m = Matrix::sparseMatrix(i = i + 1, j = j + 1, x  =  x)
+    m = Matrix::sparseMatrix(i = i + 1, j = j + 1, x  =  as.numeric(x))
 
     if (balance) {
       message("\nBalancing")
@@ -90,7 +90,7 @@ coolFetch <- function(path, chr, bin.width = NA, balance = FALSE) {
       # restricting weights to the actual bins under consideration
       min_id1 = min(id1[which(id2 < chrom_hi)])
       max_id2 = max(id2[which(id2 < chrom_hi)])
-      w = bins$weight[bins$index >= min_id1 & bins$index <= max_id2]
+      w = bins$weight[bins$index >= min_id1 & bins$index <= max_id2] #use instead??: w = (bins %>% filter(chromosome == chr))$weight
       #upper matrix weight for balancing
       mat_weight = Matrix::triu((w %*% t(w)))
       mat_weight[is.na(mat_weight)] <- 0 #remove NaN

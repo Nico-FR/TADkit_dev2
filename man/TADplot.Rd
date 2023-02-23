@@ -21,15 +21,13 @@ TADplot(
 )
 }
 \arguments{
-\item{tad.gr}{GRange object with TADs. This file must have chromosomes lengths (see dataframes2grange function).}
+\item{tad.gr}{GRange object with domains. This file must have chromosomes lengths (see dataframes2grange function).}
 
 \item{chr}{Chromosome name to plot.}
 
-\item{start}{Start of the area of interest.}
+\item{start, stop}{region of interest in base pair.}
 
-\item{stop}{End of the area of interest.}
-
-\item{tad.id}{Default is FASLE to write the size of each TAD instead of their names.}
+\item{tad.id}{Logical. Default is FASLE to write the size of each TAD instead of their names.}
 
 \item{bigwig.path}{Path for the bigwig file plotted as histogram. Default = NULL (ie no track is plotted).}
 

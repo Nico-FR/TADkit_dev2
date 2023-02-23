@@ -23,7 +23,7 @@
 
 PC1calling <- function(bedgraph) {
   if (is.character(bedgraph)) {
-    bedgraph = read.table(bedgraph, h=F, sep="\t") %>% dplyr::mutate(comp = dplyr::case_when(V4 < 0 ~ 'B', V4 >= 0 ~ 'A', is.na(V4) ~ "AB"))
+    bedgraph = read.table(bedgraph, header = FALSE, sep = "\t") %>% dplyr::mutate(comp = dplyr::case_when(V4 < 0 ~ 'B', V4 >= 0 ~ 'A', is.na(V4) ~ "AB"))
 
     grange = GenomicRanges::makeGRangesFromDataFrame(bedgraph, start.field="V2", end.field = "V3", seqnames.field = "V1", keep.extra.columns = T)
   }

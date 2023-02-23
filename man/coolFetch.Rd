@@ -11,7 +11,7 @@ coolFetch(path, chr, bin.width = NA, balance = FALSE)
 
 \item{chr}{the selected chromosome}
 
-\item{bin.width}{bin width (i.e resolution) of the mcool matrix in bp}
+\item{bin.width}{bin width (i.e resolution) of the mcool matrix in bp. It must not be used for cool file.}
 
 \item{balance}{logical. Weather or not to use balanced counts instead of raw counts. Default = FALSE}
 }
