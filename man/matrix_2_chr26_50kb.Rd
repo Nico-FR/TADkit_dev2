@@ -5,7 +5,7 @@
 \alias{matrix_2_chr26_50kb}
 \title{Matrix of individual 2 and chromosome 26.}
 \format{
-\subsection{\code{matrix_1_chr26_50kb}}{
+\subsection{\code{matrix_2_chr26_50kb}}{
 
 A dgCMatrix object with 1040 rows and columns containing the raw counts (number of interactions).
 For individual 2, chromosome 26 with a bin width of 50e3 bases pairs.
