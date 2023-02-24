@@ -10,7 +10,7 @@
 #' Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a dataframe or the path of the file.
 #' Chromosome domains and loops can be filter using tad.chr parameter.
 #'
-#' @param matrix matrix object (of class "dgCMatrix" or "matrix") for only one chromosome.
+#' @inheritParams matObsExp
 #' @param start,stop region of interest in base pair.
 #' @param bin.width bin width of the matrix in base pair.
 #' @param matrix.diag logical. Weather or not to plot diagonal values of the matrix. Default = TRUE

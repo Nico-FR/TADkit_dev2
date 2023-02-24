@@ -1,16 +1,16 @@
 #' @title Annotations analysis around TAD boundaries
 #'
-#' @description For each TAD boundary (start or end), this function return all annotations that are in the desired window of the boundary.
-#' The main use of this function is to be combined with areaHist or areaCov functions.
-#' It is possible to use the start or the end of the TAD to analyze the distribution of annotations on both sides (note that it can be possible to use the center of the TAD).
-#' This function can be time consuming so it is recommended to test it in a subset of the tad.gr.
+#' @description For each TAD boundary (start or end), `TADarea` return all annotations that are in the desired window of the boundary (i.e boundary +/- `window.size`).
+#' The main use of this function is to be combined with `areaHist()` or `areaCov()` functions.
+#' It is possible to use the `"start"`, `"end"` or `"center"` of the TAD to analyze the distribution of annotations.
 #'
-#' @param tad.gr GRange file with TADs.
-#' @param annot.gr GRange file with genomic annotations.
-#' @param window.size Window (+/- value) in bp surrounding TAD boundary.
-#' @param tad.boundary TAD border to be analyzed, "start", "end", and "center" denoting what to use as an anchor. Default is the start of each TADs.
+#' @inheritParams TADplot
+#' @param annot.gr `GRanges` object with genomic annotations.
+#' @param window.size Window in bp surrounding each side of the TAD boundaries.
+#' @param tad.boundary TAD border to be analyzed; `"start"`, `"end"` or `"center"` denoting what to use as an anchor. Default is the `"start"` of each TAD.
 #'
-#' @return GRange file with all annotations surronding all TAD boundary (starts or stops...). TAD boundaries are at the window.size position.
+#' @return `GRanges` object with all annotations surrounding all TAD boundaries. TAD boundaries are at the window.size position.
+#'
 #' @import GenomicRanges
 #' @import GenomeInfoDb
 #' @import methods

@@ -2,25 +2,28 @@
 % Please edit documentation in R/coolFetch.R
 \name{coolFetch}
 \alias{coolFetch}
-\title{Fetch a chromosome of a mcool file}
+\title{Fetch a chromosome of a cool or mcool file}
 \usage{
-coolFetch(path, chr, bin.width = NA, balance = FALSE)
+coolFetch(cool.path, chr, bin.width = NA, balance = FALSE)
 }
 \arguments{
-\item{path}{the full path of the cool or mcool file}
+\item{cool.path}{The full path of the cool or mcool file.}
 
-\item{chr}{the selected chromosome}
+\item{chr}{The selected chromosome.}
 
-\item{bin.width}{bin width (i.e resolution) of the mcool matrix in bp. It must not be used for cool file.}
+\item{bin.width}{Bin width (i.e resolution) of the mcool matrix in bp. It must not be used for cool file.}
 
-\item{balance}{logical. Weather or not to use balanced counts instead of raw counts. Default = FALSE}
+\item{balance}{Logical. Weather or not to use balanced counts instead of raw counts. Default = \code{FALSE}.}
 }
 \value{
-a dgCMatrix object: upper triangular and sparse Matrix
+A \code{dgCMatrix} object: upper triangular and sparse Matrix
 }
 \description{
-Using the Indexes provided byt the cooler data model :
+From cool or mcool files, \code{coolFetch} import the interaction matrix for one chromosome.
+If balance = \code{TRUE} returns the normalized counts
+}
+\details{
+Using the Indexes provided by the cooler data model :
 https://cooler.readthedocs.io/en/latest/schema.html,
 extract the intra-chromosomal counts for a given chromosome
-If balance = TRUE returns the normalized counts
 }

@@ -7,22 +7,21 @@
 TADarea(tad.gr, annot.gr, window.size = 50000, tad.boundary = "start")
 }
 \arguments{
-\item{tad.gr}{GRange file with TADs.}
+\item{tad.gr}{\code{GRanges} object with domains. The chromosomes lengths must be stored as metadata (see \code{dataframes2grange()}).}
 
-\item{annot.gr}{GRange file with genomic annotations.}
+\item{annot.gr}{\code{GRanges} object with genomic annotations..}
 
-\item{window.size}{Window (+/- value) in bp surrounding TAD boundary.}
+\item{window.size}{Window in bp surrounding each side of the TAD boundaries.}
 
-\item{tad.boundary}{TAD border to be analyzed, "start", "end", and "center" denoting what to use as an anchor. Default is the start of each TADs.}
+\item{tad.boundary}{TAD border to be analyzed; \code{"start"}, \code{"end"} or \code{"center"} denoting what to use as an anchor. Default is the \code{"start"} of each TAD.}
 }
 \value{
-GRange file with all annotations surronding all TAD boundary (starts or stops...). TAD boundaries are at the window.size position.
+\code{GRanges} object with all annotations surrounding all TAD boundaries. TAD boundaries are at the window.size position.
 }
 \description{
-For each TAD boundary (start or end), this function return all annotations that are in the desired window of the boundary.
-The main use of this function is to be combined with areaHist or areaCov functions.
-It is possible to use the start or the end of the TAD to analyze the distribution of annotations on both sides (note that it can be possible to use the center of the TAD).
-This function can be time consuming so it is recommended to test it in a subset of the tad.gr.
+For each TAD boundary (start or end), \code{TADarea} return all annotations that are in the desired window of the boundary (i.e boundary +/- \code{window.size}).
+The main use of this function is to be combined with \code{areaHist()} or \code{areaCov()} functions.
+It is possible to use the \code{"start"}, \code{"end"} or \code{"center"} of the TAD to analyze the distribution of annotations.
 }
 \examples{
 # tad.gr with 2 TADs

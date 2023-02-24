@@ -12,7 +12,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Imports: 
     S4Vectors,
@@ -38,3 +39,4 @@ Depends:
     R (>= 2.10)
 LazyData: true
 License: MIT + file LICENSE
+Config/testthat/edition: 3

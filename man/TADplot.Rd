@@ -11,7 +11,7 @@ TADplot(
   stop,
   tad.id = FALSE,
   bigwig.path = NULL,
-  bigwig.binsize = 1000,
+  bigwig.binwidth = 1000,
   bigwig.xaxis = "mean",
   bigwig.chr = NULL,
   bigwig.yaxis = NULL,
@@ -21,33 +21,33 @@ TADplot(
 )
 }
 \arguments{
-\item{tad.gr}{GRange object with domains. This file must have chromosomes lengths (see dataframes2grange function).}
+\item{tad.gr}{\code{GRanges} object with domains. The chromosomes lengths must be stored as metadata (see \code{dataframes2grange()}).}
 
 \item{chr}{Chromosome name to plot.}
 
-\item{start, stop}{region of interest in base pair.}
+\item{start, stop}{Region of interest in base pair.}
 
-\item{tad.id}{Logical. Default is FASLE to write the size of each TAD instead of their names.}
+\item{tad.id}{Logical. Default is \code{FALSE} to label the domain with their sizes \code{width(tad.gr)} instead of their names \code{names(tad.gr)}.}
 
-\item{bigwig.path}{Path for the bigwig file plotted as histogram. Default = NULL (ie no track is plotted).}
+\item{bigwig.path}{Path for the bigwig file plotted as histogram. Default = \code{NULL} (i.e the track is not plotted).}
 
-\item{bigwig.binsize}{Bin sizes for the histogram of the bigwig track. Default = 1e3.}
+\item{bigwig.binwidth}{Bin sizes for the histogram of the bigwig track. Default = \code{1e3}.}
 
-\item{bigwig.xaxis}{Function used to transforming the x-axis of bigwig values among each bigwig.binsize. Defaults = "median".
-Alternatively, other predefined functions can be supplied as character (mean, median, sum, min, max or extreme).}
+\item{bigwig.xaxis}{Function used to transform the x-axis of the bigwig values among each bigwig.binwidth. Defaults = \code{"median"}.
+Alternatively, other predefined functions can be supplied as character (\code{"mean"}, \code{"median"}, \code{"sum"}, \code{"min"}, \code{"max"} or \code{"extreme"}).}
 
-\item{bigwig.chr}{Chromosome name used for the bigwig file(s). Default = NULL to used the same name as chr.}
+\item{bigwig.chr}{Chromosome name used for the bigwig file. Default = \code{NULL} to used the same name as chr.}
 
-\item{bigwig.yaxis}{Function used to transforming the y-axis of bigwig values. Default = NULL. Use "log2" to use the function log2(x + 1) to transform the y-axis or provide any other function.}
+\item{bigwig.yaxis}{Function used to transforming the y-axis of bigwig values. Default = \code{NULL}. Use \code{"log2"} to use the function \code{log2(x + 1)} to transform the y-axis or provide any other function.}
 
-\item{annot.gr}{GRange file with genomic annotations. Default = NULL (ie no track is plotted).}
+\item{annot.gr}{\code{GRanges} object with genomic annotations. Default = \code{NULL} (i.e the track is not plotted).}
 
-\item{annot.col}{Column number of the metadata from annot.gr files used to group the annotation tracks. Default = NULL.}
+\item{annot.col}{Column number of the metadata from \code{annot.gr} file used to group the annotation tracks. Default = \code{NULL}.}
 
-\item{bedgraph.path}{Path for the bedgraph file plotted as line. Default = NULL (ie no track is plotted).}
+\item{bedgraph.path}{Path for the bedgraph file plotted as line. Default = \code{NULL} (i.e the track is not plotted).}
 }
 \value{
-Plot with TADs and other tracks as a list of GenomeGraph tracks (see Gviz::plotTracks for details).
+Plot with TADs and other tracks as a list of GenomeGraph tracks (see \code{Gviz::plotTracks} for details).
 }
 \description{
 TADplot use Gviz package to plot at least 2 tracks. The first one includes all the TADs from the specified chromosome. And the second one is a zoom in the defined area.

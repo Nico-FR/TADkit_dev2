@@ -7,16 +7,18 @@
 matObsExp(matrix)
 }
 \arguments{
-\item{matrix}{a dgCMatrix or matrix object}
+\item{matrix}{a \code{dgCMatrix} or \code{matrix} object}
 }
 \value{
-a dgCMatrix object: upper triangular and sparse Matrix
+a \code{dgCMatrix} object: upper triangular and sparse Matrix
 }
 \description{
-For each bin of the matrix (interaction count observed) this function return a ratio: observed / expected.
-The input matrix must be a dgCMatrix or matrix object (i.e array with as many rows and columns than the number of bin). Only the upper part of the matrix is used.
-The output can be plot with MATplot function with log2=T and scale.colors = "ObsExp" parameters.
+For each bin of the matrix (interaction count observed) \code{matObsExp()} return the ratio: observed / expected.
+The input matrix must be a \code{dgCMatrix} or \code{matrix} object (i.e matrix with as many rows and columns than the number of bin).
+The output can be plot with \code{MATplot(output, log2 = TRUE, scale.colors = "ObsExp")}.
 }
 \details{
-The expected number of interaction corresponds to the average of the interaction counts according to the bin distances (NB: bins with zero counts are not considered).
+The expected number of interaction corresponds to the average of the interaction counts according to the bin distances.
+Bins with zero counts are not considered.
+Only the upper part of the matrix is used.
 }

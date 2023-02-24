@@ -24,7 +24,7 @@ MATplot(
 )
 }
 \arguments{
-\item{matrix}{matrix object (of class "dgCMatrix" or "matrix") for only one chromosome.}
+\item{matrix}{a \code{dgCMatrix} or \code{matrix} object}
 
 \item{start, stop}{region of interest in base pair.}
 

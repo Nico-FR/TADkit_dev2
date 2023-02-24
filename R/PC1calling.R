@@ -1,21 +1,24 @@
 #' @title Compartments calling (A or B)
 #'
-#' @description From a score for each bin (i.e principal component), the function output a Grange file with compartment A for score >= 0 and compartment B for score < 0
+#' @description From a score for each bin (i.e first principal component scores), the function output a `GRanges` with compartment A for score >= 0 and compartment B for score < 0
 #'
-#' @details From bedgraph as input (GRange object or path) output a GRange with the compartments.
-#' NA score are considered as part of a compartment A if they are between two compartments A (the other way around for B compartments).
-#' Otherwise (if NA are between compartment A and B) they are not called, thus leaving a gap between compartments.
+#' @details From bedgraph as input (`GRanges` object or path) output a `GRanges` with the domains A or B.
+#' `NA` score are considered as part of a compartment A if they are between two compartments A (the other way around for B compartments).
+#' Otherwise (if `NA` are between compartment A and B) they are not called, thus leaving a gap between two compartments.
 #'
 #'
-#' @param bedgraph GRange file or bedgraph path (4 columns: chr, star, end, pc1 score) for PC1 values.
+#' @param bedgraph `GRanges` object or bedgraph path (4 columns: chr, star, end, score).
 #'
-#' @return grange
+#' @return `GRanges`
+#'
 #' @import GenomeInfoDb
 #' @importFrom BiocGenerics sort
 #' @importFrom dplyr mutate case_when
 #' @importFrom S4Vectors split
 #' @import GenomicRanges
+#'
 #' @export
+#'
 #' @examples
 #' # output <- geneTADtopo(tad.gr, gene.gr)
 #' # plot(output)

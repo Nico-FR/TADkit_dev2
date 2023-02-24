@@ -15,27 +15,29 @@
 #' Another track with any annotations can be added.
 #' This track can be group using factors in a specified column of the annot.gr files (metadata) otherwise the names of each annotation is used.
 #'
-#' @param tad.gr GRange object with domains. This file must have chromosomes lengths (see dataframes2grange function).
+#' @param tad.gr `GRanges` object with domains. The chromosomes lengths must be stored as metadata (see `dataframes2grange()`).
 #' @param chr Chromosome name to plot.
-#' @param start,stop region of interest in base pair.
-#' @param tad.id Logical. Default is FASLE to write the size of each TAD instead of their names.
-#' @param bigwig.path Path for the bigwig file plotted as histogram. Default = NULL (ie no track is plotted).
-#' @param annot.gr GRange file with genomic annotations. Default = NULL (ie no track is plotted).
-#' @param bigwig.binsize Bin sizes for the histogram of the bigwig track. Default = 1e3.
-#' @param bigwig.xaxis Function used to transforming the x-axis of bigwig values among each bigwig.binsize. Defaults = "median".
-#' Alternatively, other predefined functions can be supplied as character (mean, median, sum, min, max or extreme).
-#' @param bigwig.chr Chromosome name used for the bigwig file(s). Default = NULL to used the same name as chr.
-#' @param bigwig.yaxis Function used to transforming the y-axis of bigwig values. Default = NULL. Use "log2" to use the function log2(x + 1) to transform the y-axis or provide any other function.
-#' @param annot.col Column number of the metadata from annot.gr files used to group the annotation tracks. Default = NULL.
-#' @param bedgraph.path Path for the bedgraph file plotted as line. Default = NULL (ie no track is plotted).
+#' @param start,stop Region of interest in base pair.
+#' @param tad.id Logical. Default is `FALSE` to label the domain with their sizes `width(tad.gr)` instead of their names `names(tad.gr)`.
+#' @param bigwig.path Path for the bigwig file plotted as histogram. Default = `NULL` (i.e the track is not plotted).
+#' @param annot.gr `GRanges` object with genomic annotations. Default = `NULL` (i.e the track is not plotted).
+#' @param bigwig.binwidth Bin sizes for the histogram of the bigwig track. Default = `1e3`.
+#' @param bigwig.xaxis Function used to transform the x-axis of the bigwig values among each bigwig.binwidth. Defaults = `"median"`.
+#' Alternatively, other predefined functions can be supplied as character (`"mean"`, `"median"`, `"sum"`, `"min"`, `"max"` or `"extreme"`).
+#' @param bigwig.chr Chromosome name used for the bigwig file. Default = `NULL` to used the same name as chr.
+#' @param bigwig.yaxis Function used to transforming the y-axis of bigwig values. Default = `NULL`. Use `"log2"` to use the function `log2(x + 1)` to transform the y-axis or provide any other function.
+#' @param annot.col Column number of the metadata from `annot.gr` file used to group the annotation tracks. Default = `NULL`.
+#' @param bedgraph.path Path for the bedgraph file plotted as line. Default = `NULL` (i.e the track is not plotted).
 #'
-#' @return Plot with TADs and other tracks as a list of GenomeGraph tracks (see Gviz::plotTracks for details).
+#' @return Plot with TADs and other tracks as a list of GenomeGraph tracks (see `Gviz::plotTracks` for details).
+#'
 #' @import GenomicRanges
 #' @importFrom S4Vectors aggregate
 #' @import IRanges
 #' @import GenomeInfoDb
 #' @import Gviz
 #' @import rtracklayer
+#'
 #' @export
 #'
 #' @examples # Lets create a GRange object with 3 TADs and 1 metadata column:
@@ -59,7 +61,7 @@
 #'   annot.gr = tad.gr, annot.col = 1
 #' )
 TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
-                    bigwig.path = NULL, bigwig.binsize = 1e3, bigwig.xaxis = "mean", bigwig.chr = NULL, bigwig.yaxis = NULL,
+                    bigwig.path = NULL, bigwig.binwidth = 1e3, bigwig.xaxis = "mean", bigwig.chr = NULL, bigwig.yaxis = NULL,
                     annot.gr = NULL, annot.col = NULL, bedgraph.path = NULL) {
 
   ##############################
@@ -156,7 +158,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
     }
 
     bins <- GenomicRanges::tileGenome(GenomeInfoDb::seqlengths(bin.gr)[as.character(bigwig.chr)],
-                                      tilewidth = bigwig.binsize, cut.last.tile.in.chrom = TRUE
+                                      tilewidth = bigwig.binwidth, cut.last.tile.in.chrom = TRUE
     )
 
     bins2 <- bins[start(bins) >= extended_start & end(bins) <= extended_stop]

@@ -7,18 +7,18 @@
 PC1calling(bedgraph)
 }
 \arguments{
-\item{bedgraph}{GRange file or bedgraph path (4 columns: chr, star, end, pc1 score) for PC1 values.}
+\item{bedgraph}{\code{GRanges} object or bedgraph path (4 columns: chr, star, end, score).}
 }
 \value{
-grange
+\code{GRanges}
 }
 \description{
-From a score for each bin (i.e principal component), the function output a Grange file with compartment A for score >= 0 and compartment B for score < 0
+From a score for each bin (i.e first principal component scores), the function output a \code{GRanges} with compartment A for score >= 0 and compartment B for score < 0
 }
 \details{
-From bedgraph as input (GRange object or path) output a GRange with the compartments.
-NA score are considered as part of a compartment A if they are between two compartments A (the other way around for B compartments).
-Otherwise (if NA are between compartment A and B) they are not called, thus leaving a gap between compartments.
+From bedgraph as input (\code{GRanges} object or path) output a \code{GRanges} with the domains A or B.
+\code{NA} score are considered as part of a compartment A if they are between two compartments A (the other way around for B compartments).
+Otherwise (if \code{NA} are between compartment A and B) they are not called, thus leaving a gap between two compartments.
 }
 \examples{
 # output <- geneTADtopo(tad.gr, gene.gr)

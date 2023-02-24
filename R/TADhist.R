@@ -1,34 +1,35 @@
 #' @title Histogram of annotation distribution within TADs
 #'
-#' @description Graph of the distribution of the genomic annotations within the TADs (relative distance)
+#' @description Plot of the distribution of the genomic annotations within the TADs (relative distance)
 #' Measures the relative distances of annotation border (start, end or the center) according to TAD size and plot the distribution as an histogram.
 #'
 #'
-#' @details As an exemple, this function take all TAD domains and count the relative position of all annotation features (start, end or even the center).
-#' It is possible that some annotations overlap a TAD boundary, in this cases few option are possible (see ifoverlap parameter and the exemple for better understanding):
-#'     (1)remove those annotations,
-#'     (2)uses the TAD in which the features (start, stop or center of the annotation) is located,
-#'     (3)uses the TAD in which the annotation has the largest overlap.
+#' @details As an example, `TADhist()` take all TAD domains and count the relative position of all annotation features (start, end or even the center).
+#' It is possible that some annotations overlap a TAD boundary, in this cases few option are possible to get the distributions (see `ifoverlap` parameter and the example for better understanding):
+#'     * remove: those annotations,
+#'     * uses: the TAD in which the features (`"start"`, `"end"` or `"center" of the annotation) is located,
+#'     * uses: the TAD in which the annotation has the best overlap.
+#'     Therefore, in some cases, the `"start"` of an `annot.gr` can be located before the TAD (i.e the TAD with the best overlap). In that case, the distance between the `"start"` of `annot.border` and TAD corresponds to the real distance (in base pair).
 #'
 #'
-#' @param tad.gr GRange file with TADs.
-#' @param annot.gr GRange file with genomic annotations.
-#' @param annot.border Type of feature to analyzed. Start, end or center of each annotations from annot.gr files.
+#' @inheritParams TADarea
+#' @param annot.border Type of feature to analyzed. `"start"`, `"end"` or `"center"` of each annotations from `annot.gr` object.
 #' @param annot.strand Default is FALSE to plot the distribution as histogram. If TRUE, distributions are separated according to their strands and are displayed with lines.
-#' @param bin.width Size of the bin in percent to count the number of annotations features, default is 5. if ifoverlap = "best": the real bin distances (before and after TAD boundaries) is equal to bin.width multiply by 1kb (therefore default bin size is 5kb).
-#' @param ifoverlap In case of annotation overlap a TAD boundary, few options are available:
-#'    (1)"remove" to remove all annot.gr that overlaps a TAD boundary,
-#'    (2)"real" to take the position of the annot.border in which it is located,
-#'    (3)"best" to take the position of the annot.border (that overlaps a TAD boundary) based on the TAD in which this annot.gr has the best overlay.
-#' @param output Default is "plot" to return a ggplot. Use "data" to return the datas used to produce the plot.
+#' @param bin.width Size of the bin in percent to count the number of annotations features, default is 5%. if `ifoverlap = "best"`: the real bin distances (ploted before and after TAD boundaries) is equal to `bin.width*1e3`. Therefore default real bin size is 5kb.
+#' @param ifoverlap In case of annotation overlap a TAD boundary, few options are available to measure the `annot.border` positions:
+#'    * "remove" to remove all `annot.gr` that overlaps a TAD boundary,
+#'    * "real" to take the position according to the TAD where the  `annot.border` is located,
+#'    * "best" to take the position according to the TAD where the `annot.gr` has the best overlay.
+#' @param output Default is `"plot"` to return a `ggplot`. Use `"data"` to return the datas used to produce the plot.
 #'
+#' @return `ggplot` object.
 #'
-#' @return Return a ggplot graph
 #' @import GenomeInfoDb
 #' @importFrom plyr ddply
 #' @import ggplot2
 #' @import scales
 #' @import GenomicRanges
+#'
 #' @export
 #'
 #' @examples
