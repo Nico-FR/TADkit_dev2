@@ -73,6 +73,11 @@ coolFetch <- function(path, chr, bin.width = NA, balance = FALSE) {
     i = id1[which(id2 < chrom_hi)] - chrom_lo + 1
     j = id2[which(id2 < chrom_hi)] - chrom_lo + 1
     x = interactions[which(id2 < chrom_hi)]
+    if (max(i) < chrom_hi - chrom_lo) {
+       i = append(i, chrom_hi - chrom_lo)
+       j = append(j, chrom_hi - chrom_lo)
+       x = append(x, 0)
+   }
 
     m = Matrix::sparseMatrix(i = i + 1, j = j + 1, x  =  x)
 
@@ -90,6 +95,8 @@ coolFetch <- function(path, chr, bin.width = NA, balance = FALSE) {
       # restricting weights to the actual bins under consideration
       min_id1 = min(id1[which(id2 < chrom_hi)])
       max_id2 = max(id2[which(id2 < chrom_hi)])
+      min_id1 = min((bins %>% filter(chromosome == chr))$index)
+      max_id2 = max((bins %>% filter(chromosome == chr))$index)
       w = bins$weight[bins$index >= min_id1 & bins$index <= max_id2]
       #upper matrix weight for balancing
       mat_weight = Matrix::triu((w %*% t(w)))
