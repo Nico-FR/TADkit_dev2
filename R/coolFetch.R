@@ -1,14 +1,15 @@
 #' @title Fetch a chromosome of a cool or mcool file
 #'
 #' @description From cool or mcool files, `coolFetch` import the interaction matrix for one chromosome.
-#' If balance = `TRUE` returns the normalized counts
+#' If balance = `TRUE`, `coolFetch` returns the normalized counts
 #'
-#' @details Using the Indexes provided by the cooler data model :
-#' https://cooler.readthedocs.io/en/latest/schema.html,
-#' extract the intra-chromosomal counts for a given chromosome
+#' @details The cool file format is an efficient storage format for high resolution genomic interaction matrices, developed and maintained by the Mirny lab (https://github.com/open2c/cooler)
+#' `coolFetch` use the indexes provided by the cooler data model to extract the intra-chromosomal counts for a given chromosome.
+#' As cool files store genomic interactions for only one resolution, `bin.width` must be set to `NA`.
+#' While, as mcool files store genomic interactions for multiples resolutions, the chosen resolution must be set with the `bin.width` parameter.
 #'
 #' @param cool.path The full path of the cool or mcool file.
-#' @param bin.width Bin width (i.e resolution) of the mcool matrix in bp. It must not be used for cool file.
+#' @param bin.width Bin width in base pair (i.e resolution) for mcool file. Default is `NA` for cool file.
 #' @param chr The selected chromosome.
 #' @param balance Logical. Weather or not to use balanced counts instead of raw counts. Default = `FALSE`.
 #'
@@ -17,12 +18,14 @@
 #' @import Matrix
 #' @importFrom rhdf5 h5read
 #' @importFrom methods as
+#' @importFrom magrittr %>%
 #'
 #' @export
 #'
 #'
 coolFetch <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
-    message("\nParsing '", cool.path, "'.")
+
+  if (!is.na(bin.width)) {message("\nParsing .mcool file.")} else {message("\nParsing .cool file.")}
 
   #mcool path
     uri <- function(cool.path) {
@@ -36,9 +39,16 @@ coolFetch <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
             )
         )
     }
-    #TODO: add message for unavailable resolution and available resolution
-    #command to get available resolutions (it must be possible to make it simpler):
-    #(rhdf5::h5ls(cool.path) %>% filter(group == "/resolutions"))$name %>% as.numeric %>% sort %>% format(scientific = FALSE) %>% paste0(collapse = ", ")
+
+    if (!is.na(bin.width)) {
+      #available resolutions
+      ar = (rhdf5::h5ls(cool.path) %>% filter(group == "/resolutions"))$name
+
+      #if bin.width not available
+      if (is.na(match(bin.width, ar))) {
+        stop("\n '", bin.width, "' is not an available resolution.", " Available resolutions are:\n", ar %>% as.numeric %>% sort %>% paste0(collapse = ", "), ".")
+      }
+    }
 
     # The list of avalaible chromosomes
     chromosomes = rhdf5::h5read(file = cool.path, name = uri("chroms/name"))
@@ -79,23 +89,21 @@ coolFetch <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
     j = id2[which(id2 < chrom_hi)] - chrom_lo + 1
     x = interactions[which(id2 < chrom_hi)]
 
+    #check if max(i) < nb bins (i.e is there a gap at the end of the chr?)
+    #then, add the last bin indexes
+    if (max(i) < chrom_hi - chrom_lo) {
+      i = append(i, chrom_hi - chrom_lo)
+      j = append(j, chrom_hi - chrom_lo)
+      x = append(x, 0)
+    }
+
     m = Matrix::sparseMatrix(i = i + 1, j = j + 1, x  =  as.numeric(x))
 
     if (balance) {
       message("\nBalancing")
       # Fetch the weights corresponding to the chromosome
-      bins <- data.frame(
-         chromosome = rhdf5::h5read(file = cool.path, name = uri("bins/chrom")),
-         start = rhdf5::h5read(file = cool.path, name = uri("bins/start")),
-         end = rhdf5::h5read(file = cool.path, name = uri("bins/end")),
-         weight = rhdf5::h5read(file = cool.path, name = uri("bins/weight"))
-      )
-      # all indexes, id1, id2 are 0-based, hence we set index as 0-based
-      bins$index = 0:(nrow(bins) - 1)
-      # restricting weights to the actual bins under consideration
-      min_id1 = min(id1[which(id2 < chrom_hi)])
-      max_id2 = max(id2[which(id2 < chrom_hi)])
-      w = bins$weight[bins$index >= min_id1 & bins$index <= max_id2] #use instead??: w = (bins %>% filter(chromosome == chr))$weight
+      bins <- as.data.frame(rhdf5::h5read(file = cool.path, name = uri("bins/"))) %>% filter(chrom == chr)
+      w = bins$weight
       #upper matrix weight for balancing
       mat_weight = Matrix::triu((w %*% t(w)))
       mat_weight[is.na(mat_weight)] <- 0 #remove NaN
