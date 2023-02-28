@@ -19,7 +19,7 @@
 #'
 #' @return `ggplot`
 #'
-#' @import Matrix
+#' @importFrom Matrix triu summary diag tril
 #' @importFrom viridis scale_fill_viridis
 #' @importFrom scales unit_format
 #' @import ggplot2

@@ -13,7 +13,7 @@
 #' @return `ggplot`
 #'
 #' @importFrom S4Vectors runmean
-#' @import IRanges
+#' @importFrom IRanges coverage ranges
 #' @import GenomicRanges
 #' @import ggplot2
 #' @importFrom scales unit_format

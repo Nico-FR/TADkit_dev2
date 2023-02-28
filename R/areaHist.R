@@ -19,7 +19,7 @@
 #'
 #' @import GenomeInfoDb
 #' @import GenomicRanges
-#' @import IRanges
+#' @importFrom IRanges distance IRanges ranges
 #' @import ggplot2
 #' @importFrom scales unit_format
 #'

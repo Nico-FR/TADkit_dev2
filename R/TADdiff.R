@@ -20,6 +20,7 @@
 #' @importFrom methods as
 #' @import GenomicRanges
 #' @import GenomeInfoDb
+#'
 #' @export
 #'
 #'

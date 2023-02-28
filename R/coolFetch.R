@@ -15,7 +15,7 @@
 #'
 #' @return A `dgCMatrix` object: upper triangular and sparse Matrix
 #'
-#' @import Matrix
+#' @importFrom Matrix triu sparseMatrix
 #' @importFrom rhdf5 h5read
 #' @importFrom methods as
 #' @importFrom magrittr %>%

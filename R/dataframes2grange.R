@@ -16,7 +16,7 @@
 #' @return GRange file that contains chromosome size.
 #' @import GenomicRanges
 #' @importFrom S4Vectors Rle
-#' @import IRanges
+#' @importFrom IRanges IRanges
 #' @import GenomeInfoDb
 #' @export
 

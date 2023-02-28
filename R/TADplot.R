@@ -38,7 +38,7 @@
 #'
 #' @import GenomicRanges
 #' @importFrom S4Vectors aggregate
-#' @import IRanges
+#' @importFrom IRanges IRanges
 #' @import GenomeInfoDb
 #' @import Gviz
 #' @import rtracklayer

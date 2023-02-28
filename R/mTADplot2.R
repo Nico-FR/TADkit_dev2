@@ -36,7 +36,7 @@
 #' @return Plot with domains and other tracks as a list of GenomeGraph tracks (see `Gviz::plotTracks` for details).
 #'
 #' @import GenomicRanges
-#' @import IRanges
+#' @importFrom IRanges IRanges ranges
 #' @import GenomeInfoDb
 #' @importFrom magrittr %>%
 #' @import dplyr

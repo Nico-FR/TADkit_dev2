@@ -40,7 +40,7 @@ matObsExp <- function(matrix) {
   output = matrix / mat_expected
 
   return(
-    if(class(output) == "matrix") {as(output, "dgCMatrix")} else {output}
+    if(class(output) == "matrix") {methods::as(output, "dgCMatrix")} else {output}
     )
   }
 
