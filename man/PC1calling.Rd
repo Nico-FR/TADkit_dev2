@@ -13,7 +13,7 @@ PC1calling(bedgraph)
 \code{GRanges}
 }
 \description{
-From a score for each bin (i.e first principal component scores), the function output a \code{GRanges} with compartment A for score >= 0 and compartment B for score < 0
+From the scores of each bin (i.e first principal component scores), \code{PC1calling} output a \code{GRanges} with compartment A for score >= 0 and compartment B for score < 0
 }
 \details{
 From bedgraph as input (\code{GRanges} object or path) output a \code{GRanges} with the domains A or B.

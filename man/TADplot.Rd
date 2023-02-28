@@ -47,11 +47,18 @@ Alternatively, other predefined functions can be supplied as character (\code{"m
 \item{bedgraph.path}{Path for the bedgraph file plotted as line. Default = \code{NULL} (i.e the track is not plotted).}
 }
 \value{
-Plot with TADs and other tracks as a list of GenomeGraph tracks (see \code{Gviz::plotTracks} for details).
+Plot with domains and other tracks as a list of GenomeGraph tracks (see \code{Gviz::plotTracks} for details).
 }
 \description{
-TADplot use Gviz package to plot at least 2 tracks. The first one includes all the TADs from the specified chromosome. And the second one is a zoom in the defined area.
-Other tracks can be added like gene annotation or read depth data.
+\code{TADplot()} use \code{Gviz} package to plot at least 2 tracks:
+\itemize{
+\item All the TADs from a specified chromosome,
+\item A zoom in the defined area.
+Other tracks can be added:
+\item bed files with annotations (genes...),
+\item bigwig files (read depth sequencing...),
+\item bedgraph with bin values (insulation score...).
+}
 }
 \details{
 This create a plot with at least 2 tracks from TADs annotation (tad.gr).
@@ -61,10 +68,10 @@ The second track is a zoom in the area of interest. This area is extend to the b
 
 Another track from a bigwig file can be added like read depth sequencing (RNAseq...) as an histogram.
 The bin size of the histogram is 1Kb by default, the read depth is smoothed using the median value of each bin.
-If the chromosome name is different (between the bigwig and the chr parameter), it can be fix using the bigwig.chr parameter ("1" versus "chr1").
+If the chromosome name is different (between the bigwig and the \code{chr} parameter), it can be fix using the \code{bigwig.chr} parameter (e.g \code{chr="1"} while \code{bigwig.chr="chr1"}).
 
 Another track with any annotations can be added.
-This track can be group using factors in a specified column of the annot.gr files (metadata) otherwise the names of each annotation is used.
+This track can be group using factors in a specified column of the \code{annot.gr} files (metadata) otherwise the names of each annotation is used.
 }
 \examples{
 # Lets create a GRange object with 3 TADs and 1 metadata column:

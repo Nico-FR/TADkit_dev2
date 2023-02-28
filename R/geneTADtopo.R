@@ -2,22 +2,22 @@
 #'
 #' @description For each domain (e.g TAD) the function return a data frame with the numbers, names and strands of genes. It also return some statistics which can be plotted using plot(output).
 #'
-#' @details Return a S3 object with 3 dataframes. The second and the third dataframe can be plotted using the plot function
+#' @details Return a S3 object with 3 dataframes. The second and the third dataframe can be plotted using the plot function.
 #'
-#'
-#' @param tad.gr GRange file with TADs.
-#' @param gene.gr GRange file with genomic annotations.
-#' @param ifoverlap In case of annotation overlap a TAD boundary, few options are available:
-#'    (1)"remove" to remove all annotations that overlaps a TAD boundary,
-#'    (2)"real" to select the TAD in which the start of annotations are located,
-#'    (3)"best" to select the TAD in which annotations have the best overlay.
-#' @param expression.data.frame Data frame with expression data (raw counts...). The first two columns should be used to identify the genes. The 1st one must use the same gene id than names(gene.gr), i.e unique ID. The 2nd can be used with usual gene names. Others columns give expression count, one column per sample/experiment.
+#' @inheritParams TADhist
+#' @param gene.gr `GRanges` with genomic annotations.
+#' @param expression.data.frame `dataframe` with expression data (raw counts...).
+#' The first two columns should be used to identify the genes. The 1st one must use the same gene id than `names(gene.gr)` (i.e unique ID). The 2nd can be used with usual gene names.
+#' Others columns give expression count, one column per sample/experiment.
 #'
 #' @return Return a S3 class object with 3 data frames.
+#'
 #' @import GenomeInfoDb
 #' @import GenomicRanges
 #' @import dplyr
+#'
 #' @export
+#'
 #' @examples
 #' # output <- geneTADtopo(tad.gr, gene.gr)
 #' # plot(output)

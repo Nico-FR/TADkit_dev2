@@ -5,17 +5,19 @@
 #' @details This function take the output of TADarea function.
 #' If the density is significantly different between strands, it can be useful to use relative density (i.e normalized using the zscore with norm = TRUE parameter).
 #'
-#' @param data.gr Output of TADarea function.
-#' @param annot.strand If TRUE (default): separate coverage according to their strands.
-#' @param bin.width Size of the sliding window to calculate the mean coverage. By default the size in 10 time smaller than window.size.
-#' @param norm Normalized density using relative content (zscore of density). Default is FALSE.
+#' @param data.gr Output of `TADarea()`.
+#' @param annot.strand Logical. If `TRUE` (default): separate coverage according to their strands.
+#' @param bin.width Size of the sliding window in base pair to calculate the mean coverage. Default is `NULL` to to use a size in 10 time smaller than `window.size` parameter of `TADarea()`.
+#' @param norm Logical. Normalized density using relative content (zscore of density). Default is `FALSE`.
 #'
-#' @return Return a ggplot graph
+#' @return `ggplot`
+#'
 #' @importFrom S4Vectors runmean
 #' @import IRanges
 #' @import GenomicRanges
 #' @import ggplot2
-#' @import scales
+#' @importFrom scales unit_format
+#'
 #' @export
 #'
 #' @examples

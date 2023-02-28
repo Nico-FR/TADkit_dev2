@@ -11,7 +11,7 @@ coolFetch(cool.path, chr, bin.width = NA, balance = FALSE)
 
 \item{chr}{The selected chromosome.}
 
-\item{bin.width}{Bin width (i.e resolution) of the mcool matrix in bp. It must not be used for cool file.}
+\item{bin.width}{Bin width in base pair (i.e resolution) for mcool file. Default is \code{NA} for cool file.}
 
 \item{balance}{Logical. Weather or not to use balanced counts instead of raw counts. Default = \code{FALSE}.}
 }
@@ -20,10 +20,11 @@ A \code{dgCMatrix} object: upper triangular and sparse Matrix
 }
 \description{
 From cool or mcool files, \code{coolFetch} import the interaction matrix for one chromosome.
-If balance = \code{TRUE} returns the normalized counts
+If balance = \code{TRUE}, \code{coolFetch} returns the normalized counts
 }
 \details{
-Using the Indexes provided by the cooler data model :
-https://cooler.readthedocs.io/en/latest/schema.html,
-extract the intra-chromosomal counts for a given chromosome
+The cool file format is an efficient storage format for high resolution genomic interaction matrices, developed and maintained by the Mirny lab (https://github.com/open2c/cooler)
+\code{coolFetch} use the indexes provided by the cooler data model to extract the intra-chromosomal counts for a given chromosome.
+As cool files store genomic interactions for only one resolution, \code{bin.width} must be set to \code{NA}.
+While, as mcool files store genomic interactions for multiples resolutions, the chosen resolution must be set with the \code{bin.width} parameter.
 }

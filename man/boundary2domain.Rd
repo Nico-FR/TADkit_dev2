@@ -7,14 +7,14 @@
 boundary2domain(boundaries)
 }
 \arguments{
-\item{boundaries}{data frame (chromosome, start and end) or GRanges with the boundaries}
+\item{boundaries}{\code{dataframe} (chromosome, start and end) or \code{GRanges} with the boundaries.}
 }
 \value{
-GRanges object with boundaries
+\code{GRanges} object with domains
 }
 \description{
-From data with each boundaries stored by line (chromosome, start and end), return GRanges with domains.
+From datas with each boundaries stored by line (chromosome, start and end), \code{boundary2domain()} return \code{GRanges} with domains.
 }
 \details{
-Start or end position of domains are the middle of a boundary.
+Start and end of domains are the middle of boundaries.
 }

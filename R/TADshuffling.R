@@ -1,16 +1,19 @@
 #' @title TAD shuffling
 #'
-#' @description From a set of TADs, this function return un random set of TADs.
+#' @description From an ordered set of TADs, this function return un random set of TADs.
 #'
-#' @details This function shuffle the TADs order for each chromosomes (i.e. keep the TADs sizes). The TADs input should not have gaps (region between two TADs) excepted for the extremities of chromosomes.
+#' @details `TADshuffling` shuffle the TADs order for each chromosomes (i.e keep the TADs sizes).
+#' The TADs input should not have gaps (region between two TADs) excepted for the extremities of chromosomes.
 #'
-#' @param tad.gr GRange object with TADs. This file must have chromosomes lengths (see dataframes2grange function).
+#' @inheritParams TADplot
 #'
-#' @return GRange file
+#' @return `GRanges`
+#'
 #' @import GenomicRanges
 #' @import GenomeInfoDb
 #' @importFrom magrittr %>%
 #' @import dplyr
+#'
 #' @export
 #'
 TADshuffling <- function(tad.gr) {

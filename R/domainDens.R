@@ -1,30 +1,29 @@
 #' @title Distribution of annotation density within domains
 #'
 #' @description Distribution of annotations density (e.g. density  of genes) within domains (e.g. TADs, compartments...).
-#' This function calculates the density per bin of annotations and measures the relative position of each bin within each domain
+#' `domainDens()` calculates the annotations density per bin and measures the relative position of each bin within the domain
 #'
-#' @details As an example, this function take all TAD domains and calculate the density of annotations.
-#' For example:
-#' 1- calculate the density of annotations per bin,
-#' 2- calculate the relative positions of each bin within his corresponding TAD,
-#' 3- plot the smoothed bin density (and zscore bin density) according to relative positions.
+#' @details As an example, this function take all TAD domains and calculate the density of annotations by:
+#' * calculate the annotations density per bin,
+#' * calculate the relative positions of each bin within his corresponding TAD,
+#' * plot the smoothed bin density (and zscore bin density) according to relative positions.
 #'
+#' @param domain.gr `GRanges` with domains (TADs, compartments...).
+#' @param annot.gr `GRanges` with genomic annotations (genes, repeat elements...).
+#' @param annot.col Column number (metadata columns) used to split annotations. By default, annot.col = `NULL`. Use `"strand"` in order to separate annotations according to their strands.
+#' @param domain.col Column number (metadata columns) used to split domain classes (e.g. column to differentiate compartments A and B). By default, domain.col is `NULL`.
+#' @param bin.width Size of the bin in base pairs. It should match the size of the bins used to call the domains.
+#' @param output Default is `"plot"` to return a `ggplot`. Use `"data"` to return the `dataframe` used to produce the plot.
 #'
-#' @param domain.gr GRange file with domains (TADs, compartments...).
-#' @param annot.gr GRange file with genomic annotations (genes, repeat elements...).
-#' @param annot.col Column number (metadata columns) used to separate annotations. By default, annot.col = NULL. Use "strand" in order to separate annotations according to their strands.
-#' @param domain.col Column number (metadata columns) used to separate domain classes (e.g. column to differentiate compartments A and B). By default, domain.col = NULL.
-#' @param bin.width Size of the bin in bp. This should match the size of the bins used to determine the domains.
-#' @param output Default is "plot" to return a ggplot. Use "data" to return the datas used to produce the plot.
+#' @return `ggplot`
 #'
-#'
-#' @return Return a ggplot graphs
 #' @import GenomeInfoDb
 #' @import dplyr
 #' @import ggplot2
 #' @import GenomicRanges
 #' @importFrom tidyr gather
 #' @importFrom magrittr %>%
+#'
 #' @export
 #'
 #' @examples

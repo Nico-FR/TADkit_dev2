@@ -9,9 +9,9 @@ TADarea(tad.gr, annot.gr, window.size = 50000, tad.boundary = "start")
 \arguments{
 \item{tad.gr}{\code{GRanges} object with domains. The chromosomes lengths must be stored as metadata (see \code{dataframes2grange()}).}
 
-\item{annot.gr}{\code{GRanges} object with genomic annotations..}
+\item{annot.gr}{\code{GRanges} object with genomic annotations.}
 
-\item{window.size}{Window in bp surrounding each side of the TAD boundaries.}
+\item{window.size}{Window in base pair surrounding each side of the TAD boundaries.}
 
 \item{tad.boundary}{TAD border to be analyzed; \code{"start"}, \code{"end"} or \code{"center"} denoting what to use as an anchor. Default is the \code{"start"} of each TAD.}
 }

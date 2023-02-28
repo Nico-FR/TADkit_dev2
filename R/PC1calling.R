@@ -1,6 +1,6 @@
 #' @title Compartments calling (A or B)
 #'
-#' @description From a score for each bin (i.e first principal component scores), the function output a `GRanges` with compartment A for score >= 0 and compartment B for score < 0
+#' @description From the scores of each bin (i.e first principal component scores), `PC1calling` output a `GRanges` with compartment A for score >= 0 and compartment B for score < 0
 #'
 #' @details From bedgraph as input (`GRanges` object or path) output a `GRanges` with the domains A or B.
 #' `NA` score are considered as part of a compartment A if they are between two compartments A (the other way around for B compartments).

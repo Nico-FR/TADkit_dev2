@@ -2,7 +2,7 @@
 % Please edit documentation in R/bw2grange.R
 \name{bw2grange}
 \alias{bw2grange}
-\title{Convert bigwig file to GRange object}
+\title{Convert bigwig file to \code{GRanges} object}
 \usage{
 bw2grange(bigwig.path, bin.width = NULL)
 }
@@ -12,8 +12,8 @@ bw2grange(bigwig.path, bin.width = NULL)
 \item{bin.width}{Bin width. Default is NULL to return the bin size as it is in the bigwig file.}
 }
 \value{
-GRanges object
+\code{GRanges}
 }
 \description{
-From the full path of a bigwig files, return a GRanges object. The bin width of the GRnages can be specify with bin.width parameter.
+From the full path of a bigwig files, return a \code{GRanges} object. The bin width of the \code{GRanges} can be specify with \code{bin.width} parameter.
 }

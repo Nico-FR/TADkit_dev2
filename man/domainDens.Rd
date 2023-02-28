@@ -14,31 +14,32 @@ domainDens(
 )
 }
 \arguments{
-\item{domain.gr}{GRange file with domains (TADs, compartments...).}
+\item{domain.gr}{\code{GRanges} with domains (TADs, compartments...).}
 
-\item{annot.gr}{GRange file with genomic annotations (genes, repeat elements...).}
+\item{annot.gr}{\code{GRanges} with genomic annotations (genes, repeat elements...).}
 
-\item{domain.col}{Column number (metadata columns) used to separate domain classes (e.g. column to differentiate compartments A and B). By default, domain.col = NULL.}
+\item{domain.col}{Column number (metadata columns) used to split domain classes (e.g. column to differentiate compartments A and B). By default, domain.col is \code{NULL}.}
 
-\item{annot.col}{Column number (metadata columns) used to separate annotations. By default, annot.col = NULL. Use "strand" in order to separate annotations according to their strands.}
+\item{annot.col}{Column number (metadata columns) used to split annotations. By default, annot.col = \code{NULL}. Use \code{"strand"} in order to separate annotations according to their strands.}
 
-\item{bin.width}{Size of the bin in bp. This should match the size of the bins used to determine the domains.}
+\item{bin.width}{Size of the bin in base pairs. It should match the size of the bins used to call the domains.}
 
-\item{output}{Default is "plot" to return a ggplot. Use "data" to return the datas used to produce the plot.}
+\item{output}{Default is \code{"plot"} to return a \code{ggplot}. Use \code{"data"} to return the \code{dataframe} used to produce the plot.}
 }
 \value{
-Return a ggplot graphs
+\code{ggplot}
 }
 \description{
 Distribution of annotations density (e.g. density  of genes) within domains (e.g. TADs, compartments...).
-This function calculates the density per bin of annotations and measures the relative position of each bin within each domain
+\code{domainDens()} calculates the annotations density per bin and measures the relative position of each bin within the domain
 }
 \details{
-As an example, this function take all TAD domains and calculate the density of annotations.
-For example:
-1- calculate the density of annotations per bin,
-2- calculate the relative positions of each bin within his corresponding TAD,
-3- plot the smoothed bin density (and zscore bin density) according to relative positions.
+As an example, this function take all TAD domains and calculate the density of annotations by:
+\itemize{
+\item calculate the annotations density per bin,
+\item calculate the relative positions of each bin within his corresponding TAD,
+\item plot the smoothed bin density (and zscore bin density) according to relative positions.
+}
 }
 \examples{
 #to do

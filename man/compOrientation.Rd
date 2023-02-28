@@ -7,33 +7,39 @@
 compOrientation(bedgraph, gene.gr, expression.data.frame)
 }
 \arguments{
-\item{bedgraph}{GRange file with the score to be used for compartment calling (such as PC1).}
+\item{bedgraph}{\code{GRanges} file with the score to be used for compartment calling (i.e PC1).}
 
-\item{gene.gr}{GRange file with gene annotations.}
+\item{gene.gr}{\code{GRanges} file with gene annotations.}
 
-\item{expression.data.frame}{Data frame with 3 columns:
--first: gene IDs, must be identical IDs than names(gene.gr),
--second: common name for genes, could be the gene ID,
--third: expression of each gene, such as raw count or log(raw_count + 1).}
+\item{expression.data.frame}{\code{dataframe} with 3 columns:
+\itemize{
+\item 1: gene IDs, must be identical IDs than \code{names(gene.gr)},
+\item 2: common name for genes, could be the gene ID,
+\item 3: expression of each gene, such as raw count or \code{log(raw_count + 1)}.
+}}
 }
 \value{
-Return a S3 class object with 3 data frames.
+S3 class object with 3 \code{dataframes}.
 }
 \description{
 Considering that the A compartments have a stronger expression than the B compartments.
-This function allows the score (such as PC1) to be oriented (positif or negatif).
+This function allows the score (i.e PC1 score) to be oriented (positif or negatif).
 Then the compartments A (actif) and B (inactif) can be called accurately.
 }
 \details{
 This function is divided into 3 steps:
-1: Compartments calling from the score (see PC1calling function).
-2: Measures median gene expression in compartments A and B per chromosome.
-3: Reverse the score if median expression of A is smaller than B compartments.
+\itemize{
+\item Compartments calling from the score (see PC1calling function).
+\item Measures median gene expression in compartments A and B per chromosome.
+\item Reverse the score if median expression of A is smaller than B compartments.
+}
 
-Return a list with 3 dataframes.
-1: bedgraph as GRange object with the score oriented.
-2: data frame with expression of each gene (before orientation).
-2: data frame with median expression of each compartment (before orientation).
+Return a list with 3 \code{dataframe}.
+\itemize{
+\item bedgraph as \code{GRanges} object with the score oriented.
+\item \code{dataframe} with expression of each gene (before orientation).
+\item \code{dataframe} with median expression of each compartment (before orientation).
+}
 }
 \examples{
 # output <- compOrientation(bedgraph, gene.gr, expression.data.frame)

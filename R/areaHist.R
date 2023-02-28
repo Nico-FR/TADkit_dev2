@@ -1,27 +1,28 @@
-#' @title Histogram plot of annotations around TAD boundaries
+#' @title Histogram of annotations around TAD boundaries
 #'
 #' @description Graph of the distribution of the genomic annotations around TAD boundaries (real distance).
-#' Measures the distances between TAD boundaries and the annotation borders (start, end, closest or the center) and plot the distribution as an histogram.
-#' This function take the output of TADarea function.
-#' annot.border="closest", use the closest border (start or stop) to measure the distances from the TAD boundary independently to his strand. Therefore all annotations that overlap a TAD boundary have a distance of 0.
+#' `areahist()` measures the distances between TAD boundaries and the annotation borders (start, end, closest or the center) and plot the distribution as an histogram.
+#' `areahist()` takes the output of `TADarea()`.
+#' `annot.border = "closest"`, use the closest border (start or stop) to measure the distances from the TAD boundary independently to his strand. Therefore all annotations that overlap a TAD boundary have a distance of 0.
 #'
 #' @details Several features distances can be count. As an example (see examples for visualizations) of 2 genes which start at 20Kb of a TAD boundary (width of the 2 genes are 10Kb and are on the reverse an forward strand respectively).
-#' -If annot.border = "start", the distances from the TAD border are 20Kb,
-#' -If annot.border = "end", the distances are 10 and 30Kb respectively,
-#' -If annot.border = "center", the distances are 15Kb and 25Kb respectively,
-#' -If annot.border = "closest", the distances are 10Kb and 20Kb respectively.
+#' -If `annot.border = "start"`, the distances from the TAD border are 20Kb,
+#' -If `annot.border = "end"`, the distances are 10 and 30Kb respectively,
+#' -If `annot.border = "center"`, the distances are 15Kb and 25Kb respectively,
+#' -If `annot.border = "closest"`, the distances are 10Kb and 20Kb respectively.
 #'
-#' @param data.gr Output of TADarea function.
-#' @param annot.border Type of feature to analyzed. Start, end or center of each annotations from annot.gr files. It is possible to use "closest" to take the closest border (from TAD boundary) independently to the start or end (or independently to the strands).
-#' @param annot.strand Default is FALSE to plot the distribution as histogram. If TRUE, distributions are separated according to their strands and are display with lines.
-#' @param bin.width Size of the bin to count the number of annotations features. If NULL the bin size is 10 times smaller than window.size. It is recommended to use the same size as the HiC matrix.
+#' @inheritParams areaCov
+#' @param annot.border Type of feature to analyzed. `"Start"`, `"end"` or `"center"` of each annotations from `annot.gr` input. It is possible to use `"closest"` to take the closest border (start or end) independently to the strands.
+#' @param annot.strand Logical. Default is `FALSE` to plot the distribution as histogram. If `TRUE`, distributions are separated according to their strands and are display with lines.
 #'
-#' @return Return a ggplot graph
+#' @return `ggplot`
+#'
 #' @import GenomeInfoDb
 #' @import GenomicRanges
 #' @import IRanges
 #' @import ggplot2
-#' @import scales
+#' @importFrom scales unit_format
+#'
 #' @export
 #'
 #' @examples

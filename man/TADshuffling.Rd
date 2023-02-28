@@ -7,14 +7,15 @@
 TADshuffling(tad.gr)
 }
 \arguments{
-\item{tad.gr}{GRange object with TADs. This file must have chromosomes lengths (see dataframes2grange function).}
+\item{tad.gr}{\code{GRanges} object with domains. The chromosomes lengths must be stored as metadata (see \code{dataframes2grange()}).}
 }
 \value{
-GRange file
+\code{GRanges}
 }
 \description{
-From a set of TADs, this function return un random set of TADs.
+From an ordered set of TADs, this function return un random set of TADs.
 }
 \details{
-This function shuffle the TADs order for each chromosomes (i.e. keep the TADs sizes). The TADs input should not have gaps (region between two TADs) excepted for the extremities of chromosomes.
+\code{TADshuffling} shuffle the TADs order for each chromosomes (i.e keep the TADs sizes).
+The TADs input should not have gaps (region between two TADs) excepted for the extremities of chromosomes.
 }

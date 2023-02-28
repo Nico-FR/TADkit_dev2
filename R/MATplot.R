@@ -1,43 +1,45 @@
 #' @title Plot matrix with annotations
 #'
-#' @description MATplot allow to plot matrix with 3 types of annotations:
-#' -domains (e.g. TADs or compartments) are plot as triangles or lines on the upper or/and lower part of the matrix.
+#' @description `MATplot` allow to plot matrix with 2 types of annotations:
+#' -domains (e.g. TADs or compartments) are plot as triangles and/or lines on the upper or/and lower part of the matrix.
 #' -interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
 #'
-#' @details The matrix input must be a dgCMatrix or a matrix object for only one chromosome (see coolFetch function to read cool files).
-#' All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (dataframe or GRange) or the path of the files.
-#' For tad.lines, another column can be used to specify different classes of domains (e.g compartment A or B). To use those domain classes, specify the column number (of the tad.upper.line and tad.lower.line inputs) with tad.line.col parameter and a custom set of colors with line.colors parameter.
-#' Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a dataframe or the path of the file.
-#' Chromosome domains and loops can be filter using tad.chr parameter.
+#' @details The matrix input must be a `dgCMatrix` or a `matrix` object for only one chromosome (see `coolFetch` function to read cool files).
+#' All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (`dataframe` or `GRanges`) or the path of the files.
+#' For `tad.lines`, another column can be used to specify different classes of domains (e.g compartment A or B). To use those domain classes, specify the column number (of the `tad.upper.line` and `tad.lower.line` inputs) with `tad.line.col` parameter and a custom set of colors with `line.colors` parameter.
+#' Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a `dataframe` object or the path of the file.
+#' Chromosome domains and loops can be filter using `tad.chr` parameter.
 #'
 #' @inheritParams matObsExp
-#' @param start,stop region of interest in base pair.
-#' @param bin.width bin width of the matrix in base pair.
-#' @param matrix.diag logical. Weather or not to plot diagonal values of the matrix. Default = TRUE
-#' @param log2 logical. Use the log2 of the matrix values. Default is TRUE
-#' @param scale.colors A character string indicating the color map option to use. Eight colors palettes are available from viridis package. Another palette "OE" is made for data centered on 0 (i.e log2 of observed/expected matrix). Default is "H":
-#' * "ObsExp" (or "OE"),
-#' * "magma" (or "A"),
-#' * "inferno" (or "B"),
-#' * "plasma" (or "C"),
-#' * "viridis" (or "D"),
-#' * "cividis" (or "E"),
-#' * "rocket" (or "F"),
-#' * "mako" (or "G"),
-#' * "turbo" (or "H").
-#' @param tad.upper.tri,tad.lower.tri bed files path, data frame or grange object with the TAD to plot as triangle in the upper or lower part of the matrix. Default is NULL.
-#' @param tad.upper.line,tad.lower.line bed files path, data frame or grange object with the TAD to plot as line in the upper or lower parts of the matrix. Default is NULL.
-#' @param tad.line.col column number of the tad.line files that contain factors used to color tad.upper.line and tad.lower.line. Default is NULL.
-#' @param loop.bedpe bedpe files path or data frame to plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is NULL
-#' @param tad.chr chromosome name to filter bed and bedpe files. Default is NULL
-#' @param annotations.color color for loop and tri annotations. Default is "red".
-#' @param line.colors colors for upper and lower lines. Default is red and blue.
+#' @inheritParams TADplot
+#' @param matrix `dgCMatrix` or `matrix` object for only one chromosome.
+#' @param bin.width Bin width of the matrix in base pair.
+#' @param matrix.diag logical. Weather or not to plot diagonal values of the matrix. Default = `TRUE`.
+#' @param log2 logical. Use the log2 of the matrix values. Default is `TRUE`.
+#' @param scale.colors A character string indicating the color map option to use. Eight colors palettes are available from `viridis` package. Another palette `"OE"` is made for data centered on 0 (e.g log2 of observed/expected matrix). Default is `"H"`:
+#' * `"ObsExp"` (or `"OE"`),
+#' * `"magma"` (or `"A"`),
+#' * `"inferno"` (or `"B"`),
+#' * `"plasma"` (or `"C"`),
+#' * `"viridis"` (or `"D"`),
+#' * `"cividis"` (or `"E"`),
+#' * `"rocket"` (or `"F"`),
+#' * `"mako"` (or `"G"`),
+#' * `"turbo"` (or `"H"`).
+#' @param tad.upper.tri,tad.lower.tri `data.frame`, `GRanges` or the bed files path with the TAD to plot as triangle in the upper or lower part of the matrix. Default is `NULL`.
+#' @param tad.upper.line,tad.lower.line `data.frame`, `GRanges` or the bed files path with the TAD to plot as line in the upper or lower parts of the matrix. Default is `NULL`.
+#' @param tad.line.col Column number of `tad.upper.line` and `tad.lower.line` files that contain factors used to color upper and lower lines. Default is `NULL`.
+#' @param loop.bedpe `data.frame` or bedpe files path to plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is `NULL`
+#' @param tad.chr Chromosome name to filter annotations (domains and loop). Default is `NULL`
+#' @param annotations.color Color for loop and triangular annotations. Default is `"red"`.
+#' @param line.colors Colors for `tad.upper.line` and `tad.lower.line`. Default is `c("red", "blue")`.
 
 #'
-#' @return ggplot
+#' @return `ggplot`
+#'
 #' @import Matrix
-#' @import viridis
-#' @import scales
+#' @importFrom viridis scale_fill_viridis
+#' @importFrom scales unit_format
 #' @import ggplot2
 #' @export
 #'

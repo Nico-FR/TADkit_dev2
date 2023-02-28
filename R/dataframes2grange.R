@@ -1,16 +1,16 @@
 #' Create GRange with sequence lengths
 #'
-#' This function create a GRange object from the first dataframe and add the size of the chromosomes from the second dataframe.
-#' A name of each line is added to the GRange object.
+#' This function create a GRange object from the first `dataframe` and add the size of the chromosomes on the second `dataframe`.
+#' A name of each line is added to the `GRanges` output.
 #'
-#' @param annotation.table Data frame with genomic annotations (at least 3 columns: chromosome, start and stop).
-#' @param chromsize Data frame with chromosome names and lengths. Chromosomes are also filtered according to this list.
-#' @param chr.col Column number for chromosome names, default=1.
-#' @param start.col Column number for start, default=2.
-#' @param end.col Column number for end, default=3.
-#' @param strand.col Column number for strands, default=NULL to set strands as "*" (instead of "+" or "-").
-#' @param name.col Column number for annotation names, default=NULL to create names with chr.names and start.
-#' @param metadata.mcols Column number(s) for metadata, default=NULL (ie no metadata).
+#' @param annotation.table `dataframe` with genomic annotations (at least 3 columns: chromosome, start and stop).
+#' @param chromsize `dataframe` with chromosome names and sizes. Chromosomes are also filtered according to this list.
+#' @param chr.col Column number for chromosome names, default is 1.
+#' @param start.col Column number for start, default is 2.
+#' @param end.col Column number for end, default is 3.
+#' @param strand.col Column number for strands, default is `NULL` to set strands as "*" (i.e both strands or unknown stand) otherwise the column must contain "+" or "-" characters.
+#' @param name.col Column number for annotation names, default is `NULL` to create names with chr.names and start.
+#' @param metadata.mcols Column number(s) for metadata, default is `NULL` (i.e no metadata).
 #'
 #'
 #' @return GRange file that contains chromosome size.

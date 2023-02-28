@@ -1,12 +1,12 @@
-#' Convert bigwig file to GRange object
+#' Convert bigwig file to `GRanges` object
 #'
-#' @description From the full path of a bigwig files, return a GRanges object. The bin width of the GRnages can be specify with bin.width parameter.
+#' @description From the full path of a bigwig files, return a `GRanges` object. The bin width of the `GRanges` can be specify with `bin.width` parameter.
 #'
 #'
 #' @param bigwig.path path of bigwig file.
 #' @param bin.width Bin width. Default is NULL to return the bin size as it is in the bigwig file.
 #'
-#' @return GRanges object
+#' @return `GRanges`
 #' @import GenomicRanges
 #' @import GenomeInfoDb
 #' @import rtracklayer

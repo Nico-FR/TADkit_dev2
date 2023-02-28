@@ -1,7 +1,12 @@
 #' @title Plot TADs for one individual
 #'
-#' @description TADplot use Gviz package to plot at least 2 tracks. The first one includes all the TADs from the specified chromosome. And the second one is a zoom in the defined area.
-#' Other tracks can be added like gene annotation or read depth data.
+#' @description `TADplot()` use `Gviz` package to plot at least 2 tracks:
+#' * All the TADs from a specified chromosome,
+#' * A zoom in the defined area.
+#' Other tracks can be added:
+#' * bed files with annotations (genes...),
+#' * bigwig files (read depth sequencing...),
+#' * bedgraph with bin values (insulation score...).
 #'
 #' @details This create a plot with at least 2 tracks from TADs annotation (tad.gr).
 #'
@@ -10,10 +15,10 @@
 #'
 #' Another track from a bigwig file can be added like read depth sequencing (RNAseq...) as an histogram.
 #' The bin size of the histogram is 1Kb by default, the read depth is smoothed using the median value of each bin.
-#' If the chromosome name is different (between the bigwig and the chr parameter), it can be fix using the bigwig.chr parameter ("1" versus "chr1").
+#' If the chromosome name is different (between the bigwig and the `chr` parameter), it can be fix using the `bigwig.chr` parameter (e.g `chr="1"` while `bigwig.chr="chr1"`).
 #'
 #' Another track with any annotations can be added.
-#' This track can be group using factors in a specified column of the annot.gr files (metadata) otherwise the names of each annotation is used.
+#' This track can be group using factors in a specified column of the `annot.gr` files (metadata) otherwise the names of each annotation is used.
 #'
 #' @param tad.gr `GRanges` object with domains. The chromosomes lengths must be stored as metadata (see `dataframes2grange()`).
 #' @param chr Chromosome name to plot.
@@ -29,7 +34,7 @@
 #' @param annot.col Column number of the metadata from `annot.gr` file used to group the annotation tracks. Default = `NULL`.
 #' @param bedgraph.path Path for the bedgraph file plotted as line. Default = `NULL` (i.e the track is not plotted).
 #'
-#' @return Plot with TADs and other tracks as a list of GenomeGraph tracks (see `Gviz::plotTracks` for details).
+#' @return Plot with domains and other tracks as a list of GenomeGraph tracks (see `Gviz::plotTracks` for details).
 #'
 #' @import GenomicRanges
 #' @importFrom S4Vectors aggregate

@@ -7,9 +7,11 @@
 #' @details The expected number of interaction corresponds to the average of the interaction counts according to the bin distances.
 #' Bins with zero counts are not considered.
 #' Only the upper part of the matrix is used.
-#' @param matrix a `dgCMatrix` or `matrix` object
 #'
-#' @return a `dgCMatrix` object: upper triangular and sparse Matrix
+#' @param matrix `dgCMatrix` or `matrix` object.
+#'
+#' @return `dgCMatrix` object: upper triangular and sparse Matrix
+#'
 #' @importFrom stats toeplitz
 #' @import Matrix
 #' @importFrom methods as

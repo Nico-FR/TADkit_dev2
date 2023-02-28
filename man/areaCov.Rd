@@ -7,16 +7,16 @@
 areaCov(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE)
 }
 \arguments{
-\item{data.gr}{Output of TADarea function.}
+\item{data.gr}{Output of \code{TADarea()}.}
 
-\item{annot.strand}{If TRUE (default): separate coverage according to their strands.}
+\item{annot.strand}{Logical. If \code{TRUE} (default): separate coverage according to their strands.}
 
-\item{bin.width}{Size of the sliding window to calculate the mean coverage. By default the size in 10 time smaller than window.size.}
+\item{bin.width}{Size of the sliding window in base pair to calculate the mean coverage. Default is \code{NULL} to to use a size in 10 time smaller than \code{window.size} parameter of \code{TADarea()}.}
 
-\item{norm}{Normalized density using relative content (zscore of density). Default is FALSE.}
+\item{norm}{Logical. Normalized density using relative content (zscore of density). Default is \code{FALSE}.}
 }
 \value{
-Return a ggplot graph
+\code{ggplot}
 }
 \description{
 Graph of the density of the genomic annotations around TAD boundaries (real distance).

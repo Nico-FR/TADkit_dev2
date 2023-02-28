@@ -8,32 +8,33 @@ TADdiff(
   boundaries.lst,
   score.lst,
   bin.width = NULL,
-  extend = NULL,
+  window.size = NULL,
   restrict = 2e+06
 )
 }
 \arguments{
-\item{boundaries.lst}{List of TAD boundaries as GRanges. Each files in the list must have names and seqlengths metadata. The width of each boundary must correspond to the resolution of the matrix used and must be the same between samples.}
+\item{boundaries.lst}{List of TAD boundaries as \code{GRanges}. Each \code{GRanges} in the list must have names and seqlengths metadata. The width of each boundary must correspond to the resolution of the matrix used and must be the same between samples.}
 
-\item{score.lst}{List of insulation score as a GRanges. Each files in the list must have names and seqlengths metadata.}
+\item{score.lst}{List of insulation score as a \code{GRanges}. Each \code{GRanges} in the list must have names and seqlengths metadata.}
 
-\item{bin.width}{Default is NULL to estimate the bin.width from boundaries.lst files.}
+\item{bin.width}{Default is \code{NULL} to estimate the bin.width from \code{boundaries.lst} files.}
 
-\item{extend}{Defaults is NULL to take a value 2 times higher than bin.width.}
+\item{window.size}{Defaults is \code{NULL} to take a value 2 times higher than \code{bin.width}, otherwise set the \code{window.size} in base pairs.}
 
-\item{restrict}{Default is 2e6 base pair to remove boundary at the extremities of chromosomes.}
+\item{restrict}{Default is \code{2e6} (i.e 2Mb) to remove boundary at the extremities of chromosomes.}
 }
 \value{
 list of GRanges
 }
 \description{
-This function check if for each TAD boundary from one sample there is an other boundary in the vicinity on all other samples provided.
+\code{TADdiff} check if for each TAD boundary from one sample there is an other boundary in the vicinity on all other samples provided.
 It also return the score for each boundary and calculate the delta between each sample.
 }
 \details{
-This function take the score used to find TAD boundaries (like insulation score) and the TAD boundaries as a GRanges object (see dataframes2grange function).
-TAD differences (new boundary and delta score at boundary) are performed between 2 samples or more. Boundaries at the beginning and the end of each chromosome are removed using restrict parameters as it is usually difficult to estimate accurately the score in those regions.
+\code{TADdiff} take the score used to find TAD boundaries (e.g insulation score) and the TAD boundaries as a \code{GRanges} object (see \code{dataframes2grange()} function).
 For each TAD boundary :
--the function check if there is an other boundary in all others samples +/- extend value (ie +/- 20kb if bin.size = 10kb),
+-the function check if there is an other boundary in all others samples +/- \code{window.size} (e.g +/- 20kb if \code{bin.size} = 10kb and \code{window.size} = \code{NULL}),
 -export the score at the boundary and calculate the delta compare to the other samples. Those delta scores can be used to rank and find the boundary with the highest differences.
+Differences analysis (new boundary and delta score at boundary) are performed between 2 samples or more.
+Boundaries at the extremities of the chromosomes (beginning and the end of each chromosome) can be ignored using restrict parameters as it is usually difficult to estimate accurately the score in those regions.
 }

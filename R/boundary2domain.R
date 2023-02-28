@@ -1,12 +1,15 @@
 #' Convert boundary to domain
 #'
-#' @description From data with each boundaries stored by line (chromosome, start and end), return GRanges with domains.
+#' @description From datas with each boundaries stored by line (chromosome, start and end), `boundary2domain()` return `GRanges` with domains.
 #'
-#' @details Start or end position of domains are the middle of a boundary.
-#' @param boundaries data frame (chromosome, start and end) or GRanges with the boundaries
+#' @details Start and end of domains are the middle of boundaries.
 #'
-#' @return GRanges object with boundaries
+#' @param boundaries `dataframe` (chromosome, start and end) or `GRanges` with the boundaries.
+#'
+#' @return `GRanges` object with domains
+#'
 #' @import GenomicRanges
+#'
 #' @export
 #'
 boundary2domain <- function(boundaries) {

@@ -6,7 +6,7 @@
 #'
 #' @inheritParams TADplot
 #' @param annot.gr `GRanges` object with genomic annotations.
-#' @param window.size Window in bp surrounding each side of the TAD boundaries.
+#' @param window.size Window in base pair surrounding each side of the TAD boundaries.
 #' @param tad.boundary TAD border to be analyzed; `"start"`, `"end"` or `"center"` denoting what to use as an anchor. Default is the `"start"` of each TAD.
 #'
 #' @return `GRanges` object with all annotations surrounding all TAD boundaries. TAD boundaries are at the window.size position.

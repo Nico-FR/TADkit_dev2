@@ -7,10 +7,10 @@
 matObsExp(matrix)
 }
 \arguments{
-\item{matrix}{a \code{dgCMatrix} or \code{matrix} object}
+\item{matrix}{\code{dgCMatrix} or \code{matrix} object.}
 }
 \value{
-a \code{dgCMatrix} object: upper triangular and sparse Matrix
+\code{dgCMatrix} object: upper triangular and sparse Matrix
 }
 \description{
 For each bin of the matrix (interaction count observed) \code{matObsExp()} return the ratio: observed / expected.

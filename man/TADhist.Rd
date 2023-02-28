@@ -17,18 +17,18 @@ TADhist(
 \arguments{
 \item{tad.gr}{\code{GRanges} object with domains. The chromosomes lengths must be stored as metadata (see \code{dataframes2grange()}).}
 
-\item{annot.gr}{\code{GRanges} object with genomic annotations..}
+\item{annot.gr}{\code{GRanges} object with genomic annotations.}
 
 \item{annot.border}{Type of feature to analyzed. \code{"start"}, \code{"end"} or \code{"center"} of each annotations from \code{annot.gr} object.}
 
 \item{ifoverlap}{In case of annotation overlap a TAD boundary, few options are available to measure the \code{annot.border} positions:
 \itemize{
-\item (1)"remove" to remove all \code{annot.gr} that overlaps a TAD boundary,
-\item (2)"real" to take the position according to the TAD where the  \code{annot.border} is located,
-\item (3)"best" to take the position according to the TAD where the \code{annot.gr} has the best overlay.
+\item \code{"remove"} to remove all \code{annot.gr} that overlaps a TAD boundary,
+\item \code{"real"} to take the position according to the TAD where the \code{annot.border} is located,
+\item \code{"best"} to take the position according to the TAD where the \code{annot.gr} has the best overlay.
 }}
 
-\item{annot.strand}{Default is FALSE to plot the distribution as histogram. If TRUE, distributions are separated according to their strands and are displayed with lines.}
+\item{annot.strand}{Default is \code{FALSE} to plot the distribution as histogram. If \code{TRUE}, distributions are separated according to their strands and are displayed with lines.}
 
 \item{bin.width}{Size of the bin in percent to count the number of annotations features, default is 5\%. if \code{ifoverlap = "best"}: the real bin distances (ploted before and after TAD boundaries) is equal to \code{bin.width*1e3}. Therefore default real bin size is 5kb.}
 
@@ -44,8 +44,8 @@ Measures the relative distances of annotation border (start, end or the center) 
 \details{
 As an example, \code{TADhist()} take all TAD domains and count the relative position of all annotation features (start, end or even the center).
 It is possible that some annotations overlap a TAD boundary, in this cases few option are possible to get the distributions (see \code{ifoverlap} parameter and the example for better understanding):
-* (1)remove those annotations,
-* (2)uses the TAD in which the features (\code{"start"}, \code{"end"} or \verb{"center" of the annotation) is located, * (3)uses the TAD in which the annotation has the best overlap. Therefore, in some cases, the }"start"\verb{of an}annot.gr\verb{can be located before the TAD (i.e the TAD with the best overlap). In that case, the distance between the}"start"\code{of}annot.border` and TAD corresponds to the real distance (in base pair).
+* remove: those annotations,
+* uses: the TAD in which the features (\code{"start"}, \code{"end"} or \verb{"center" of the annotation) is located, * uses: the TAD in which the annotation has the best overlap. Therefore, in some cases, the }"start"\verb{of an}annot.gr\verb{can be located before the TAD (i.e the TAD with the best overlap). In that case, the distance between the}"start"\code{of}annot.border` and TAD corresponds to the real distance (in base pair).
 }
 \examples{
 #Create 20 genes

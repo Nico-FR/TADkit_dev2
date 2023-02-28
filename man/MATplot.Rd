@@ -24,55 +24,55 @@ MATplot(
 )
 }
 \arguments{
-\item{matrix}{a \code{dgCMatrix} or \code{matrix} object}
+\item{matrix}{\code{dgCMatrix} or \code{matrix} object for only one chromosome.}
 
-\item{start, stop}{region of interest in base pair.}
+\item{start, stop}{Region of interest in base pair.}
 
-\item{bin.width}{bin width of the matrix in base pair.}
+\item{bin.width}{Bin width of the matrix in base pair.}
 
-\item{log2}{logical. Use the log2 of the matrix values. Default is TRUE}
+\item{log2}{logical. Use the log2 of the matrix values. Default is \code{TRUE}.}
 
-\item{scale.colors}{A character string indicating the color map option to use. Eight colors palettes are available from viridis package. Another palette "OE" is made for data centered on 0 (i.e log2 of observed/expected matrix). Default is "H":
+\item{scale.colors}{A character string indicating the color map option to use. Eight colors palettes are available from \code{viridis} package. Another palette \code{"OE"} is made for data centered on 0 (e.g log2 of observed/expected matrix). Default is \code{"H"}:
 \itemize{
-\item "ObsExp" (or "OE"),
-\item "magma" (or "A"),
-\item "inferno" (or "B"),
-\item "plasma" (or "C"),
-\item "viridis" (or "D"),
-\item "cividis" (or "E"),
-\item "rocket" (or "F"),
-\item "mako" (or "G"),
-\item "turbo" (or "H").
+\item \code{"ObsExp"} (or \code{"OE"}),
+\item \code{"magma"} (or \code{"A"}),
+\item \code{"inferno"} (or \code{"B"}),
+\item \code{"plasma"} (or \code{"C"}),
+\item \code{"viridis"} (or \code{"D"}),
+\item \code{"cividis"} (or \code{"E"}),
+\item \code{"rocket"} (or \code{"F"}),
+\item \code{"mako"} (or \code{"G"}),
+\item \code{"turbo"} (or \code{"H"}).
 }}
 
-\item{matrix.diag}{logical. Weather or not to plot diagonal values of the matrix. Default = TRUE}
+\item{matrix.diag}{logical. Weather or not to plot diagonal values of the matrix. Default = \code{TRUE}.}
 
-\item{tad.upper.tri, tad.lower.tri}{bed files path, data frame or grange object with the TAD to plot as triangle in the upper or lower part of the matrix. Default is NULL.}
+\item{tad.upper.tri, tad.lower.tri}{\code{data.frame}, \code{GRanges} or the bed files path with the TAD to plot as triangle in the upper or lower part of the matrix. Default is \code{NULL}.}
 
-\item{loop.bedpe}{bedpe files path or data frame to plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is NULL}
+\item{loop.bedpe}{\code{data.frame} or bedpe files path to plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is \code{NULL}}
 
-\item{tad.chr}{chromosome name to filter bed and bedpe files. Default is NULL}
+\item{tad.chr}{Chromosome name to filter annotations (domains and loop). Default is \code{NULL}}
 
-\item{annotations.color}{color for loop and tri annotations. Default is "red".}
+\item{annotations.color}{Color for loop and triangular annotations. Default is \code{"red"}.}
 
-\item{tad.upper.line, tad.lower.line}{bed files path, data frame or grange object with the TAD to plot as line in the upper or lower parts of the matrix. Default is NULL.}
+\item{tad.upper.line, tad.lower.line}{\code{data.frame}, \code{GRanges} or the bed files path with the TAD to plot as line in the upper or lower parts of the matrix. Default is \code{NULL}.}
 
-\item{tad.line.col}{column number of the tad.line files that contain factors used to color tad.upper.line and tad.lower.line. Default is NULL.}
+\item{tad.line.col}{Column number of \code{tad.upper.line} and \code{tad.lower.line} files that contain factors used to color upper and lower lines. Default is \code{NULL}.}
 
-\item{line.colors}{colors for upper and lower lines. Default is red and blue.}
+\item{line.colors}{Colors for \code{tad.upper.line} and \code{tad.lower.line}. Default is \code{c("red", "blue")}.}
 }
 \value{
-ggplot
+\code{ggplot}
 }
 \description{
-MATplot allow to plot matrix with 3 types of annotations:
--domains (e.g. TADs or compartments) are plot as triangles or lines on the upper or/and lower part of the matrix.
+\code{MATplot} allow to plot matrix with 2 types of annotations:
+-domains (e.g. TADs or compartments) are plot as triangles and/or lines on the upper or/and lower part of the matrix.
 -interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
 }
 \details{
-The matrix input must be a dgCMatrix or a matrix object for only one chromosome (see coolFetch function to read cool files).
-All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (dataframe or GRange) or the path of the files.
-For tad.lines, another column can be used to specify different classes of domains (e.g compartment A or B). To use those domain classes, specify the column number (of the tad.upper.line and tad.lower.line inputs) with tad.line.col parameter and a custom set of colors with line.colors parameter.
-Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a dataframe or the path of the file.
-Chromosome domains and loops can be filter using tad.chr parameter.
+The matrix input must be a \code{dgCMatrix} or a \code{matrix} object for only one chromosome (see \code{coolFetch} function to read cool files).
+All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (\code{dataframe} or \code{GRanges}) or the path of the files.
+For \code{tad.lines}, another column can be used to specify different classes of domains (e.g compartment A or B). To use those domain classes, specify the column number (of the \code{tad.upper.line} and \code{tad.lower.line} inputs) with \code{tad.line.col} parameter and a custom set of colors with \code{line.colors} parameter.
+Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a \code{dataframe} object or the path of the file.
+Chromosome domains and loops can be filter using \code{tad.chr} parameter.
 }

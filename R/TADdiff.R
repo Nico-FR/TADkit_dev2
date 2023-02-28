@@ -1,19 +1,20 @@
 #' @title TAD boundaries comparison between 2 or more samples.
 #'
-#' @description This function check if for each TAD boundary from one sample there is an other boundary in the vicinity on all other samples provided.
+#' @description `TADdiff` check if for each TAD boundary from one sample there is an other boundary in the vicinity on all other samples provided.
 #' It also return the score for each boundary and calculate the delta between each sample.
 #'
-#' @details This function take the score used to find TAD boundaries (like insulation score) and the TAD boundaries as a GRanges object (see dataframes2grange function).
-#' TAD differences (new boundary and delta score at boundary) are performed between 2 samples or more. Boundaries at the beginning and the end of each chromosome are removed using restrict parameters as it is usually difficult to estimate accurately the score in those regions.
+#' @details `TADdiff` take the score used to find TAD boundaries (e.g insulation score) and the TAD boundaries as a `GRanges` object (see `dataframes2grange()` function).
 #' For each TAD boundary :
-#'     -the function check if there is an other boundary in all others samples +/- extend value (ie +/- 20kb if bin.size = 10kb),
+#'     -the function check if there is an other boundary in all others samples +/- `window.size` (e.g +/- 20kb if `bin.size` = 10kb and `window.size` = `NULL`),
 #'     -export the score at the boundary and calculate the delta compare to the other samples. Those delta scores can be used to rank and find the boundary with the highest differences.
+#' Differences analysis (new boundary and delta score at boundary) are performed between 2 samples or more.
+#' Boundaries at the extremities of the chromosomes (beginning and the end of each chromosome) can be ignored using restrict parameters as it is usually difficult to estimate accurately the score in those regions.
 #'
-#' @param boundaries.lst List of TAD boundaries as GRanges. Each files in the list must have names and seqlengths metadata. The width of each boundary must correspond to the resolution of the matrix used and must be the same between samples.
-#' @param score.lst List of insulation score as a GRanges. Each files in the list must have names and seqlengths metadata.
-#' @param bin.width Default is NULL to estimate the bin.width from boundaries.lst files.
-#' @param extend Defaults is NULL to take a value 2 times higher than bin.width.
-#' @param restrict Default is 2e6 base pair to remove boundary at the extremities of chromosomes.
+#' @param boundaries.lst List of TAD boundaries as `GRanges`. Each `GRanges` in the list must have names and seqlengths metadata. The width of each boundary must correspond to the resolution of the matrix used and must be the same between samples.
+#' @param score.lst List of insulation score as a `GRanges`. Each `GRanges` in the list must have names and seqlengths metadata.
+#' @param bin.width Default is `NULL` to estimate the bin.width from `boundaries.lst` files.
+#' @param window.size Defaults is `NULL` to take a value 2 times higher than `bin.width`, otherwise set the `window.size` in base pairs.
+#' @param restrict Default is `2e6` (i.e 2Mb) to remove boundary at the extremities of chromosomes.
 #'
 #' @return list of GRanges
 #' @importFrom methods as
@@ -22,20 +23,20 @@
 #' @export
 #'
 #'
-TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, extend = NULL, restrict = 2.e6) {
+TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = NULL, restrict = 2.e6) {
 
   #parameters
   if (is.null(bin.width)) {
     bin.width <- round(IRanges::median(BiocGenerics::width(unlist(methods::as(boundaries.lst, "GRangesList")))) /2)  * 2
   }
 
-  if (is.null(extend)) {
-    extend <- round(bin.width/2) * 4
+  if (is.null(window.size)) {
+    window.size <- round(bin.width/2) * 4
   }
 
   message("######################################################")
   message(paste0("Bin width used is: ", bin.width, "bp."))
-  message(paste0("New TAD boundary is FALSE if there is another TAD boundary in the vicinity +/-", extend, "bp."))
+  message(paste0("New TAD boundary is FALSE if there is another TAD boundary in the vicinity +/-", window.size, "bp."))
   message(paste0("TAD boundaries for the first and last ", restrict, "bp of each chromosomes are removed from the analysis."))
   message("######################################################")
 
@@ -74,8 +75,8 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, extend = NULL, 
       bin_hit = GenomicRanges::findOverlaps(subject = ind2_ins.gr, query = ind1_boundaries.gr, ignore.strand=TRUE, select="arbitrary", minoverlap = bin.width/2)
       GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind2)]] = GenomicRanges::mcols(ind2_ins.gr[bin_hit])[,1]
 
-      # #add column to specify if there is a TAD in the other sample (+/- extend). "newTAD" means no TAD boundaries in the vicinity i.e. +/- extend_value.
-      GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("newTAD_",ind2)]] = ind1_boundaries.gr %outside% (ind2_boundaries.gr + extend - 1) # "minus 1" to count TAD with start(indiv1) = end(indiv2)+extend or end(indiv1) = start(indiv2)-extend as new TAD
+      # #add column to specify if there is a TAD in the other sample (+/- window.size). "newTAD" means no TAD boundaries in the vicinity i.e. +/- window.size_value.
+      GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("newTAD_",ind2)]] = ind1_boundaries.gr %outside% (ind2_boundaries.gr + window.size - 1) # "minus 1" to count TAD with start(indiv1) = end(indiv2)+window.size or end(indiv1) = start(indiv2)-window.size as new TAD
 
       # Delta score
       GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("delta_score_",ind2)]] =  GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind1)]] - GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind2)]]

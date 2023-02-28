@@ -2,7 +2,7 @@
 % Please edit documentation in R/areaHist.R
 \name{areaHist}
 \alias{areaHist}
-\title{Histogram plot of annotations around TAD boundaries}
+\title{Histogram of annotations around TAD boundaries}
 \usage{
 areaHist(
   data.gr,
@@ -12,29 +12,29 @@ areaHist(
 )
 }
 \arguments{
-\item{data.gr}{Output of TADarea function.}
+\item{data.gr}{Output of \code{TADarea()}.}
 
-\item{annot.border}{Type of feature to analyzed. Start, end or center of each annotations from annot.gr files. It is possible to use "closest" to take the closest border (from TAD boundary) independently to the start or end (or independently to the strands).}
+\item{annot.border}{Type of feature to analyzed. \code{"Start"}, \code{"end"} or \code{"center"} of each annotations from \code{annot.gr} input. It is possible to use \code{"closest"} to take the closest border (start or end) independently to the strands.}
 
-\item{annot.strand}{Default is FALSE to plot the distribution as histogram. If TRUE, distributions are separated according to their strands and are display with lines.}
+\item{annot.strand}{Logical. Default is \code{FALSE} to plot the distribution as histogram. If \code{TRUE}, distributions are separated according to their strands and are display with lines.}
 
-\item{bin.width}{Size of the bin to count the number of annotations features. If NULL the bin size is 10 times smaller than window.size. It is recommended to use the same size as the HiC matrix.}
+\item{bin.width}{Size of the sliding window in base pair to calculate the mean coverage. Default is \code{NULL} to to use a size in 10 time smaller than \code{window.size} parameter of \code{TADarea()}.}
 }
 \value{
-Return a ggplot graph
+\code{ggplot}
 }
 \description{
 Graph of the distribution of the genomic annotations around TAD boundaries (real distance).
-Measures the distances between TAD boundaries and the annotation borders (start, end, closest or the center) and plot the distribution as an histogram.
-This function take the output of TADarea function.
-annot.border="closest", use the closest border (start or stop) to measure the distances from the TAD boundary independently to his strand. Therefore all annotations that overlap a TAD boundary have a distance of 0.
+\code{areahist()} measures the distances between TAD boundaries and the annotation borders (start, end, closest or the center) and plot the distribution as an histogram.
+\code{areahist()} takes the output of \code{TADarea()}.
+\code{annot.border = "closest"}, use the closest border (start or stop) to measure the distances from the TAD boundary independently to his strand. Therefore all annotations that overlap a TAD boundary have a distance of 0.
 }
 \details{
 Several features distances can be count. As an example (see examples for visualizations) of 2 genes which start at 20Kb of a TAD boundary (width of the 2 genes are 10Kb and are on the reverse an forward strand respectively).
--If annot.border = "start", the distances from the TAD border are 20Kb,
--If annot.border = "end", the distances are 10 and 30Kb respectively,
--If annot.border = "center", the distances are 15Kb and 25Kb respectively,
--If annot.border = "closest", the distances are 10Kb and 20Kb respectively.
+-If \code{annot.border = "start"}, the distances from the TAD border are 20Kb,
+-If \code{annot.border = "end"}, the distances are 10 and 30Kb respectively,
+-If \code{annot.border = "center"}, the distances are 15Kb and 25Kb respectively,
+-If \code{annot.border = "closest"}, the distances are 10Kb and 20Kb respectively.
 }
 \examples{
 # create GRange with 2 annotations (genes with same size and start but different strand)

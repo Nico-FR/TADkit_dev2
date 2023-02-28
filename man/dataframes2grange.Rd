@@ -16,26 +16,26 @@ dataframes2grange(
 )
 }
 \arguments{
-\item{annotation.table}{Data frame with genomic annotations (at least 3 columns: chromosome, start and stop).}
+\item{annotation.table}{\code{dataframe} with genomic annotations (at least 3 columns: chromosome, start and stop).}
 
-\item{chromsize}{Data frame with chromosome names and lengths. Chromosomes are also filtered according to this list.}
+\item{chromsize}{\code{dataframe} with chromosome names and sizes. Chromosomes are also filtered according to this list.}
 
-\item{chr.col}{Column number for chromosome names, default=1.}
+\item{chr.col}{Column number for chromosome names, default is 1.}
 
-\item{start.col}{Column number for start, default=2.}
+\item{start.col}{Column number for start, default is 2.}
 
-\item{end.col}{Column number for end, default=3.}
+\item{end.col}{Column number for end, default is 3.}
 
-\item{strand.col}{Column number for strands, default=NULL to set strands as "*" (instead of "+" or "-").}
+\item{strand.col}{Column number for strands, default is \code{NULL} to set strands as "*" (i.e both strands or unknown stand) otherwise the column must contain "+" or "-" characters.}
 
-\item{name.col}{Column number for annotation names, default=NULL to create names with chr.names and start.}
+\item{name.col}{Column number for annotation names, default is \code{NULL} to create names with chr.names and start.}
 
-\item{metadata.mcols}{Column number(s) for metadata, default=NULL (ie no metadata).}
+\item{metadata.mcols}{Column number(s) for metadata, default is \code{NULL} (i.e no metadata).}
 }
 \value{
 GRange file that contains chromosome size.
 }
 \description{
-This function create a GRange object from the first dataframe and add the size of the chromosomes from the second dataframe.
-A name of each line is added to the GRange object.
+This function create a GRange object from the first \code{dataframe} and add the size of the chromosomes on the second \code{dataframe}.
+A name of each line is added to the \code{GRanges} output.
 }
