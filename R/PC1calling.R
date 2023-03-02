@@ -1,4 +1,4 @@
-#' @title Compartments calling (A or B)
+#' @title Compartments calling (A or B) from PC1 scores
 #'
 #' @description From the scores of each bin (i.e first principal component scores), `PC1calling` output a `GRanges` with compartment A for score >= 0 and compartment B for score < 0
 #'
@@ -7,7 +7,7 @@
 #' Otherwise (if `NA` are between compartment A and B) they are not called, thus leaving a gap between two compartments.
 #'
 #'
-#' @param bedgraph `GRanges` object or bedgraph path (4 columns: chr, star, end, score).
+#' @param bedgraph `GRanges` or `data.frame` object or bedgraph path (4 columns: chr, star, end, score).
 #'
 #' @return `GRanges`
 #'
@@ -31,9 +31,14 @@ PC1calling <- function(bedgraph) {
     grange = GenomicRanges::makeGRangesFromDataFrame(bedgraph, start.field="V2", end.field = "V3", seqnames.field = "V1", keep.extra.columns = T)
   }
 
+  if (class(bedgraph)=="data.frame") {
+    grange = bedgraph %>% dplyr::mutate(comp = dplyr::case_when(bedgraph[,4] < 0 ~ 'B', bedgraph[,4] >= 0 ~ 'A', is.na(bedgraph[,4]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
+  }
+
   if (class(bedgraph)=="GRanges") {
     grange = bedgraph %>% as.data.frame %>% dplyr::mutate(comp = dplyr::case_when(GenomicRanges::mcols(bedgraph)[,1] < 0 ~ 'B', GenomicRanges::mcols(bedgraph)[,1] >= 0 ~ 'A', is.na(GenomicRanges::mcols(bedgraph)[,1]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
   }
+
 
 
   gap = GenomicRanges::gaps(grange, start = 2)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/TADshuffling.R
 \name{TADshuffling}
 \alias{TADshuffling}
-\title{TAD shuffling}
+\title{randomize domains order}
 \usage{
 TADshuffling(tad.gr)
 }

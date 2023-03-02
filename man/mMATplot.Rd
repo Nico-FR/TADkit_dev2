@@ -2,7 +2,7 @@
 % Please edit documentation in R/mMATplot.R
 \name{mMATplot}
 \alias{mMATplot}
-\title{Plot 2 matrix with annotations}
+\title{Plot 2 interaction matrices}
 \usage{
 mMATplot(
   matrix.upper,
@@ -49,7 +49,7 @@ mMATplot(
 
 \item{matrix.upper.txt, matrix.lower.txt}{text to write on the upper or lower part of the matrix.}
 
-\item{tad.upper.tri, tad.lower.tri}{bed files path, data frame or grange object with the TAD to plot as triangle in the upper or lower part of the matrix. Default is NULL.}
+\item{tad.upper.tri, tad.lower.tri}{\code{data.frame}, \code{GRanges} or the bed files path with the TAD to plot as triangle in the upper or lower part of the matrix. Default is \code{NULL}.}
 
 \item{loop.bedpe}{\code{data.frame} or bedpe files path to plot on both parts of the matrix. Six columns table (chr1, start1, end1, chr2, start2, end2) that gives loops between 2 areas. Default is \code{NULL}}
 
@@ -57,7 +57,7 @@ mMATplot(
 
 \item{annotations.color}{Color for loop and triangular annotations. Default is \code{"red"}.}
 
-\item{tad.upper.line, tad.lower.line}{bed files path, data frame or grange object with the TAD to plot as line in the upper or lower parts of the matrix. Default is NULL.}
+\item{tad.upper.line, tad.lower.line}{\code{data.frame}, \code{GRanges} or the bed files path with the TAD to plot as line in the upper or lower parts of the matrix. Default is \code{NULL}.}
 
 \item{tad.line.col}{Column number of \code{tad.upper.line} and \code{tad.lower.line} files that contain factors used to color upper and lower lines. Default is \code{NULL}.}
 

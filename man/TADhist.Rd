@@ -2,7 +2,7 @@
 % Please edit documentation in R/TADhist.R
 \name{TADhist}
 \alias{TADhist}
-\title{Histogram of annotation distribution within TADs}
+\title{Histogram of annotation distribution within domains}
 \usage{
 TADhist(
   tad.gr,

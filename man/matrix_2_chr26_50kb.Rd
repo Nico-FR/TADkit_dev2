@@ -3,12 +3,12 @@
 \docType{data}
 \name{matrix_2_chr26_50kb}
 \alias{matrix_2_chr26_50kb}
-\title{Matrix of individual 2 and chromosome 26.}
+\title{Matrix of bovine 2 and chromosome 26.}
 \format{
 \subsection{\code{matrix_2_chr26_50kb}}{
 
 A dgCMatrix object with 1040 rows and columns containing the raw counts (number of interactions).
-For individual 2, chromosome 26 with a bin width of 50e3 bases pairs.
+For bovine 2, chromosome 26 with a bin width of 50e3 bases pairs.
 Only the upper matrix and non zero count are stored.
 }
 }
@@ -16,6 +16,6 @@ Only the upper matrix and non zero count are stored.
 matrix_2_chr26_50kb
 }
 \description{
-Matrix of individual 2 and chromosome 26.
+Matrix of bovine 2 and chromosome 26.
 }
 \keyword{datasets}

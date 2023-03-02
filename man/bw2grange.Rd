@@ -2,7 +2,7 @@
 % Please edit documentation in R/bw2grange.R
 \name{bw2grange}
 \alias{bw2grange}
-\title{Convert bigwig file to \code{GRanges} object}
+\title{Convert bigwig file to \code{GRanges}}
 \usage{
 bw2grange(bigwig.path, bin.width = NULL)
 }

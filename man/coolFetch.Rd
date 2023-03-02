@@ -2,7 +2,7 @@
 % Please edit documentation in R/coolFetch.R
 \name{coolFetch}
 \alias{coolFetch}
-\title{Fetch a chromosome of a cool or mcool file}
+\title{Import matrix from cool or mcool file}
 \usage{
 coolFetch(cool.path, chr, bin.width = NA, balance = FALSE)
 }

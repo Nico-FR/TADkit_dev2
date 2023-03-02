@@ -1,4 +1,4 @@
-#' @title Plot TADs for one individual
+#' @title Plot domains for one individual
 #'
 #' @description `TADplot()` use `Gviz` package to plot at least 2 tracks:
 #' * All the TADs from a specified chromosome,
@@ -148,7 +148,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
       ranges = IRanges::IRanges(start = extended_start, end = extended_stop),
       strand = "*"
     )
-    GenomeInfoDb::seqlengths(bin.gr) <- GenomeInfoDb::seqlengths(tad.gr)[chr]
+    GenomeInfoDb::seqlengths(bin.gr) <- GenomeInfoDb::seqlengths(tad.gr)[as.character(chr)]
 
     GenomeInfoDb::seqlevels(bin.gr) <- as.character(bigwig.chr)
 

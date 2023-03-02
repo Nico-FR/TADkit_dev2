@@ -1,4 +1,4 @@
-#' Plot TADs for multiple individuals
+#' Plot domains for multiple individuals
 #'
 #' @description `mTADplot()` is similar to the `TADplot()` but it allows to plot and compare several individuals.
 #' The simplest graph allows you to view the domains of one or more individuals.

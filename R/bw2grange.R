@@ -1,4 +1,4 @@
-#' Convert bigwig file to `GRanges` object
+#' Convert bigwig file to `GRanges`
 #'
 #' @description From the full path of a bigwig files, return a `GRanges` object. The bin width of the `GRanges` can be specify with `bin.width` parameter.
 #'

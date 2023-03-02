@@ -1,0 +1,272 @@
+---
+title: "Tutorial_TADkit_R_package"
+output:
+    html_document: 
+      self_contained: true
+      number_sections: yes
+      toc: yes
+editor_options:
+  chunk_output_type: inline
+vignette: >
+  %\VignetteIndexEntry{Turorial_TADkit_R_package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>")
+```
+
+# Preamble
+
+The main objective of TADkit R package was to allow easy visualization of data that are associated with HiC analysis. For that purpose two pairs of function have been created to visualize :
+
+* domains such as TADs (topological Associated Domain) or compartments (compartment A and B),
+* interaction matrices.
+
+Other tools has been added in order to analysed genomic annotations in the light of the 3D organisation.
+
+In this tutorial, we are going to start with the visualization of domains and matrices with the datas included in the package. Note that most of the functions refer to the so called TAD but it also work for other kind of domains (e.g compartments). 
+
+# Data format
+
+First, we will see the different types of data and their formats that can be visualized with TADkit. Datas of 2 chromosomes and 2 cows are available within the package.
+Let's start by loading the packages needed for that tutorial.
+```{r setup, warning=FALSE, message=FALSE}
+library(TADkit)
+library(dplyr)
+library(GenomicRanges)
+library(GenomicFeatures)
+```
+
+## .bed
+
+Domains are usely stored in bed file format which contains at least 3 columns (chromosome name, the start and the end of the TAD). 
+```{r}
+head(TADkit::tad_1_10kb.bed) #TAD for bovine 1 estimated from 10kb matrix
+```
+Other columns can be added like the stand, any score or character. In most of the functions bed files must be stored in `GRanges` in which we can store the chromosomes sizes with `dataframe2grange()`:
+```{r}
+#chromosomes sizes
+TADkit::chromsize
+#create GRanges with chr sizes:
+tad_1_10kb.gr = dataframes2grange(TADkit::tad_1_10kb.bed, TADkit::chromsize)
+tad_1_10kb.gr
+seqlengths(tad_1_10kb.gr)
+```
+TADs are often stored in the form of domains and each domain gives the beginning and the end of a TAD. Sometime TADs are stored in the form of boundaries which gives the bin in which the border is located. The size of the boundaries correspond to the size of the bins used (i.e 10kb in our datas).
+```{r}
+#TADs as a form of boundaries:
+boundaries = data.frame(chr = seqnames(tad_1_10kb.gr),
+                      start = start(tad_1_10kb.gr) - 5e3,
+                      end = start(tad_1_10kb.gr) + 5e3)
+head(boundaries)
+```
+Then boundaries can be translated as domains with `boundary2domain()`:
+```{r}
+boundary2domain(boundaries)
+```
+
+Download genes annotations available on Ensembl:
+```{r}
+txdb <- GenomicFeatures::makeTxDbFromBiomart(biomart="ensembl", dataset="btaurus_gene_ensembl")
+genomic.gr = GenomicFeatures::genes(txdb, columns=c("TXTYPE"))
+genomic.gr
+```
+
+## .bedgraph
+
+Bedgraph are used to store a score for each bin, like insulation score. Insulation score is a measure of the number of interactions (that pass on both sides of his bin) used to call TAD boundaries.
+To avoid having to load too much data in the R environment, in most of the TADkit functions, only the full path of the bedgraph files are needed.
+```{r}
+head(TADkit::IS_1_10kb.bedgraph)
+
+#write bedgraph in a file
+write.table(TADkit::IS_1_10kb.bedgraph, "./IS_1_10kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t")
+```
+
+## .bigwig
+
+Similar to bedgraph, bigwig files are used to store a score for each interval in an indexed and compressed form. 
+Insulation scores stored as a bigwig format can be translated to a `GRranges` with `bw2grange()`.
+
+For this tutorial we are going to use coverage data from RNA sequencing experiment available on Ensembl.
+Download expression data (RNAseq) of bovine:
+```{r}
+download.file("http://ftp.ensembl.org/pub/release-104/bamcov/bos_taurus/genebuild/ARS-UCD1.2.ENA.heart.1.bam.bw", destfile = "./rna_seq_bov.bw", method = "curl") #if it fails: remove the method parameter or download it manually
+```
+
+# Domains plot
+
+Two functions have been built to plot TADs: 
+for one indiviual `TADplot()` and multiple individual `mTADplot()`. 
+
+In addition to domains, few others tracks can be plotted:
+
+* bedgraph to plot bin scores (e.g insulation score...),
+* bigwig to plot coverage datas (e.g RNAseq...),
+* bed to plot annotations (e.g genes...).
+
+## TADplot
+
+Let start with the most basic usage:
+```{r, fig.height = 1.5, fig.width = 8}
+TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6) #Note that the area is extended to the first and last TAD.
+```
+
+Add insulation score (bedgraph), RNAseq (bigwig) and genomic annotations (genes...) grouped according to the "TXTYPE" column (i.e first metadata column):
+```{r, fig.height = 5, fig.width = 8}
+TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6,
+        bedgraph.path = "./IS_1_10kb.bedgraph",
+        bigwig.path = "./rna_seq_bov.bw", 
+        annot.gr = genomic.gr, annot.col = 1)
+```
+
+## mTADplot
+
+`mTADplot()` allow to plot 1 or more individual/sample in a same plot. All tracks inputs must be stored in a list, and all object in the list must have names:
+
+data for the 2 bovine:
+```{r}
+tad_2_10kb.gr = dataframes2grange(TADkit::tad_2_10kb.bed, TADkit::chromsize) 
+write.table(TADkit::IS_2_10kb.bedgraph, "./IS_2_10kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
+```
+
+### Create list
+
+```{r, fig.height = 3, fig.width = 7}
+#list of TADs
+tad.lst = list(tad_1_10kb.gr, tad_2_10kb.gr)
+names(tad.lst) = c("bov1", "bov2")
+
+#insulation score (path) list
+IS.lst = list("./IS_1_10kb.bedgraph", "./IS_2_10kb.bedgraph")
+names(IS.lst) = c("bov1", "bov2")
+
+mTADplot(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
+        bedgraphPath.lst = IS.lst)
+```
+
+# Matrix plot
+
+Two functions have been built to plot interaction count (HiC matrix) for one matrix `MATplot()` and 2 matrices `mMATplot()` (one the upper or lower part). In addition to matrices, 3 others tracks can be plotted:
+
+* bed file type to visualized domains as a line or a triangle,
+* bedpe file type to visualized interactions between 2 areas.
+
+Interaction count can be store in a multiple of format. A basic storage is a data frame in which each row and columns represent a bin. A matrices for chromosome 25 and 26 are available in the TADkit package as a sparse `dgCMatrix` format (i.e only the upper part of the matrix without the zeros are stored). 
+```{r}
+class(matrix_1_chr25_50kb)
+
+#raw count between bins 60 to 70
+matrix_1_chr25_50kb[60:70,60:70]
+```
+As interaction count for one genome is a very large size, only the matrix for one chromosome can be load and plot with TADkit package.
+
+One of the most common HiC array storage formats is the .cool or .mcool format which store data for 1 resolution and multiple resolutions respectively. To convert cool/.mcool to `dgCMatrix`, a function have been build: `coolFetch()`:
+```{r, eval=FALSE}
+#read .cool file
+my_matrix.10kb = coolFetch("my_matrix.10kb.cool", chr = "chr_name")
+```
+
+## MATplot
+
+### matrix + triangles
+
+Plot of the matrix at 50kb resolution with TADs as triangles on the upper part of the matrix.
+```{r, fig.height = 7, fig.width = 7}
+MATplot(matrix_1_chr25_50kb, start = 10e6, stop = 30e6,
+        bin.width = 50e3, log2 = T,
+        tad.upper.tri = tad_1_10kb.gr,
+        tad.chr = 25, #filter TADs for chr 25
+        scale.colors = "H", #color of matrix, try "D" or "H"
+        annotations.color = "red")
+```
+
+### matrix + triangles + loops + lines
+
+bedpe file as used to highlight 2 areas. For example let's create a bedpe file to highlight the region of chromsome 25 between :
+* 11Mb to 13Mb,
+* 26Mb to 27Mb:
+```{r}
+bedpe = data.frame(chr1 = "25", start1 = 11e6, end1 = 13e6,
+                   chr2 = "25", start2 = 26e6, end2 = 27e6)
+```
+
+In addition to bedpe file, let's see 2 others functions:
+* `matObsExp()` to produce the observed / expected ratio of interaction count,
+* `PC1calling()` to call the compartments A and B from PC1 values.
+```{r, fig.height = 7, fig.width = 7}
+MATplot(matObsExp(matrix_1_chr25_50kb), start = 10e6, stop = 30e6,
+        bin.width = 50e3, log2 = T,
+        tad.upper.tri = tad_1_10kb.gr,
+        tad.chr = 25, #filter TADs for chr 25
+        scale.colors = "OE", 
+        annotations.color = "red",
+        loop.bedpe = bedpe,
+        tad.upper.line = PC1calling(PC1_1_50kb.bedgraph), #compartments
+        tad.line.col = 1 #use the fist metadata columns with vectors A and B
+        )
+```
+
+# Clear files
+
+```{r}
+file.remove(
+  grep(list.files(full.names = TRUE), pattern = "Rmd", invert = TRUE, value = TRUE))
+```
+
+
+
+# Analysis
+
+In progress...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

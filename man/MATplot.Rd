@@ -2,7 +2,7 @@
 % Please edit documentation in R/MATplot.R
 \name{MATplot}
 \alias{MATplot}
-\title{Plot matrix with annotations}
+\title{Plot interaction matrix}
 \usage{
 MATplot(
   matrix,
@@ -66,8 +66,8 @@ MATplot(
 }
 \description{
 \code{MATplot} allow to plot matrix with 2 types of annotations:
--domains (e.g. TADs or compartments) are plot as triangles and/or lines on the upper or/and lower part of the matrix.
--interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
+* domains (e.g. TADs or compartments) are plot as triangles and/or lines on the upper or/and lower part of the matrix.
+* interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
 }
 \details{
 The matrix input must be a \code{dgCMatrix} or a \code{matrix} object for only one chromosome (see \code{coolFetch} function to read cool files).

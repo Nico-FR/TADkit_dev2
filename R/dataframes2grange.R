@@ -1,4 +1,4 @@
-#' Create GRange with sequence lengths
+#' Create GRanges with metadatas
 #'
 #' This function create a GRange object from the first `dataframe` and add the size of the chromosomes on the second `dataframe`.
 #' A name of each line is added to the `GRanges` output.

@@ -1,8 +1,8 @@
-#' @title Plot matrix with annotations
+#' @title Plot interaction matrix
 #'
 #' @description `MATplot` allow to plot matrix with 2 types of annotations:
-#' -domains (e.g. TADs or compartments) are plot as triangles and/or lines on the upper or/and lower part of the matrix.
-#' -interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
+#'     * domains (e.g. TADs or compartments) are plot as triangles and/or lines on the upper or/and lower part of the matrix.
+#'     * interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
 #'
 #' @details The matrix input must be a `dgCMatrix` or a `matrix` object for only one chromosome (see `coolFetch` function to read cool files).
 #' All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (`dataframe` or `GRanges`) or the path of the files.

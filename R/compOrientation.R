@@ -1,4 +1,4 @@
-#' @title Orientation of bedgraph score
+#' @title Orientation of PC1 score
 #'
 #' @description Considering that the A compartments have a stronger expression than the B compartments.
 #' This function allows the score (i.e PC1 score) to be oriented (positif or negatif).

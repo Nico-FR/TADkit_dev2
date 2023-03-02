@@ -14,7 +14,7 @@
 #'
 boundary2domain <- function(boundaries) {
 
-  if (class(boundaries) == "GRnages") {
+  if (class(boundaries) == "GRanges") {
     boundaries = as.data.frame(boundaries)[,1:3]}
 
   boundaries$mean = apply(boundaries[,2:3], 1, mean)
@@ -27,6 +27,6 @@ boundary2domain <- function(boundaries) {
       end = x$mean[2:nrow(x)])
     })
   df = do.call("rbind", df.lst)
-
+  rownames(df) = paste0(df$seqnames, "_", df$start)
   return(GenomicRanges::makeGRangesFromDataFrame(df))
 }

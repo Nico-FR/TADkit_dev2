@@ -1,4 +1,4 @@
-#' @title TAD shuffling
+#' @title randomize domains order
 #'
 #' @description From an ordered set of TADs, this function return un random set of TADs.
 #'

@@ -1,4 +1,4 @@
-#' @title Histogram of annotation distribution within TADs
+#' @title Histogram of annotation distribution within domains
 #'
 #' @description Plot of the distribution of the genomic annotations within the TADs (relative distance)
 #' Measures the relative distances of annotation border (start, end or the center) according to TAD size and plot the distribution as an histogram.

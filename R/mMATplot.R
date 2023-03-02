@@ -1,4 +1,4 @@
-#' @title Plot 2 matrix with annotations
+#' @title Plot 2 interaction matrices
 #'
 #' @description Same as `MATplot()` function but `mMATplot()` allow to plot 2 different matrices on the upper and lower part of the plot.
 #' Two types of annotations can be added:
@@ -14,8 +14,6 @@
 #' @inheritParams MATplot
 #' @param matrix.upper,matrix.lower `dgCMatrix` or `matrix` object for only one chromosome.
 #' @param matrix.upper.txt,matrix.lower.txt text to write on the upper or lower part of the matrix.
-#' @param tad.upper.tri,tad.lower.tri bed files path, data frame or grange object with the TAD to plot as triangle in the upper or lower part of the matrix. Default is NULL.
-#' @param tad.upper.line,tad.lower.line bed files path, data frame or grange object with the TAD to plot as line in the upper or lower parts of the matrix. Default is NULL.
 #'
 #' @return `ggplot`
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mTADplot2.R
 \name{mTADplot2}
 \alias{mTADplot2}
-\title{Plot TADs for multiple individuals}
+\title{Plot domains for multiple individuals}
 \usage{
 mTADplot2(
   tad.lst,

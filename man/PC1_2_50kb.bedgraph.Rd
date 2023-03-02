@@ -3,12 +3,12 @@
 \docType{data}
 \name{PC1_2_50kb.bedgraph}
 \alias{PC1_2_50kb.bedgraph}
-\title{First principal component score of individual 2 and chromosome 25/26.}
+\title{First principal component score of bovine 2 and chromosome 25/26.}
 \format{
 \subsection{\code{PC1_2_50kb.bedgraph}}{
 
 A data frame containing PC1 score calculated by dcHiC on 50kb matrix.
-For individual 2, chromosome 25 and 26.
+For bovine 2, chromosome 25 and 26.
 \describe{
 \item{chr}{chromosome name}
 \item{start}{bin start}
@@ -21,6 +21,6 @@ For individual 2, chromosome 25 and 26.
 PC1_2_50kb.bedgraph
 }
 \description{
-First principal component score of individual 2 and chromosome 25/26.
+First principal component score of bovine 2 and chromosome 25/26.
 }
 \keyword{datasets}

@@ -3,12 +3,12 @@
 \docType{data}
 \name{tad_2_10kb.bed}
 \alias{tad_2_10kb.bed}
-\title{Topological Associated Domain of individual 2 and chromosome 25/26.}
+\title{TAD of bovine 2 and chromosome 25/26.}
 \format{
 \subsection{\code{tad_2_10kb.bed}}{
 
 A data frame containing TADs (domains) predicted by HiCExplorer on 10kb matrix.
-For individual 2, chromosome 25 and 26.
+For bovine 2, chromosome 25 and 26.
 \describe{
 \item{chr}{chromosome name}
 \item{start}{TAD start}
@@ -20,6 +20,6 @@ For individual 2, chromosome 25 and 26.
 tad_2_10kb.bed
 }
 \description{
-Topological Associated Domain of individual 2 and chromosome 25/26.
+TAD of bovine 2 and chromosome 25/26.
 }
 \keyword{datasets}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/TADdiff.R
 \name{TADdiff}
 \alias{TADdiff}
-\title{TAD boundaries comparison between 2 or more samples.}
+\title{TAD boundaries differences between 2 or more samples.}
 \usage{
 TADdiff(
   boundaries.lst,
@@ -28,13 +28,13 @@ list of GRanges
 }
 \description{
 \code{TADdiff} check if for each TAD boundary from one sample there is an other boundary in the vicinity on all other samples provided.
-It also return the score for each boundary and calculate the delta between each sample.
+It also return the score for each boundary and the delta between each sample.
 }
 \details{
-\code{TADdiff} take the score used to find TAD boundaries (e.g insulation score) and the TAD boundaries as a \code{GRanges} object (see \code{dataframes2grange()} function).
+\code{TADdiff()} takes the score used to find TAD boundaries (e.g insulation score) and the TAD boundaries as a \code{GRanges} object (see \code{dataframes2grange()} function).
 For each TAD boundary :
--the function check if there is an other boundary in all others samples +/- \code{window.size} (e.g +/- 20kb if \code{bin.size} = 10kb and \code{window.size} = \code{NULL}),
--export the score at the boundary and calculate the delta compare to the other samples. Those delta scores can be used to rank and find the boundary with the highest differences.
-Differences analysis (new boundary and delta score at boundary) are performed between 2 samples or more.
-Boundaries at the extremities of the chromosomes (beginning and the end of each chromosome) can be ignored using restrict parameters as it is usually difficult to estimate accurately the score in those regions.
+-checks if there is an other boundary in the other sample +/- \code{window.size} (e.g +/- 20kb if \code{bin.size = 10e3} and \code{window.size = NULL}),
+-exports the score at the boundary and the delta score at he boundary compared to the other sample. Those delta scores can be used to rank and find the boundary with the highest differences.
+Differences analysis (new boundary and delta score at boundary) are performed between each samples (2 samples or more).
+Because the scores are often not accurate at the extremities of the chromosomes (beginning and the end of each chromosome), these regions can be ignored using \code{restrict} parameters.
 }

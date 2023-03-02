@@ -2,7 +2,7 @@
 % Please edit documentation in R/TADplot.R
 \name{TADplot}
 \alias{TADplot}
-\title{Plot TADs for one individual}
+\title{Plot domains for one individual}
 \usage{
 TADplot(
   tad.gr,

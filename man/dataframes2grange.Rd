@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframes2grange.R
 \name{dataframes2grange}
 \alias{dataframes2grange}
-\title{Create GRange with sequence lengths}
+\title{Create GRanges with metadatas}
 \usage{
 dataframes2grange(
   annotation.table,

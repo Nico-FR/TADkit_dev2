@@ -2,7 +2,7 @@
 % Please edit documentation in R/compOrientation.R
 \name{compOrientation}
 \alias{compOrientation}
-\title{Orientation of bedgraph score}
+\title{Orientation of PC1 score}
 \usage{
 compOrientation(bedgraph, gene.gr, expression.data.frame)
 }

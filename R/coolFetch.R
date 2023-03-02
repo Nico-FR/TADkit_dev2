@@ -1,4 +1,4 @@
-#' @title Fetch a chromosome of a cool or mcool file
+#' @title Import matrix from cool or mcool file
 #'
 #' @description From cool or mcool files, `coolFetch` import the interaction matrix for one chromosome.
 #' If balance = `TRUE`, `coolFetch` returns the normalized counts

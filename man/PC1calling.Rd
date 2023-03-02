@@ -2,12 +2,12 @@
 % Please edit documentation in R/PC1calling.R
 \name{PC1calling}
 \alias{PC1calling}
-\title{Compartments calling (A or B)}
+\title{Compartments calling (A or B) from PC1 scores}
 \usage{
 PC1calling(bedgraph)
 }
 \arguments{
-\item{bedgraph}{\code{GRanges} object or bedgraph path (4 columns: chr, star, end, score).}
+\item{bedgraph}{\code{GRanges} or \code{data.frame} object or bedgraph path (4 columns: chr, star, end, score).}
 }
 \value{
 \code{GRanges}
