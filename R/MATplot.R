@@ -37,13 +37,20 @@
 #'
 #' @return `ggplot`
 #'
-#' @importFrom Matrix triu summary diag tril
+#' @importFrom Matrix triu summary diag tril band
 #' @importFrom viridis scale_fill_viridis
 #' @importFrom scales unit_format
+#' @importFrom dplyr filter
 #' @import ggplot2
 #' @export
 #'
 #' @examples
+#' MATplot(matrix_1_chr25_50kb, start = 10e6, stop = 30e6,
+#' bin.width = 50e3, log2 = T,
+#' tad.upper.tri = tad_1_10kb.gr,
+#' tad.chr = 25, #filter TADs for chr 25
+#' scale.colors = "H", #color of matrix, try "D" or "H"
+#' annotations.color = "red")
 
 MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H", matrix.diag = T,
                     tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL, tad.chr = NULL, annotations.color = "red",

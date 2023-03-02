@@ -39,7 +39,7 @@
 #' @importFrom IRanges IRanges ranges
 #' @import GenomeInfoDb
 #' @importFrom magrittr %>%
-#' @import dplyr
+#' @importFrom dplyr select full_join
 #' @importFrom utils read.table
 #' @import Gviz
 #'

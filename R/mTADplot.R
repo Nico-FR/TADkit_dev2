@@ -40,7 +40,7 @@
 #' @import IRanges
 #' @import GenomeInfoDb
 #' @importFrom magrittr %>%
-#' @import dplyr
+#' @importFrom dplyr full_join select
 #' @importFrom utils read.table
 #' @import Gviz
 #' @export

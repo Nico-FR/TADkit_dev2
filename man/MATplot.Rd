@@ -76,3 +76,11 @@ For \code{tad.lines}, another column can be used to specify different classes of
 Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a \code{dataframe} object or the path of the file.
 Chromosome domains and loops can be filter using \code{tad.chr} parameter.
 }
+\examples{
+MATplot(matrix_1_chr25_50kb, start = 10e6, stop = 30e6,
+bin.width = 50e3, log2 = T,
+tad.upper.tri = tad_1_10kb.gr,
+tad.chr = 25, #filter TADs for chr 25
+scale.colors = "H", #color of matrix, try "D" or "H"
+annotations.color = "red")
+}

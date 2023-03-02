@@ -18,7 +18,7 @@
 #' @return `ggplot`
 #'
 #' @import GenomeInfoDb
-#' @import dplyr
+#' @importFrom dplyr select filter
 #' @import ggplot2
 #' @import GenomicRanges
 #' @importFrom tidyr gather

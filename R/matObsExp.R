@@ -13,7 +13,8 @@
 #' @return `dgCMatrix` object: upper triangular and sparse Matrix
 #'
 #' @importFrom stats toeplitz
-#' @import Matrix
+#' @importFrom Matrix triu
+#' @importClassesFrom Matrix dgCMatrix
 #' @importFrom methods as
 #' @export
 #'

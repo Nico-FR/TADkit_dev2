@@ -12,7 +12,7 @@
 #' @import GenomicRanges
 #' @import GenomeInfoDb
 #' @importFrom magrittr %>%
-#' @import dplyr
+#' @importFrom dplyr filter
 #'
 #' @export
 #'
