@@ -17,7 +17,7 @@ TADplot(
   bigwig.yaxis = NULL,
   annot.gr = NULL,
   annot.col = NULL,
-  bedgraph.path = NULL
+  bedgraph = NULL
 )
 }
 \arguments{
@@ -44,7 +44,7 @@ Alternatively, other predefined functions can be supplied as character (\code{"m
 
 \item{annot.col}{Column number of the metadata from \code{annot.gr} file used to group the annotation tracks. Default = \code{NULL}.}
 
-\item{bedgraph.path}{Path for the bedgraph file plotted as line. Default = \code{NULL} (i.e the track is not plotted).}
+\item{bedgraph}{\code{data.frame}, \code{GRanges} or path for the bedgraph file plotted as line. Default = NULL (i.e no track is plotted).}
 }
 \value{
 Plot with domains and other tracks as a list of GenomeGraph tracks (see \code{Gviz::plotTracks} for details).

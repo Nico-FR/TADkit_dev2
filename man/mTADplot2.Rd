@@ -17,7 +17,7 @@ mTADplot2(
   bigwig.yaxis = NULL,
   annot.lst = NULL,
   annot.col = NULL,
-  bedgraphPath.lst = NULL,
+  bedgraph.lst = NULL,
   bedgraph.name = "bedgraph",
   bedgraph_outliers = 0,
   colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F",
@@ -48,8 +48,8 @@ Alternatively, other predefined functions can be supplied as character (\code{"m
 
 \item{annot.col}{Column number of the metadata from annot.gr file(s) used to group the annotation tracks. Default = NULL.}
 
-\item{bedgraphPath.lst}{List of path for the bedgraph file(s) plotted as line. Default = NULL (ie no track is plotted).
-it is possible to create several bedgraph tracks (each containing 1 or more lines) by using a list containing another list of path (see exemple). All list must have names.}
+\item{bedgraph.lst}{\code{data.frame}, \code{GRanges} or list of path for the bedgraph file(s) plotted as line. Default = NULL (i.e no track is plotted).
+it is possible to create several bedgraph tracks (each containing 1 or more lines) by using a list containing few others lists (see vignette). All list must have names.}
 
 \item{bedgraph.name}{Name of the bedgraph track when there is only one track (default = "bedgraph"). Otherwise it takes the names of each list.}
 

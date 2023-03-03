@@ -32,7 +32,7 @@
 #' @param bigwig.chr Chromosome name used for the bigwig file. Default = `NULL` to used the same name as chr.
 #' @param bigwig.yaxis Function used to transforming the y-axis of bigwig values. Default = `NULL`. Use `"log2"` to use the function `log2(x + 1)` to transform the y-axis or provide any other function.
 #' @param annot.col Column number of the metadata from `annot.gr` file used to group the annotation tracks. Default = `NULL`.
-#' @param bedgraph.path Path for the bedgraph file plotted as line. Default = `NULL` (i.e the track is not plotted).
+#' @param bedgraph `data.frame`, `GRanges` or path for the bedgraph file plotted as line. Default = NULL (i.e no track is plotted).
 #'
 #' @return Plot with domains and other tracks as a list of GenomeGraph tracks (see `Gviz::plotTracks` for details).
 #'
@@ -67,7 +67,7 @@
 #' )
 TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
                     bigwig.path = NULL, bigwig.binwidth = 1e3, bigwig.xaxis = "mean", bigwig.chr = NULL, bigwig.yaxis = NULL,
-                    annot.gr = NULL, annot.col = NULL, bedgraph.path = NULL) {
+                    annot.gr = NULL, annot.col = NULL, bedgraph = NULL) {
 
   ##############################
   # Ideotrack
@@ -202,7 +202,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
           chromosome = as.character(chr),
           strand = BiocGenerics::strand(data1),
           id = names(data1), groupAnnotation = "id",
-          genome = "bosTau9", name = "Annot", col = "deepskyblue4"
+          genome = "custom", name = "Annot", col = "deepskyblue4"
         )
       }
     } else {
@@ -226,7 +226,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
           chromosome = as.character(chr),
           strand = BiocGenerics::strand(data1),
           group = GenomicRanges::mcols(data1)[,annot.col], groupAnnotation = "group",
-          genome = "bosTau9", name = "Annot", col = "deepskyblue4",
+          genome = "custom", name = "Annot", col = "deepskyblue4",
           col.line = "darkblue", cex.feature = 0.5, cex.group = 0.7,
           just.group = "below"
         )
@@ -237,10 +237,27 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
   #####################################
   # bedgraphTrack
   #####################################
-  if (is.null(bedgraph.path)) {
+  if (is.null(bedgraph)) {
     bedgraphTrack <- NULL
   } else {
-    bedgraphTrack <- DataTrack(range = bedgraph.path, type = "b", lwd = 1, name = "bg", chromosome = chr)
+    chromsize = data.frame(chr = GenomeInfoDb::seqlevels(tad.gr),
+                              size = seqlengths(tad.gr))
+    #read bedgraph datas
+    ##if dataframe
+    if (is.data.frame(bedgraph)) {
+      data1 = TADkit::dataframes2grange(bedgraph, chromsize, metadata.mcols = 4)
+    }
+    ##if path
+    if (is.character(bedgraph)) {
+      data0 = utils::read.table(bedgraph, header = FALSE, sep = "\t")[,1:4]
+      data1 = TADkit::dataframes2grange(data0, chromsize, metadata.mcols = 4)
+    }
+    ##if GRanges
+    if (class(bedgraph) == "GRanges") {
+      data1 = bedgraph[,1]
+    }
+
+    bedgraphTrack <- DataTrack(range = data1, type = "b", lwd = 1, name = "bg", chromosome = chr)
   }
 
   #####################################

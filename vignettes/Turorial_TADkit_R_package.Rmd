@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 # Preamble
 
-The main objective of TADkit R package was to allow easy visualization of data that are associated with HiC analysis. For that purpose two pairs of function have been created to visualize :
+The main objective of the TADkit R package is to make the visualization of data associated with HiC analyses accessible to biologists without the need for bioinformatics skills. To this end, two pairs of functions have been created to visualize :
 
 * domains such as TADs (topological Associated Domain) or compartments (compartment A and B),
 * interaction matrices.
@@ -78,7 +78,7 @@ mat1.dgcmat = as(mat1.mat, "dgCMatrix") #translate to dgCMatrix
 
 ### .cool / .mcool
 
-One of the most common HiC array storage formats is the .cool or .mcool format which store matrices for 1 resolution and multiple resolutions respectively. To load HiC matrix for one chromosome from cool/.mcool as a matrix (`dgCMatrix`), a function have been build: `coolFetch()`:
+One of the most common HiC array storage formats is the .cool or .mcool format which store matrices for 1 resolution and multiple resolutions respectively. To load HiC matrix for one chromosome from cool/.mcool as a matrix (`dgCMatrix`) use `coolFetch()`:
 ```{r, eval=FALSE}
 #read .cool file
 my_matrix.10kb = coolFetch("my_matrix.10kb.cool", chr = "chr_name")
@@ -93,7 +93,8 @@ Domains are usely stored in bed file format which contains at least 3 columns (c
 ```{r}
 head(TADkit::tad_1_10kb.bed) #TAD for bovine 1 estimated from 10kb matrix
 ```
-Other columns can be added like the stand, any score or character. In most of the functions bed files must be stored in `GRanges` in which we can store the chromosomes sizes with `dataframe2grange()`:
+Other columns can be added like the stand, any score or character. In most of the functions bed files must be stored in `GRanges` in which we can store the size of the chromosomes we will need.  
+To create a `GRanges` with the size of the chromosomes use `dataframe2grange()`:
 ```{r}
 #chromosomes sizes
 TADkit::chromsize
@@ -101,9 +102,11 @@ TADkit::chromsize
 #create GRanges with chr sizes:
 tad_1_10kb.gr = dataframes2grange(TADkit::tad_1_10kb.bed, TADkit::chromsize)
 tad_1_10kb.gr
+
+#chromsize within GRanges object
 seqlengths(tad_1_10kb.gr)
 ```
-TADs are often stored in the form of domains and each domain gives the beginning and the end of a TAD. Sometime TADs are stored in the form of boundaries which gives the bin in which the border is located. The size of the boundaries correspond to the size of the bins used (i.e 10kb in our datas).
+TADs are often stored in the form of domains and each domain gives the beginning and the end of a TAD. Sometime TADs are stored in the form of boundaries which gives bins in which borders are located. The width of the boundaries corresponds to the size of the bins in the matrix (i.e 10kb in our datas).
 ```{r}
 #TADs as a form of boundaries:
 boundaries = data.frame(chr = seqnames(tad_1_10kb.gr),
@@ -116,7 +119,7 @@ Then boundaries can be translated as domains with `boundary2domain()`:
 boundary2domain(boundaries)
 ```
 
-Download genes annotations available on Ensembl:
+In addition to TADs, we can also plot any type of annotations. For this tutorial we will use genes annotations available on Ensembl:
 ```{r}
 txdb <- makeTxDbFromBiomart(biomart="ensembl", dataset="btaurus_gene_ensembl")
 genomic.gr = genes(txdb, columns=c("TXTYPE"))
@@ -125,8 +128,14 @@ genomic.gr
 
 ## .bedgraph
 
-Bedgraph are used to store a score for each bin, like insulation score. Insulation score is a measure of the number of interactions (that pass on both sides of his bin) used to call TAD boundaries.
-To avoid having to load too much data in the R environment, in most of the TADkit functions, only the full path of the bedgraph files are needed.
+Bedgraph are used to store a score for each bin, like insulation score. Insulation score (IS) is defined for a bin as an average number of intyeractions that occur across this bin in some vicinity of the bin (Crane et al., 2015). Insulation scores are used to call TAD boundaries.
+In TADkit plot functions, bedgraph inputs can be in 3 formats:
+
+* `dataframe`,
+* `GRanges`,
+* or the path of the file.
+
+To avoid having to load too much data in the R environment, we will see in this tutorial how to use the paths:
 ```{r}
 head(TADkit::IS_1_10kb.bedgraph)
 
@@ -139,10 +148,10 @@ write.table(TADkit::IS_1_10kb.bedgraph, "./IS_1_10kb.bedgraph", col.names = FALS
 Similar to bedgraph, bigwig files are used to store a score for each interval in an indexed and compressed form. 
 Insulation scores stored as a bigwig format can be translated to a `GRranges` with `bw2grange()`.
 
-For this tutorial we are going to use coverage data from RNA sequencing experiment available on Ensembl.
-Download expression data (RNAseq) of bovine:
+For this tutorial we are going to use coverage data from RNA sequencing experiment available on Ensembl:
 ```{r}
-download.file("http://ftp.ensembl.org/pub/release-104/bamcov/bos_taurus/genebuild/ARS-UCD1.2.ENA.heart.1.bam.bw", destfile = "./rna_seq_bov.bw", method = "curl") #if it fails: remove the method parameter or download it manually
+#download expression data (RNAseq) of bovine:
+download.file("http://ftp.ensembl.org/pub/release-104/bamcov/bos_taurus/genebuild/ARS-UCD1.2.ENA.heart.1.bam.bw", destfile = "./rna_seq_bov.bw", method = "curl") #if it fails: remove the method parameter or download it manually in the current directory
 ```
 
 # Domains plot
@@ -162,15 +171,17 @@ Let start with the most basic usage:
 ```{r, fig.height = 1.5, fig.width = 8}
 TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6)
 ```
+
 Note that the area is extended to the first and last TAD of the window.
 
-Add insulation score (bedgraph), RNAseq (bigwig) and genomic annotations (genes grouped according to the "TXTYPE" column, i.e first metadata column):
+Add insulation score (bedgraph), RNAseq (bigwig) and genomic annotations (genes grouped according to the "TXTYPE" column, i.e first metadata column) to the plot:
 ```{r, fig.height = 5, fig.width = 8}
 TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6,
-        bedgraph.path = "./IS_1_10kb.bedgraph",
+        bedgraph = IS_1_10kb.bedgraph,
         bigwig.path = "./rna_seq_bov.bw", 
         annot.gr = genomic.gr, 
-        annot.col = 1 #columns to group annotations
+        annot.col = 1, #columns to group annotations
+        bigwig.yaxis = "log2" #log2 of RNAseq values
         )
 ```
 
@@ -209,12 +220,15 @@ names(IS.lst) = c("bov1", "bov2")
 #insulation score (path) list
 IS.lst = list("./IS_1_10kb.bedgraph", "./IS_2_10kb.bedgraph")
 names(IS.lst) = c("bov1", "bov2")
+
+IS.lst = list(makeGRangesFromDataFrame(IS_1_10kb.bedgraph, keep.extra.columns = T), makeGRangesFromDataFrame(IS_2_10kb.bedgraph, keep.extra.columns = T))
+names(IS.lst) = c("bov1", "bov2")
 ```
 
 Do the plot:
 ```{r, fig.height = 2.5, fig.width = 8}
 mTADplot2(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
-        bedgraphPath.lst = IS.lst, bedgraph.name = "IS")
+        bedgraph.lst = IS.lst, bedgraph.name = "IS")
 ```
 
 ### Create multiple lists
@@ -243,16 +257,40 @@ bedgraphs.lst
 Do the plot:
 ```{r, fig.height = 3.5, fig.width = 8}
 mTADplot2(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
-        bedgraphPath.lst = bedgraphs.lst)
+        bedgraph.lst = bedgraphs.lst)
 ```
+
+## Options
+
+When you master TADplot(), mTADplot() is much more powerful and flexible to make the desired graphics. Moreover there are many options to change some of the graphic parameters:
+
+### bigwigPath.lst	
+
+* bigwig.binsize: Bin sizes for the histogram. Default = 1e3.
+
+* bigwig.xaxis: Function used to transform the x-axis among each bigwig.binsize. Defaults = "median". Alternatively, other predefined functions can be supplied as character ("mean", "median", "sum", "min", "max" or "extreme").
+
+* bigwig.chr: Chromosome name used to filter chromosome names that can be different from chr (e.g chr = "1" and bigwig.chr = "chr1"). Default = NULL to used the same name as chr.
+
+* bigwig.yaxis: Function used to transforming the y-axis values. Default = NULL. Use "log2" to use the function log2(x + 1) to transform the y-axis (for RNA seq) or provide any other function.
+
+### annotation.lst
+
+* annot.col: Column number of the metadata from annot.gr file(s) used to group the annotation tracks. Default = NULL and the name of each annotation is added.
+
+### bedgraphPath.lst	
+
+* bedgraph.name: Name of the bedgraph track when there is only one track (default = "bedgraph"). Otherwise it takes the names of each list.
+
+* bedgraph_outliers: Ratio to remove outliers of all each bedgraph values. Default is 0 (ie no filter). To remove the first and last 2 percentiles (i.e extreme values / outliers) use 0.02.
 
 # Matrix plot
 
-Two functions have been built to plot interaction count (HiC matrix) for one matrix `MATplot()` and 2 matrices `mMATplot()` (one the upper or lower part) as a ggplot graph. 
+Two functions have been built to plot interaction count (HiC matrix) for one matrix `MATplot()` and 2 matrices `mMATplot()` (on the upper or lower part) as a ggplot graph. 
 In addition to matrices, 3 others tracks can be plotted:
 
-* bed file type to visualized domains as a line or a triangle,
-* bedpe file type to visualized interactions between 2 areas.
+* bed file type to visualized domains as lines or a triangles,
+* bedpe file type to hightlight interactions between 2 areas (loops).
 
 ## MATplot
 
@@ -278,6 +316,7 @@ bedpe file are used to highlight 2 areas. For example let's create a bedpe file 
 ```{r}
 bedpe = data.frame(chr1 = "25", start1 = 11e6, end1 = 13e6,
                    chr2 = "25", start2 = 26e6, end2 = 27e6)
+bedpe
 ```
 
 In addition to bedpe file, let's see 2 others functions:

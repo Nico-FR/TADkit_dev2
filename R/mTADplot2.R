@@ -27,8 +27,8 @@
 #' @param bigwig.binsize Bin sizes for the histogram of the bigwig track. Default = 1e3.
 #' @param annot.lst List of GRange file(s) with genomic annotations. Default = NULL (ie no track is plotted).
 #' @param annot.col Column number of the metadata from annot.gr file(s) used to group the annotation tracks. Default = NULL.
-#' @param bedgraphPath.lst List of path for the bedgraph file(s) plotted as line. Default = NULL (ie no track is plotted).
-#' it is possible to create several bedgraph tracks (each containing 1 or more lines) by using a list containing another list of path (see exemple). All list must have names.
+#' @param bedgraph.lst `data.frame`, `GRanges` or list of path for the bedgraph file(s) plotted as line. Default = NULL (i.e no track is plotted).
+#' it is possible to create several bedgraph tracks (each containing 1 or more lines) by using a list containing few others lists (see vignette). All list must have names.
 #' @param bedgraph.name Name of the bedgraph track when there is only one track (default = "bedgraph"). Otherwise it takes the names of each list.
 #' @param bedgraph_outliers Ratio to remove outliers of all bedgraph files. Default is 0 (ie no filter). To remove the first and last 2 percentiles use 0.02.
 #' @param colors.lst Set of 8 colors used for each files within a list.
@@ -48,7 +48,7 @@
 mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
                      bigwigPath.lst = NULL, bigwig.binsize = 1e3, bigwig.xaxis = "mean", bigwig.chr = NULL, bigwig.yaxis = NULL,
                      annot.lst = NULL, annot.col = NULL,
-                     bedgraphPath.lst = NULL, bedgraph.name = "bedgraph", bedgraph_outliers = 0,
+                     bedgraph.lst = NULL, bedgraph.name = "bedgraph", bedgraph_outliers = 0,
                      colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")) {
 
    #sanity check
@@ -91,7 +91,7 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
       width = BiocGenerics::width(data),
       chromosome = as.character(chr),
       id = if (!isTRUE(tad.id)) {paste0(round(BiocGenerics::width(data) / 1e3), "Kb")} else {names(data)},
-      genome = "bosTau9",
+      genome = "custom",
       name = names(tad.lst)[i],
       stacking = "dense",
       featureAnnotation = "id",
@@ -198,7 +198,7 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
             chromosome = as.character(chr),
             strand = BiocGenerics::strand(data1),
             group = names(data1), groupAnnotation = "group",
-            genome = "bosTau9", name = names(annot.lst[i]), col = "deepskyblue4",
+            genome = "custom", name = names(annot.lst[i]), col = "deepskyblue4",
             col.line = "darkblue"
           )
         }
@@ -223,7 +223,7 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
             chromosome = as.character(chr),
             strand = BiocGenerics::strand(data1),
             group = GenomicRanges::mcols(data1)[, annot.col], groupAnnotation = "group",
-            genome = "bosTau9", name = names(annot.lst[i]), col = "deepskyblue4",
+            genome = "custom", name = names(annot.lst[i]), col = "deepskyblue4",
             col.line = "darkblue", cex.feature = 0.5, cex.group = 0.7,
             just.group = "below"
           )
@@ -238,37 +238,51 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
   #####################################
 
   #1 if bedgraphPath = NULL
-  if (is.null(bedgraphPath.lst)) {
+  if (is.null(bedgraph.lst)) {
     bedgraphTracks <- NULL
   } else {
 
-    #If bedgraphPath is not a list
-    if (!is.list(bedgraphPath.lst)) {
-      stop("bedgraphPath.lst must be a list")
+    #Stop if bedgraphPath is not a list
+    if (!is.list(bedgraph.lst)) {
+      stop("bedgraph.lst must be a list")
     }
 
     #If bedgraphPath[[1]] is not a list (list within list)
-    if (!is.list(bedgraphPath.lst[[1]])) {
-      bedgraphPath.lst = list(bedgraphPath.lst)
-      names(bedgraphPath.lst) = bedgraph.name
+    if (class(bedgraph.lst[[1]]) != "list") {
+      bedgraph.lst = list(bedgraph.lst)
+      names(bedgraph.lst) = bedgraph.name
     }
 
     bedgraphTracks = NULL
 
     #For each tracks
-    for (l in 1:length(bedgraphPath.lst)){
+    for (l in 1:length(bedgraph.lst)){
       data <- NULL
 
       #For each lines
-      for (i in 1:length(bedgraphPath.lst[[l]])) {
+      for (i in 1:length(bedgraph.lst[[l]])) {
+
+        #read bedgraph datas
+        ##if dataframe
+        if (is.data.frame(bedgraph.lst[[l]][[i]])) {
+          data0 = bedgraph.lst[[l]][[i]][,1:4]
+        }
+        ##if path
+        if (is.character(bedgraph.lst[[l]][[i]])) {
+          data0 = utils::read.table(bedgraph.lst[[l]][[i]], header = FALSE, sep = "\t")[,1:4]
+        }
+        ##if GRanges
+        if (class(bedgraph.lst[[l]][[i]]) == "GRanges") {
+          data0 = as.data.frame(bedgraph.lst[[l]][[i]], row.names = NULL)[,c(1:3,6)]
+        }
 
         #filter chr
-        data1 <- (utils::read.table(bedgraphPath.lst[[l]][[i]], header = FALSE, sep = "\t") %>%
-                    filter(V1 == chr))[,1:4]
+        names(data0) = c(paste0("V", 1:4))
+        data1 <- filter(data0, V1 == chr)
 
         #If bedgraph values are all NA (ie no data in that chr)
         if (is.na(summary(data1$V4)[4])) {
-          message(paste0(names(bedgraphPath.lst[l]), " datas of ", names(bedgraphPath.lst[[l]][i]), " is empty in that chr!"))
+          message(paste0(names(bedgraph.lst[l]), " datas of ", names(bedgraph.lst[[l]][i]), " is empty in that chr!"))
           next}
 
         #filter outliers
@@ -281,11 +295,11 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
                                     V3 >= start & V2 <= stop)
 
         if (is.na(summary(data1$V4)[4])) {
-          message(paste0(names(bedgraphPath.lst[l])," datas of ", names(bedgraphPath.lst[[l]][i]), " is empty in that area!"))
+          message(paste0(names(bedgraph.lst[l])," datas of ", names(bedgraph.lst[[l]][i]), " is empty in that area!"))
           next}
 
         data1$V1 = as.character(data1$V1)
-        names(data1) <- c("chr", "start", "end", names(bedgraphPath.lst[[l]][i]))
+        names(data1) <- c("chr", "start", "end", names(bedgraph.lst[[l]][i]))
         data <- append(data, list(data1))
       }
 
@@ -295,14 +309,14 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
         # join dataframes, sort columns according to names (mcols names from GRange must be sorted) and create GRange
         data.gr <- data %>%
           Reduce(function(...) dplyr::full_join(..., by = c("chr", "start", "end")), .) %>%
-          dplyr::select(sort(c("chr", "start", "end", base::sapply(1:length(bedgraphPath.lst[[l]]), function(x){names(data[[x]][4])})))) %>%
+          dplyr::select(sort(c("chr", "start", "end", base::sapply(1:length(bedgraph.lst[[l]]), function(x){names(data[[x]][4])})))) %>%
           GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
 
         bedgraphTracks.temp <- Gviz::DataTrack(
           range = sort(data.gr), na.rm = T,
           groups = names(GenomicRanges::mcols(data.gr)),
-          type = "l", lwd = 2, name = names(bedgraphPath.lst[l]),
-          col = colors.lst[1:length(bedgraphPath.lst[[l]])][order(names(GenomicRanges::mcols(data.gr)))]
+          type = "l", lwd = 2, name = names(bedgraph.lst[l]),
+          col = colors.lst[1:length(bedgraph.lst[[l]])][order(names(GenomicRanges::mcols(data.gr)))]
         )
 
         bedgraphTracks = append(bedgraphTracks, bedgraphTracks.temp)
