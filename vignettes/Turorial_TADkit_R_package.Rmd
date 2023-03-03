@@ -39,6 +39,52 @@ library(TADkit)
 library(dplyr)
 library(GenomicRanges)
 library(GenomicFeatures)
+library(ggplot2)
+```
+
+## matrix
+
+Interaction count (HiC matrix) for a genome is a very large size and can be store in a multiple formats. HiC matrix is symmetrical with respect to the diagonal, so only the upper part of the diagonal is loaded in memory for only one chromosome (intra chromosomal interactions).
+
+### data frame
+
+A basic storage is a compressed data frame for each chromosome in which each row and columns represent a bin. Bovine matrices for chromosome 25 and 26 are available in the TADkit package as a sparse `dgCMatrix` format (i.e upper part of the matrix without the zeros). 
+```{r}
+class(TADkit::matrix_1_chr25_50kb)
+
+#raw count between bins 60 to 70
+TADkit::matrix_1_chr25_50kb[60:70,60:70]
+```
+
+Let's write the matrix as a gzip data frame on the current directory and load in R as matrix format:
+```{r}
+write.table(as.data.frame(as.matrix(TADkit::matrix_1_chr25_50kb)), #dgCMatrix 2 data frame
+            "./matrix_1_chr25_50kb.df", 
+            row.names = TRUE, #add row names
+            col.names = TRUE, #add column names
+            quote = FALSE, sep = "\t") 
+```
+
+Those matrices can be load in R as a matrix:
+```{r}
+mat1.df = read.table("./matrix_1_chr25_50kb.df",
+                 skip = 1, #skip col.names
+                 sep = "\t",
+                 row.names = 1 #specify the columns number with row names
+                 ) 
+mat1.mat = as.matrix(mat1.df) # translate to matrix
+mat1.dgcmat = as(mat1.mat, "dgCMatrix") #translate to dgCMatrix
+```
+
+### .cool / .mcool
+
+One of the most common HiC array storage formats is the .cool or .mcool format which store matrices for 1 resolution and multiple resolutions respectively. To load HiC matrix for one chromosome from cool/.mcool as a matrix (`dgCMatrix`), a function have been build: `coolFetch()`:
+```{r, eval=FALSE}
+#read .cool file
+my_matrix.10kb = coolFetch("my_matrix.10kb.cool", chr = "chr_name")
+
+#read .mcool file
+my_matrix.10kb = coolFetch("my_matrix.mcool", chr = "chr_name", bin.width = 10e3)
 ```
 
 ## .bed
@@ -51,6 +97,7 @@ Other columns can be added like the stand, any score or character. In most of th
 ```{r}
 #chromosomes sizes
 TADkit::chromsize
+
 #create GRanges with chr sizes:
 tad_1_10kb.gr = dataframes2grange(TADkit::tad_1_10kb.bed, TADkit::chromsize)
 tad_1_10kb.gr
@@ -71,8 +118,8 @@ boundary2domain(boundaries)
 
 Download genes annotations available on Ensembl:
 ```{r}
-txdb <- GenomicFeatures::makeTxDbFromBiomart(biomart="ensembl", dataset="btaurus_gene_ensembl")
-genomic.gr = GenomicFeatures::genes(txdb, columns=c("TXTYPE"))
+txdb <- makeTxDbFromBiomart(biomart="ensembl", dataset="btaurus_gene_ensembl")
+genomic.gr = genes(txdb, columns=c("TXTYPE"))
 genomic.gr
 ```
 
@@ -113,30 +160,41 @@ In addition to domains, few others tracks can be plotted:
 
 Let start with the most basic usage:
 ```{r, fig.height = 1.5, fig.width = 8}
-TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6) #Note that the area is extended to the first and last TAD.
+TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6)
 ```
+Note that the area is extended to the first and last TAD of the window.
 
-Add insulation score (bedgraph), RNAseq (bigwig) and genomic annotations (genes...) grouped according to the "TXTYPE" column (i.e first metadata column):
+Add insulation score (bedgraph), RNAseq (bigwig) and genomic annotations (genes grouped according to the "TXTYPE" column, i.e first metadata column):
 ```{r, fig.height = 5, fig.width = 8}
 TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6,
         bedgraph.path = "./IS_1_10kb.bedgraph",
         bigwig.path = "./rna_seq_bov.bw", 
-        annot.gr = genomic.gr, annot.col = 1)
+        annot.gr = genomic.gr, 
+        annot.col = 1 #columns to group annotations
+        )
 ```
 
 ## mTADplot
 
 `mTADplot()` allow to plot 1 or more individual/sample in a same plot. All tracks inputs must be stored in a list, and all object in the list must have names:
 
-data for the 2 bovine:
+Datas for the 2 bovines:
 ```{r}
+#create GRanges with TADs
 tad_2_10kb.gr = dataframes2grange(TADkit::tad_2_10kb.bed, TADkit::chromsize) 
+
+#write bedgraph as file
 write.table(TADkit::IS_2_10kb.bedgraph, "./IS_2_10kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
+write.table(TADkit::PC1_1_50kb.bedgraph, "./PC1_1_50kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
+write.table(TADkit::PC1_2_50kb.bedgraph, "./PC1_2_50kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
 ```
 
 ### Create list
 
-```{r, fig.height = 3, fig.width = 7}
+Let's create lists for the 2 individuals (then named as "bov1" and "bov2"):
+
+* TADs:
+```{r}
 #list of TADs
 tad.lst = list(tad_1_10kb.gr, tad_2_10kb.gr)
 names(tad.lst) = c("bov1", "bov2")
@@ -144,32 +202,57 @@ names(tad.lst) = c("bov1", "bov2")
 #insulation score (path) list
 IS.lst = list("./IS_1_10kb.bedgraph", "./IS_2_10kb.bedgraph")
 names(IS.lst) = c("bov1", "bov2")
+```
 
+* insulation scores:
+```{r}
+#insulation score (path) list
+IS.lst = list("./IS_1_10kb.bedgraph", "./IS_2_10kb.bedgraph")
+names(IS.lst) = c("bov1", "bov2")
+```
+
+Do the plot:
+```{r, fig.height = 2.5, fig.width = 8}
 mTADplot2(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
-        bedgraphPath.lst = IS.lst)
+        bedgraphPath.lst = IS.lst, bedgraph.name = "IS")
+```
+
+### Create multiple lists
+
+In case of several tracks of bedgraph, we can create a list containing few other lists.
+Let's create 2 lists with the insulation scores and the PC1 scores:
+```{r}
+#insulation scores (path) as list
+IS.lst = list("./IS_1_10kb.bedgraph", "./IS_2_10kb.bedgraph")
+names(IS.lst) = c("bov1", "bov2")
+
+#PC1 scores (path) as list
+PC1.lst = list("./PC1_1_50kb.bedgraph", "./PC1_2_50kb.bedgraph")
+names(PC1.lst) = c("bov1", "bov2")
+```
+
+Now let's create a list with those 2 lists:
+```{r}
+#multiple lists fo bedgraph
+bedgraphs.lst = list(IS.lst, PC1.lst)
+names(bedgraphs.lst) = c("IS", "PC1")
+
+bedgraphs.lst
+```
+
+Do the plot:
+```{r, fig.height = 3.5, fig.width = 8}
+mTADplot2(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
+        bedgraphPath.lst = bedgraphs.lst)
 ```
 
 # Matrix plot
 
-Two functions have been built to plot interaction count (HiC matrix) for one matrix `MATplot()` and 2 matrices `mMATplot()` (one the upper or lower part). In addition to matrices, 3 others tracks can be plotted:
+Two functions have been built to plot interaction count (HiC matrix) for one matrix `MATplot()` and 2 matrices `mMATplot()` (one the upper or lower part) as a ggplot graph. 
+In addition to matrices, 3 others tracks can be plotted:
 
 * bed file type to visualized domains as a line or a triangle,
 * bedpe file type to visualized interactions between 2 areas.
-
-Interaction count can be store in a multiple of format. A basic storage is a data frame in which each row and columns represent a bin. A matrices for chromosome 25 and 26 are available in the TADkit package as a sparse `dgCMatrix` format (i.e only the upper part of the matrix without the zeros are stored). 
-```{r}
-class(matrix_1_chr25_50kb)
-
-#raw count between bins 60 to 70
-matrix_1_chr25_50kb[60:70,60:70]
-```
-As interaction count for one genome is a very large size, only the matrix for one chromosome can be load and plot with TADkit package.
-
-One of the most common HiC array storage formats is the .cool or .mcool format which store data for 1 resolution and multiple resolutions respectively. To convert cool/.mcool to `dgCMatrix`, a function have been build: `coolFetch()`:
-```{r, eval=FALSE}
-#read .cool file
-my_matrix.10kb = coolFetch("my_matrix.10kb.cool", chr = "chr_name")
-```
 
 ## MATplot
 
@@ -182,12 +265,14 @@ MATplot(matrix_1_chr25_50kb, start = 10e6, stop = 30e6,
         tad.upper.tri = tad_1_10kb.gr,
         tad.chr = 25, #filter TADs for chr 25
         scale.colors = "H", #color of matrix, try "D" or "H"
-        annotations.color = "red")
+        annotations.color = "red")+
+  ggtitle("log2(raw count): chr25 bov1")
 ```
 
 ### matrix + triangles + loops + lines
 
-bedpe file as used to highlight 2 areas. For example let's create a bedpe file to highlight the region of chromsome 25 between :
+bedpe file are used to highlight 2 areas. For example let's create a bedpe file to highlight a region on chromosome 25 between :
+
 * 11Mb to 13Mb,
 * 26Mb to 27Mb:
 ```{r}
@@ -196,8 +281,10 @@ bedpe = data.frame(chr1 = "25", start1 = 11e6, end1 = 13e6,
 ```
 
 In addition to bedpe file, let's see 2 others functions:
+
 * `matObsExp()` to produce the observed / expected ratio of interaction count,
 * `PC1calling()` to call the compartments A and B from PC1 values.
+
 ```{r, fig.height = 7, fig.width = 7}
 MATplot(matObsExp(matrix_1_chr25_50kb), start = 10e6, stop = 30e6,
         bin.width = 50e3, log2 = T,
@@ -208,7 +295,8 @@ MATplot(matObsExp(matrix_1_chr25_50kb), start = 10e6, stop = 30e6,
         loop.bedpe = bedpe,
         tad.upper.line = PC1calling(PC1_1_50kb.bedgraph), #compartments
         tad.line.col = 1 #use the fist metadata columns with vectors A and B
-        )
+        )+
+  ggtitle("log2(obs/exp): chr25 bov1")
 ```
 
 # Clear files

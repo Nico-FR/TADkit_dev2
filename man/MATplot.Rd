@@ -77,10 +77,9 @@ Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and e
 Chromosome domains and loops can be filter using \code{tad.chr} parameter.
 }
 \examples{
-MATplot(matrix_1_chr25_50kb, start = 10e6, stop = 30e6,
-bin.width = 50e3, log2 = T,
-tad.upper.tri = tad_1_10kb.gr,
-tad.chr = 25, #filter TADs for chr 25
+MATplot(matrix_1_chr25_50kb,
+start = 10e6, stop = 30e6,
+bin.width = 50e3, log2 = TRUE,
 scale.colors = "H", #color of matrix, try "D" or "H"
 annotations.color = "red")
 }

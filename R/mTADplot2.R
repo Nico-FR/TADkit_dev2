@@ -263,7 +263,7 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
       for (i in 1:length(bedgraphPath.lst[[l]])) {
 
         #filter chr
-        data1 <- (utils::read.table(bedgraphPath.lst[[l]][[i]], h=F, sep = "\t") %>%
+        data1 <- (utils::read.table(bedgraphPath.lst[[l]][[i]], header = FALSE, sep = "\t") %>%
                     filter(V1 == chr))[,1:4]
 
         #If bedgraph values are all NA (ie no data in that chr)
@@ -273,11 +273,11 @@ mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
 
         #filter outliers
         if (bedgraph_outliers != 0) {
-          data1 <- data1 %>% filter(V4 < stats::quantile(V4, na.rm=T, 1 - bedgraph_outliers))
+          data1 <- data1 %>% filter(V4 < stats::quantile(V4, na.rm = TRUE, 1 - bedgraph_outliers))
         }
 
         #filter area (start & stop)
-        data1 <- data1 %>% filter(V4 > stats::quantile(V4, na.rm=T, bedgraph_outliers) &
+        data1 <- data1 %>% filter(V4 > stats::quantile(V4, na.rm = TRUE, bedgraph_outliers) &
                                     V3 >= start & V2 <= stop)
 
         if (is.na(summary(data1$V4)[4])) {
