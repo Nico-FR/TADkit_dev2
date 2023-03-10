@@ -1,22 +1,18 @@
 ---
-title: "Tutorial_TADkit_R_package"
-output:
-    html_document: 
-      self_contained: true
-      number_sections: yes
-      toc: yes
-editor_options:
-  chunk_output_type: inline
-vignette: >
-  %\VignetteIndexEntry{Turorial_TADkit_R_package}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: 
+  github_document:
+    number_sections: yes
 ---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>")
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
 ```
 
 # TADkit
@@ -38,7 +34,6 @@ You can install the development version of TADkit from [GitHub](https://github.c
 # install.packages("devtools")
 devtools::install_github("Nico-FR/TADkit")
 ```
-
 
 # Data format
 
@@ -368,59 +363,8 @@ mMATplot(matrix.upper = matrix_1_chr25_50kb,
 # Clear files
 
 ```{r}
-file.remove(
-  grep(list.files(full.names = TRUE), pattern = "Rmd", invert = TRUE, value = TRUE))
+file.remove(list.files(full.names = TRUE, pattern = ".bw"))
+file.remove(list.files(full.names = TRUE, pattern = ".bedgraph"))
+file.remove(list.files(full.names = TRUE, pattern = ".df"))
 ```
-
-
-
-# Analysis
-
-In progress...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
