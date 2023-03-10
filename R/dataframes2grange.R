@@ -24,7 +24,7 @@
 dataframes2grange <- function(annotation.table, chromsize, chr.col = 1, start.col = 2, end.col = 3, strand.col = NULL, name.col = NULL, metadata.mcols = NULL) {
   data = annotation.table[annotation.table[, chr.col] %in% chromsize[,1] , ]
   temp <- GenomicRanges::GRanges(
-    seqnames <- S4Vectors::Rle(data[, chr.col]),
+    seqnames <- S4Vectors::Rle(data[, chr.col]) %>% droplevels(),
     ranges <- IRanges::IRanges(
       start = data[, start.col],
       end = data[, end.col],
