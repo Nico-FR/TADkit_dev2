@@ -1,7 +1,7 @@
 #' Create GRanges with metadatas
 #'
-#' This function create a GRange object from the first `dataframe` and add the size of the chromosomes on the second `dataframe`.
-#' A name of each line is added to the `GRanges` output.
+#' This function create a GRange object from the first `dataframe` (annotation.table) and add the size of the chromosomes on the second `dataframe`.
+#' The chromosomes are filtered according to the list of chromosomes contained in the second `dataframe` (chromsize).
 #'
 #' @param annotation.table `dataframe` with genomic annotations (at least 3 columns: chromosome, start and stop).
 #' @param chromsize `dataframe` with chromosome names and sizes. Chromosomes are also filtered according to this list.
@@ -24,7 +24,7 @@
 dataframes2grange <- function(annotation.table, chromsize, chr.col = 1, start.col = 2, end.col = 3, strand.col = NULL, name.col = NULL, metadata.mcols = NULL) {
   data = annotation.table[annotation.table[, chr.col] %in% chromsize[,1] , ]
   temp <- GenomicRanges::GRanges(
-    seqnames <- S4Vectors::Rle(data[, chr.col]) %>% droplevels(),
+    seqnames <- S4Vectors::Rle(as.factor(data[, chr.col])) %>% droplevels(),
     ranges <- IRanges::IRanges(
       start = data[, start.col],
       end = data[, end.col],
