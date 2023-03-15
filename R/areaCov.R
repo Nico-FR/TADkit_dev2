@@ -1,4 +1,4 @@
-#' @title Density plot of annotations around TAD boundaries
+#' @title Density plot of annotations around boundaries
 #'
 #' @description Graph of the density of the genomic annotations around TAD boundaries (real distance).
 #'
@@ -43,7 +43,7 @@
 #'
 #'
 #' # Distribution analysis surrounding the start of the TAD
-#' data.gr <- TADarea(
+#' data.gr <- domainArea(
 #'   tad.gr = tad.gr,
 #'   annot.gr = annot.gr,
 #'   window.size = 60e3,

@@ -1,19 +1,19 @@
-#' @title Histogram of annotations around TAD boundaries
+#' @title Histogram of annotations around boundaries
 #'
-#' @description Graph of the distribution of the genomic annotations around TAD boundaries (real distance).
-#' `areahist()` measures the distances between TAD boundaries and the annotation borders (start, end, closest or the center) and plot the distribution as an histogram.
-#' `areahist()` takes the output of `TADarea()`.
-#' `annot.border = "closest"`, use the closest border (start or stop) to measure the distances from the TAD boundary independently to his strand. Therefore all annotations that overlap a TAD boundary have a distance of 0.
+#' @description This function take the output of `boundArea()` to produce a graph of the distribution of the genomic annotations around TAD boundaries (real distance).
+#' `areahist()` measures the distances between the boundaries and the annotation features (start, end, closest or the center of annotations) and plot the distribution as an histogram.
+#' `annot.boundary = "closest"`, use the closest border (start or stop) to measure the distances from the boundary independently to the annotation strand. Note that all annotations that overlap a boundary will have a distance of 0.
 #'
 #' @details Several features distances can be count. As an example (see examples for visualizations) of 2 genes which start at 20Kb of a TAD boundary (width of the 2 genes are 10Kb and are on the reverse an forward strand respectively).
-#' -If `annot.border = "start"`, the distances from the TAD border are 20Kb,
-#' -If `annot.border = "end"`, the distances are 10 and 30Kb respectively,
-#' -If `annot.border = "center"`, the distances are 15Kb and 25Kb respectively,
-#' -If `annot.border = "closest"`, the distances are 10Kb and 20Kb respectively.
+#' -If `annot.boundary = "start"`, the distances from the boundary are 20Kb,
+#' -If `annot.boundary = "end"`, the distances are 10 and 30Kb respectively,
+#' -If `annot.boundary = "center"`, the distances are 15Kb and 25Kb respectively,
+#' -If `annot.boundary = "closest"`, the distances are 10Kb and 20Kb respectively.
 #'
 #' @inheritParams areaCov
-#' @param annot.border Type of feature to analyzed. `"Start"`, `"end"` or `"center"` of each annotations from `annot.gr` input. It is possible to use `"closest"` to take the closest border (start or end) independently to the strands.
+#' @param annot.boundary Type of feature to analyzed. `"Start"`, `"end"` or `"center"` of each `annot.gr`. It is possible to use `"closest"` to take the closest border (start or end) independently to the strands.
 #' @param annot.strand Logical. Default is `FALSE` to plot the distribution as histogram. If `TRUE`, distributions are separated according to their strands and are display with lines.
+#' @param bin.width Size of the bin in base pair to count the number of annotations features. It should match the bin.width of the matrix used to call the domains. Default is `NULL` to to use a size in 10 time smaller than `window.size` parameter of `TADarea()`.
 #'
 #' @return `ggplot`
 #'
@@ -59,11 +59,11 @@
 #'     data.gr = data.gr,
 #'     annot.strand = FALSE,
 #'     bin.width = 1e3,
-#'     annot.border = features
+#'     annot.boundary = features
 #'   )
 #'   print(output)
 #' }
-areaHist <- function(data.gr, annot.border = "center", annot.strand = TRUE, bin.width = NULL) {
+areaHist <- function(data.gr, annot.boundary = "center", annot.strand = TRUE, bin.width = NULL) {
   window.size <- unique(data.gr$window.size) # window.size used in TADarea function
   GenomeInfoDb::seqlengths(data.gr) <- NA # remove seqlengths to prevent out-of-bound ranges
 
@@ -73,12 +73,12 @@ areaHist <- function(data.gr, annot.border = "center", annot.strand = TRUE, bin.
     bin <- bin.width # binwidth for ggplot
   }
 
-  if (annot.border == "closest") {
+  if (annot.boundary == "closest") {
     data2.gr <- data.gr
   }
 
-  if (annot.border == "start" | annot.border == "end" | annot.border == "center") {
-    data2.gr <- GenomicRanges::resize(data.gr, 1, fix = annot.border) # resize annotations according to start, stop or center
+  if (annot.boundary == "start" | annot.boundary == "end" | annot.boundary == "center") {
+    data2.gr <- GenomicRanges::resize(data.gr, 1, fix = annot.boundary) # resize annotations according to start, stop or center
 
     data2.gr <- GenomicRanges::restrict(data2.gr, start = 1, end = 2 * window.size - 1) # remove ranges outside of the window
   }
@@ -119,6 +119,6 @@ areaHist <- function(data.gr, annot.border = "center", annot.strand = TRUE, bin.
       limits = c(-window.size + bin / 2, window.size - bin / 2)
     ) +
       ggplot2::geom_vline(aes(xintercept = 0), color = "red", size = 0.75, alpha = 0.75) +
-      ggtitle(annot.border)
+      ggtitle(annot.boundary)
   )
 }
