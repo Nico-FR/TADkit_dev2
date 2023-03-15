@@ -1,24 +1,23 @@
 #' @title Histogram of annotation distribution within domains
 #'
-#' @description Plot of the distribution of the genomic annotations within the TADs (relative distance)
-#' Measures the relative distances of annotation border (start, end or the center) according to TAD size and plot the distribution as an histogram.
+#' @description Plot of the distribution of the genomic annotations within the domains (relative distance)
+#' Measures the relative distances of annotation border (start, end) within the domain and plot the distribution as an histogram.
 #'
 #'
-#' @details As an example, `TADhist()` take all TAD domains and count the relative position of all annotation features (start, end or even the center).
-#' It is possible that some annotations overlap a TAD boundary, in this cases few option are possible to get the distributions (see `ifoverlap` parameter and the example for better understanding):
-#'     * remove: those annotations,
-#'     * uses: the TAD in which the features (`"start"`, `"end"` or `"center" of the annotation) is located,
-#'     * uses: the TAD in which the annotation has the best overlap.
-#'     Therefore, in some cases, the `"start"` of an `annot.gr` can be located before the TAD (i.e the TAD with the best overlap). In that case, the distance between the `"start"` of `annot.border` and TAD corresponds to the real distance (in base pair).
+#' @details As an example, `domainHist()` take all domains and count the relative position of all annotation features (see detais of `areaHist()`).
+#' It is possible that some annotations overlap a boundary, in this cases few option are available to get the relative positions (see `ifoverlap` parameter and the example for better understanding):
+#'     * remove those annotations,
+#'     * uses the domain in which the feature (`"start"`, `"end"` or `"center"` of the annotation) is located,
+#'     * uses the domain in which the annotation has the best overlap.
+#'     Therefore, in some cases, the `"start"` of an `annot.gr` can be located before the domain (i.e before the domain with the best overlap). In that case, the distance between the `"start"` of `annot.boundary` and the domain is represented with the real distance (in base pair).
 #'
 #'
-#' @inheritParams TADarea
-#' @param annot.border Type of feature to analyzed. `"start"`, `"end"` or `"center"` of each annotations from `annot.gr` object.
+#' @inheritParams areaHist
 #' @param annot.strand Default is `FALSE` to plot the distribution as histogram. If `TRUE`, distributions are separated according to their strands and are displayed with lines.
-#' @param bin.width Size of the bin in percent to count the number of annotations features, default is 5%. if `ifoverlap = "best"`: the real bin distances (ploted before and after TAD boundaries) is equal to `bin.width*1e3`. Therefore default real bin size is 5kb.
-#' @param ifoverlap In case of annotation overlap a TAD boundary, few options are available to measure the `annot.border` positions:
+#' @param bin.width Size of the bin in percent to count the number of annotations features, default is 5%. if `ifoverlap = "best"`: the real bin distances (measured outside of domains) are equal to `bin.width * 1000`. Therefore default real bin size is 5kb.
+#' @param ifoverlap In case of annotation overlap a TAD boundary, few options are available to measure the `annot.boundary` positions:
 #'    * `"remove"` to remove all `annot.gr` that overlaps a TAD boundary,
-#'    * `"real"` to take the position according to the TAD where the `annot.border` is located,
+#'    * `"real"` to take the position according to the TAD where the `annot.boundary` is located,
 #'    * `"best"` to take the position according to the TAD where the `annot.gr` has the best overlay.
 #' @param output Default is `"plot"` to return a `ggplot`. Use `"data"` to return the datas used to produce the plot.
 #'
@@ -47,11 +46,11 @@
 #' TADplot(tad.gr = tad.gr, annot.gr = annot.gr, start = 150e3, stop = 300e3, chr = 1)
 #'
 #' #see distribution of gene starts according to the "ifoverlap" parameters:
-#' TADhist(tad.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "real")
-#' TADhist(tad.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "remove")
-#' TADhist(tad.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "best")
+#' domainHist(tad.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "real")
+#' domainHist(tad.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "remove")
+#' domainHist(tad.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "best")
 #'
-TADhist <- function(tad.gr, annot.gr, annot.border = "start", ifoverlap = "remove", annot.strand = FALSE, bin.width = 5, output = "plot") {
+domainHist <- function(domain.gr, annot.gr, annot.boundary = "start", ifoverlap = "remove", annot.strand = FALSE, bin.width = 5, output = "plot") {
 
   if (is.na(mean(seqlengths(tad.gr), na.rm=T))) {
     stop("tad.gr must have seqlengths datas (see dataframes2grange function)")
@@ -72,16 +71,16 @@ TADhist <- function(tad.gr, annot.gr, annot.border = "start", ifoverlap = "remov
   message(paste0(length(annot.gr[annot.gr$nb_overlap_tad >= 2]) + length(annot.gr[annot.gr$nb_overlap_tad == 1 & annot.gr$nb_overlap_gap >= 1]), "/", length(annot.gr)," annotations are overlapping with a boundary"))
   message(paste0(length(annot.gr[annot.gr$nb_overlap_tad == 1 & annot.gr$nb_overlap_gap == 0]), "/", length(annot.gr)," annotations are within domains and do not overlap a boundary"))
 
-  annot2.gr <- GenomicRanges::resize(annot.gr, 1, fix = annot.border) # keep annot.border
+  annot2.gr <- GenomicRanges::resize(annot.gr, 1, fix = annot.boundary) # keep annot.boundary
 
-  # add (inter)TADhit (TAD line number) in which the annot.border is in:
-  annot2.gr$genomeHit <- GenomicRanges::findOverlaps(annot2.gr, genome.gr, select = "arbitrary") # arbitrary to randomly select the (inter)TAD when annot.border have the same position than a boundary
+  # add (inter)TADhit (TAD line number) in which the annot.boundary is in:
+  annot2.gr$genomeHit <- GenomicRanges::findOverlaps(annot2.gr, genome.gr, select = "arbitrary") # arbitrary to randomly select the (inter)TAD when annot.boundary have the same position than a boundary
 
-  annot2.gr$TADhit <- genome.gr$TAD[annot2.gr$genomeHit] # annot.border in TAD or interTAD?
+  annot2.gr$TADhit <- genome.gr$TAD[annot2.gr$genomeHit] # annot.boundary in TAD or interTAD?
 
 
   ###################################
-  # real: distribution according to annot.border positions of each TADs
+  # real: distribution according to annot.boundary positions of each TADs
   ###################################
   if (ifoverlap == "real") {
     data.gr <- annot2.gr[!is.na(annot2.gr$TADhit) & annot2.gr$TADhit == "TRUE"] # remove genes which are not overlapping a TAD
@@ -89,7 +88,7 @@ TADhist <- function(tad.gr, annot.gr, annot.border = "start", ifoverlap = "remov
   ###################################
 
   ###################################
-  # remove: distribution according to annot.border position without annot.gr that overlap a boundary (2+ TADs or 1+ TADs & 1+ gaps)
+  # remove: distribution according to annot.boundary position without annot.gr that overlap a boundary (2+ TADs or 1+ TADs & 1+ gaps)
   ###################################
   if (ifoverlap == "remove") {
     data.gr <- annot2.gr[annot2.gr$nb_overlap_tad == 1 & annot2.gr$nb_overlap_gap == 0]
@@ -97,7 +96,7 @@ TADhist <- function(tad.gr, annot.gr, annot.border = "start", ifoverlap = "remov
   ###################################
 
   ###################################
-  # best: distribution according to annot.border position using the best match of annot.gr
+  # best: distribution according to annot.boundary position using the best match of annot.gr
   ###################################
   if (ifoverlap == "best") {
     annot.overlap <- annot.gr[annot.gr$nb_overlap >= 2] # annot.gr (with >=2 overlap)
@@ -116,10 +115,10 @@ TADhist <- function(tad.gr, annot.gr, annot.border = "start", ifoverlap = "remov
     annot.overlap$genomeHit <- best$subjectHits
     annot.overlap$TADhit <- genome.gr$TAD[best$subjectHits] # best match is TAD or interTAD?
 
-    # merged annot2.gr with only one overlap with the best overlap for the other one (+resize according to annot.border)
+    # merged annot2.gr with only one overlap with the best overlap for the other one (+resize according to annot.boundary)
     data.gr <- c(
       annot2.gr[annot2.gr$nb_overlap_tad == 1 & annot2.gr$nb_overlap_gap == 0],
-      GenomicRanges::resize(annot.overlap[annot.overlap$TADhit], 1, fix = annot.border)
+      GenomicRanges::resize(annot.overlap[annot.overlap$TADhit], 1, fix = annot.boundary)
     )
   }
   ###################################
@@ -132,10 +131,10 @@ TADhist <- function(tad.gr, annot.gr, annot.border = "start", ifoverlap = "remov
   data2.gr$startHit <- GenomicRanges::start(genome.gr[data2.gr$genomeHit]) # (inter)TAD start
   data2.gr$widthHit <- BiocGenerics::width(genome.gr[data2.gr$genomeHit]) # (inter)TAD width
 
-  # relative position (%) of annot.border according to (inter)TAD start and (inter)TAD size
+  # relative position (%) of annot.boundary according to (inter)TAD start and (inter)TAD size
   data2.gr$relative_position <- (start(data2.gr) - data2.gr$startHit) / data2.gr$widthHit * 100
 
-  # real position of annot.border outside of (inter)TAD (otherwise = NA)
+  # real position of annot.boundary outside of (inter)TAD (otherwise = NA)
   data2.gr$real_position <- ifelse(start(data2.gr) < data2.gr$startHit,
     start(data2.gr) - data2.gr$startHit,
     ifelse(start(data2.gr) > (data2.gr$startHit + data2.gr$widthHit), start(data2.gr) - data2.gr$startHit - data2.gr$widthHit, NA)
@@ -187,7 +186,7 @@ TADhist <- function(tad.gr, annot.gr, annot.border = "start", ifoverlap = "remov
   return(
     p + ggplot2::geom_vline(ggplot2::aes(xintercept = 0), color = "red", size = 0.75, alpha = 0.75) +
       ggplot2::geom_vline(ggplot2::aes(xintercept = 100 * 1e3), color = "red", size = 0.75, alpha = 0.75) +
-      ggplot2::ggtitle(paste0(annot.border, "::", ifoverlap)) + ggplot2::xlab("") +
+      ggplot2::ggtitle(paste0(annot.boundary, "::", ifoverlap)) + ggplot2::xlab("") +
       ggplot2::scale_x_continuous(
         breaks = c(seq(
           ifelse(n_start_limit > 0, -n_start_limit * 20e3, 0),
