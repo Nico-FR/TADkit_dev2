@@ -29,7 +29,9 @@
 #' @examples
 #' #to do
 #'
-domainDens <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, bin.width = 50e3, output = "plot") {
+domainDens <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, bin.width = 50e3, norm = FALSE, output = "plot") {
+
+  #domain.gr=comp.gr; annot.gr=genomic.gr; domain.col = 1; annot.col = 1; bin.width = 50e3; output = "plot"
 
   #annot.col parameter
   nb_metadatacolumns = length(GenomicRanges::mcols(annot.gr))
@@ -56,10 +58,11 @@ domainDens <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL,
   bin.gr = GenomicRanges::tileGenome(GenomeInfoDb::seqlengths(domain.gr), tilewidth = bin.width, cut.last.tile.in.chrom = TRUE)
 
   # add density for each annot.type (annot.col)
-  annot.type = GenomicRanges::mcols(annot.gr)[, annot.col] %>% unique
+  annot2.gr = GenomeInfoDb::keepSeqlevels(annot.gr, seqlevels(domain.gr), pruning.mode = "coarse")
+  annot.type = GenomicRanges::mcols(annot2.gr)[, annot.col] %>% as.character %>% unique
   for (c in annot.type) {
     bin.gr = GenomicRanges::binnedAverage(bins = bin.gr,
-                                          numvar = GenomicRanges::coverage(annot.gr[GenomicRanges::mcols(annot.gr)[, annot.col] == c]),
+                                          numvar = GenomicRanges::coverage(annot2.gr[GenomicRanges::mcols(annot2.gr)[, annot.col] == c]),
                                           na.rm = FALSE, varname = c)
   }
 
@@ -91,39 +94,50 @@ domainDens <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL,
 
   if (output == "plot") {
 
+    data <- as.data.frame(bin.gr)
+    names(data) = c("seqnames", "start", "end", "width", "strand", names(GenomicRanges::mcols(bin.gr)))
+
     if (is.null(domain.col)) {
-      data <- as.data.frame(bin.gr)
-      names(data) = c("seqnames", "start", "end", "width", "strand", names(GenomicRanges::mcols(bin.gr)))
-      data2 = data %>% dplyr::select(as.character(annot.type),"relative_position") %>% tidyr::gather(annot.col, "density", 1:length(annot.type))
-      p1 = ggplot2::ggplot(data2, ggplot2::aes(y = density, x = relative_position, color = annot.col))+
-        ggplot2::geom_smooth()+
-        ggplot2::labs(color = names(GenomicRanges::mcols(annot.gr[,annot.col])))
-      print(p1)
+
+      if (norm == FALSE) {
+        data2 = data %>% dplyr::select(as.character(annot.type),"relative_position") %>% tidyr::gather(annot.col, "density", 1:length(annot.type))
+        p1 = ggplot2::ggplot(data2, ggplot2::aes(y = density, x = relative_position, color = annot.col))+
+          ggplot2::geom_smooth(se = FALSE)+
+          ggplot2::labs(color = names(GenomicRanges::mcols(annot.gr[,annot.col])))
+        print(p1)
+      }
+
+      if (norm == TRUE) {
+        data4 <- data %>% dplyr::select(paste0("zscore_", annot.type), "relative_position")
+        names(data4) <- c(as.character(annot.type), names(data4)[(length(annot.type)+1):length(data4)])
+        data5 <- data4 %>% tidyr::gather(annot.col, "zscore", 1:length(annot.type))
+        p1 = ggplot2::ggplot(data5, ggplot2::aes(y = zscore, x = relative_position, color = annot.col))+
+          ggplot2::geom_smooth(se = FALSE)+
+          ggplot2::labs(color = names(GenomicRanges::mcols(annot.gr[,annot.col])))
+        print(p1)
+      }
+
     }
 
     if (is.numeric(domain.col)) {
-      data <- as.data.frame(bin.gr)
-      names(data) = c("seqnames", "start", "end", "width", "strand", names(GenomicRanges::mcols(bin.gr)))
-      data2 = data %>% dplyr::select(as.character(annot.type), "relative_position","domain") %>% tidyr::gather(annot.col, "density", 1:length(annot.type))
-      p1 = ggplot2::ggplot(data2, ggplot2::aes(y = density, x = relative_position, color = domain))+
-        ggplot2::geom_smooth()+ggplot2::facet_wrap(.~annot.col, scales = "free_y")+
-        ggplot2::labs(color = names(GenomicRanges::mcols(domain.gr[, domain.col])))
-      print(p1)
 
-      for (c in annot.type) {
-        data3 <-  data2 %>% dplyr::filter(annot.col == c)
-        p2 = ggplot2::ggplot(data3, ggplot2::aes(y = density, x = relative_position))+
-          ggplot2::geom_smooth()+ggplot2::facet_wrap(.~domain)+ggplot2::ggtitle(c)
-        print(p2)
+      if (norm == FALSE) {
+        data2 = data %>% dplyr::select(as.character(annot.type), "relative_position","domain") %>% tidyr::gather(annot.col, "density", 1:length(annot.type))
+        p1 = ggplot2::ggplot(data2, ggplot2::aes(y = density, x = relative_position, color = annot.col))+
+          ggplot2::geom_smooth(se = FALSE)+ggplot2::facet_wrap(.~domain, scales = "free_y")+
+          ggplot2::labs(color = names(GenomicRanges::mcols(domain.gr[, domain.col])))
+        print(p1)
       }
 
-      data4 <- data %>% dplyr::select(paste0("zscore_", annot.type), "relative_position","domain")
-      names(data4) <- c(as.character(annot.type), names(data4)[(length(annot.type)+1):length(data4)])
-      data5 <- data4 %>% tidyr::gather(annot.col, "zscore", 1:length(annot.type))
-      p3 = ggplot2::ggplot(data5, ggplot2::aes(y = zscore, x = relative_position, color = annot.col))+
-        ggplot2::geom_smooth()+ggplot2::facet_wrap(.~domain)+
-      ggplot2::labs(color = names(GenomicRanges::mcols(annot.gr[,annot.col])))
-      print(p3)
+      if (norm == TRUE) {
+        data4 <- data %>% dplyr::select(paste0("zscore_", annot.type), "relative_position","domain")
+        names(data4) <- c(as.character(annot.type), names(data4)[(length(annot.type)+1):length(data4)])
+        data5 <- data4 %>% tidyr::gather(annot.col, "zscore", 1:length(annot.type))
+        p3 = ggplot2::ggplot(data5, ggplot2::aes(y = zscore, x = relative_position, color = annot.col))+
+          ggplot2::geom_smooth(se = FALSE)+ggplot2::facet_wrap(.~domain)+
+          ggplot2::labs(color = names(GenomicRanges::mcols(annot.gr[,annot.col])))
+        print(p3)
+      }
     }
   }
 }
