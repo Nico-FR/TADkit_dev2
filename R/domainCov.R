@@ -1,7 +1,7 @@
 #' @title Distribution of annotation density within domains
 #'
 #' @description Distribution of annotations density (e.g. density  of genes) within domains (e.g. TADs, compartments...).
-#' `domainDens()` calculates the annotations density per bin and measures the relative position of each bin within the domain
+#' `domainCov()` calculates the annotations density per bin and measures the relative position of each bin within the domain
 #'
 #' @details As an example, this function take all TAD domains and calculate the density of annotations by:
 #' * calculate the annotations density per bin,
@@ -12,7 +12,7 @@
 #' @param annot.gr `GRanges` with genomic annotations (genes, repeat elements...).
 #' @param annot.col Column number (metadata columns) used to split annotations. By default, annot.col = `NULL`. Use `"strand"` in order to separate annotations according to their strands.
 #' @param domain.col Column number (metadata columns) used to split domain classes (e.g. column to differentiate compartments A and B). By default, domain.col is `NULL`.
-#' @param bin.width Size of the bin in base pairs. It should match the size of the bins used to call the domains.
+#' @param bin.width Size of the bin in base pairs. It should match the bin.width of the matrix used to call the domains.
 #' @param output Default is `"plot"` to return a `ggplot`. Use `"data"` to return the `dataframe` used to produce the plot.
 #'
 #' @return `ggplot`
@@ -29,9 +29,7 @@
 #' @examples
 #' #to do
 #'
-domainDens <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, bin.width = 50e3, norm = FALSE, output = "plot") {
-
-  #domain.gr=comp.gr; annot.gr=genomic.gr; domain.col = 1; annot.col = 1; bin.width = 50e3; output = "plot"
+domainCov <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, bin.width = 50e3, norm = FALSE, output = "plot") {
 
   #annot.col parameter
   nb_metadatacolumns = length(GenomicRanges::mcols(annot.gr))
