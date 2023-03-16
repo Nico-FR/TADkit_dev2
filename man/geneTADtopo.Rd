@@ -4,35 +4,40 @@
 \alias{geneTADtopo}
 \title{Genes topology according to TAD}
 \usage{
-geneTADtopo(tad.gr, gene.gr, ifoverlap = "best", expression.data.frame = NULL)
+geneTADtopo(
+  domain.gr,
+  annot.gr,
+  ifoverlap = "best",
+  expression.data.frame = NULL
+)
 }
 \arguments{
-\item{tad.gr}{\code{GRanges} object with domains. The chromosomes lengths must be stored as metadata (see \code{dataframes2grange()}).}
+\item{domain.gr}{\code{GRanges} with domains (TADs, compartments...).}
 
-\item{gene.gr}{\code{GRanges} with genomic annotations.}
+\item{annot.gr}{\code{GRanges} with genomic annotations.}
 
-\item{ifoverlap}{In case of annotation overlap a TAD boundary, few options are available to measure the \code{annot.border} positions:
+\item{ifoverlap}{In case of annotation overlap a TAD boundary, few options are available to measure the \code{annot.boundary} positions:
 \itemize{
 \item \code{"remove"} to remove all \code{annot.gr} that overlaps a TAD boundary,
-\item \code{"real"} to take the position according to the TAD where the \code{annot.border} is located,
+\item \code{"real"} to take the position according to the TAD where the \code{annot.boundary} is located,
 \item \code{"best"} to take the position according to the TAD where the \code{annot.gr} has the best overlay.
 }}
 
 \item{expression.data.frame}{\code{dataframe} with expression data (raw counts...).
-The first two columns should be used to identify the genes. The 1st one must use the same gene id than \code{names(gene.gr)} (i.e unique ID). The 2nd can be used with usual gene names.
+The first two columns should be used to identify the genes. The 1st one must use the same gene id than \code{names(annot.gr)} (i.e unique ID). The 2nd can be used with usual gene names.
 Others columns give expression count, one column per sample/experiment.}
 }
 \value{
 Return a S3 class object with 3 data frames.
 }
 \description{
-For each domain (e.g TAD) the function return a data frame with the numbers, names and strands of genes. It also return some statistics which can be plotted using plot(output).
+For each domain (e.g TAD) the function return a data frame with the numbers, names and strands of genes. It also return some statistics.
 }
 \details{
-Return a S3 object with 3 dataframes. The second and the third dataframe can be plotted using the plot function.
+Return a S3 object with 3 dataframes.
 }
 \examples{
-# output <- geneTADtopo(tad.gr, gene.gr)
+# output <- geneTADtopo(domain.gr, annot.gr)
 # plot(output)
 
 }

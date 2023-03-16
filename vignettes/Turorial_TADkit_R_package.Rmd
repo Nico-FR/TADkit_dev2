@@ -21,14 +21,13 @@ knitr::opts_chunk$set(
 
 # TADkit
 
-The main objective of the TADkit R package is to make the visualization of data associated with HiC analyses accessible to biologists without the need for bioinformatics skills. To this end, two pairs of functions (based on gviz and ggplot packages) have been created to visualize :
+The TADkit package has 2 objectives. 
+The first one is to facilitate the visualization of HiC matrices and the data that are generally associated with them. To this end, two pairs of functions (based on gviz and ggplot packages) have been created to visualize :
 
 * domains such as TADs (topological Associated Domain) or compartments (compartment A and B),
 * interaction matrices.
 
-Other tools has been added in order to analysed genomic annotations in the light of the 3D organisation.
-
-In this tutorial, we are going to start with the visualization of domains and matrices with the datas included in the package. Note that most of the functions refer to the so called TAD but it also work for other kind of domains (e.g compartments). 
+The second objective of the package is to allow the analysis of the distribution of genomic annotations in the light of the 3D organisation.
 
 ## Installation
 
@@ -38,7 +37,6 @@ You can install the development version of TADkit from [GitHub](https://github.c
 # install.packages("devtools")
 devtools::install_github("Nico-FR/TADkit")
 ```
-
 
 # Data format
 
@@ -58,17 +56,17 @@ Interaction count (HiC matrix) for a genome is a very large size and can be stor
 
 ### data frame
 
-A basic storage is a compressed data frame for each chromosome in which each row and columns represent a bin. Bovine matrices for chromosome 25 and 26 are available in the TADkit package as a sparse `dgCMatrix` format (i.e upper part of the matrix without the zeros). 
+A basic storage is a compressed data frame for each chromosome in which each row and columns represent a bin. Bovine matrices for chromosome 25 are available in the TADkit package as a sparse `dgCMatrix` format (i.e upper part of the matrix without the zeros). 
 ```{r}
-class(TADkit::matrix_1_chr25_50kb)
+class(matrix_1_chr25_50kb)
 
 #raw count between bins 60 to 70
-TADkit::matrix_1_chr25_50kb[60:70,60:70]
+matrix_1_chr25_50kb[60:70,60:70]
 ```
 
 Let's write the matrix as data frame on the current directory:
 ```{r}
-write.table(as.data.frame(as.matrix(TADkit::matrix_1_chr25_50kb)), #dgCMatrix 2 data frame
+write.table(as.data.frame(as.matrix(matrix_1_chr25_50kb)), #dgCMatrix 2 data frame
             "./matrix_1_chr25_50kb.df", 
             row.names = TRUE, #add row names
             col.names = TRUE, #add column names
@@ -88,32 +86,32 @@ mat1.dgcmat = as(mat1.mat, "dgCMatrix") #translate to dgCMatrix
 
 ### .cool / .mcool
 
-One of the most common HiC array storage formats is the .cool or .mcool format which store matrices for 1 resolution and multiple resolutions respectively. To load HiC matrix for one chromosome from cool/.mcool as a matrix (`dgCMatrix`) use `coolFetch()`:
+One of the most common HiC array storage formats is the .cool or .mcool format which store matrices for 1 resolution and multiple resolutions respectively. To load HiC matrix for one chromosome from cool/.mcool as a matrix (`dgCMatrix`) use `cool2matrix()`:
 ```{r, eval=FALSE}
 #read .cool file
-my_matrix.10kb = coolFetch("my_matrix.10kb.cool", chr = "chr_name")
+my_matrix.10kb = cool2matrix("my_matrix.10kb.cool", chr = "chr_name")
 
 #read .mcool file
-my_matrix.10kb = coolFetch("my_matrix.mcool", chr = "chr_name", bin.width = 10e3)
+my_matrix.10kb = cool2matrix("my_matrix.mcool", chr = "chr_name", bin.width = 10e3)
 ```
 
 ## .bed
 
 Domains are usely stored in bed file format which contains at least 3 columns (chromosome name, the start and the end of the TAD). 
 ```{r}
-head(TADkit::tad_1_10kb.bed) #TAD for bovine 1 estimated from 10kb matrix
+head(tad_1_10kb.bed) #TAD for bovine 1 estimated from 10kb matrix
 ```
 Other columns can be added like the stand, any score or character. In most of the TADkit functions bed files must be stored in `GRanges` in which we can store the size of the chromosomes we will need.  
 To create a `GRanges` with the size of the chromosomes use `dataframe2grange()`:
 ```{r}
-#chromosomes sizes
-TADkit::chromsize
+#chromosomes sizes:
+head(chromsize)
 
 #create GRanges with chr sizes:
-tad_1_10kb.gr = dataframes2grange(TADkit::tad_1_10kb.bed, TADkit::chromsize)
+tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
 tad_1_10kb.gr
 
-#chromsize within GRanges object
+#chromsize within GRanges object:
 seqlengths(tad_1_10kb.gr)
 ```
 TADs are often stored in the form of domains and each domain gives the beginning and the end of a TAD. Sometime TADs are stored in the form of boundaries which gives bins in which borders are located. The width of the boundaries corresponds to the size of the bins of the matrix (i.e 10kb in our datas).
@@ -131,8 +129,9 @@ boundary2domain(boundaries)
 
 In addition to TADs, we can also plot any type of annotations. For this tutorial we will use genes annotations available on Ensembl:
 ```{r}
-txdb <- makeTxDbFromBiomart(biomart="ensembl", dataset="btaurus_gene_ensembl")
-genomic.gr = genes(txdb, columns=c("TXTYPE"))
+txdb <- makeTxDbFromBiomart(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
+genomic.gr = genes(txdb, columns = c("TXTYPE"))
+genomic.gr$TXTYPE = as.character(genomic.gr$TXTYPE)
 genomic.gr
 ```
 
@@ -148,16 +147,16 @@ In TADkit plot functions, bedgraph inputs can be in 3 formats:
 To avoid having to load too much data in the R environment, it is possible to specify the file paths instead of an R object:
 ```{r}
 # insulation score for indiv 1:
-head(TADkit::IS_1_10kb.bedgraph)
+head(IS_1_10kb.bedgraph)
 
 #write bedgraph in a file
-write.table(TADkit::IS_1_10kb.bedgraph, "./IS_1_10kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t")
+write.table(IS_1_10kb.bedgraph, "./IS_1_10kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t")
 ```
 
 ## .bigwig
 
 Similar to bedgraph, bigwig files are used to store a score for each interval in an indexed and compressed form. 
-Insulation scores stored as a bigwig format can be translated to a `GRranges` with `bw2grange()`.
+Insulation scores stored as a bigwig format can be translated as a bedgraph format (i.e `GRranges`) with `bw2grange()`.
 
 For this tutorial we are going to use coverage data from RNA sequencing experiment available on Ensembl:
 ```{r}
@@ -175,6 +174,8 @@ In addition to domains, few others tracks can be plotted:
 * bedgraph to plot bin scores (e.g insulation score...),
 * bigwig to plot coverage datas (e.g RNAseq...),
 * bed to plot annotations (e.g genes...).
+
+Note that most of the functions refer to the so called TAD but it also work for other kind of domains (e.g compartments). 
 
 ## TADplot
 
@@ -203,12 +204,12 @@ TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6,
 To avoid having to load too much data in the R environment, we will see how to use the paths of bedgraph files. Datas for the 2 bovines:
 ```{r}
 #create GRanges with TADs
-tad_2_10kb.gr = dataframes2grange(TADkit::tad_2_10kb.bed, TADkit::chromsize) 
+tad_2_10kb.gr = dataframes2grange(tad_2_10kb.bed, chromsize) 
 
-#write bedgraph as file
-write.table(TADkit::IS_2_10kb.bedgraph, "./IS_2_10kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
-write.table(TADkit::PC1_1_50kb.bedgraph, "./PC1_1_50kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
-write.table(TADkit::PC1_2_50kb.bedgraph, "./PC1_2_50kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
+#write bedgraph as files
+write.table(IS_2_10kb.bedgraph, "./IS_2_10kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
+write.table(PC1_1_50kb.bedgraph, "./PC1_1_50kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
+write.table(PC1_2_50kb.bedgraph, "./PC1_2_50kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
 ```
 
 ### Create list
@@ -270,7 +271,7 @@ mTADplot2(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
 
 ## Options
 
-When you master TADplot(), mTADplot() is much more powerful and flexible to make the desired graphics. Moreover there are many options to change some of the graphic parameters:
+When you master TADplot(), mTADplot() is much more powerful and flexible to make the desired graphics. Moreover there are many options to change some of the track parameters:
 
 ### bigwigPath.lst	
 
@@ -365,6 +366,209 @@ mMATplot(matrix.upper = matrix_1_chr25_50kb,
   ggtitle("log2(raw count): chr25 bov1 vs bov2")
 ```
 
+
+# Analysis
+
+Two functions allow to analyzed and visualized distributions of any annotations:
+
+* on both sides of the TAD boundaries,
+* or within TAD domains.
+
+## Around boundaries
+
+Suppose we want to analyze the distribution of genes around the TAD boundaries. We can either analyze the gene coverage (i.e gene density) or the distribution of the genes features (i.e start or stop of the genes).
+These analyses are done in two steps. The first is to use the `TADarea()` to return all the genes that are around each TAD boundary. It is possible to analyze the distribution of genes around the TAD starts, TAD ends or even the center of TADs.
+
+Let's analyzed genes around TAD starts +/- 50kb.
+```{r}
+#filter protein coding genes
+genes.gr = genomic.gr[as.character(genomic.gr$TXTYPE) == "protein_coding"]
+
+data.gr = boundArea(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
+                  window.size = 50e3, 
+                  domain.boundary = "start")
+```
+
+### Coverage
+
+```{r}
+areaCov(data.gr)
+```
+The `areaCov()`function return the plot with the gene coverage on a sliding window of 5kb.
+As the cumulative size of genes are different according to the strands:
+
+```{r}
+genes.gr %>% as.data.frame() %>% group_by(strand) %>% summarise(sum = sum(width))
+```
+
+We can normalized the coverage between strands with the Z-score to obtain a nice symmetrical coverage of the genes according to their strands:
+
+```{r}
+areaCov(data.gr, norm = TRUE)
+```
+
+### Distribution
+
+Let's now look at the distribution of the genes starts (TSS) around the TAD boundaries:
+
+```{r}
+areaHist(data.gr,
+         annot.boundary = "start",
+         annot.strand = FALSE,
+         bin.width = 10e3)
+```
+
+This time, we have defined the size of the bins at 10kb which corresponds to the resolution of the matrix and thus of the range in which the position of the boundaries are predicted. What we observe is an increase of the TSS in the bin of the borders.
+
+
+## Within domains
+
+### Distribution
+
+Let's do the same analysis (TSS distribution) but this time within the domains (i.e relative position of the TSS according to the TADs).
+```{r}
+domainHist(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
+        annot.boundary = "start",
+        ifoverlap = "remove", #parameter explained latter
+        annot.strand = F)
+```
+
+As before, we observe an increase in TSS near the borders.
+In the message return by `domainHist()` we also observe that 2568 genes overlap a boundary. In the example above, these genes were not taken into account (`ifoverlap = "remove").
+
+To illustrate the two other available options for considering these genes let's create an illustration:
+
+```{r, fig.height = 2, fig.width = 8}
+#create 1 genes
+annot.gr <- dataframes2grange(
+  data.frame(chr = 1, start = 198e3, end = 290e3, strand = "+", names = "gene"),
+  data.frame(chr = "1", size = 400e3),
+  strand.col = 4,
+  name.col = 5)
+
+#Create 2 TADs
+tad.gr <- dataframes2grange(
+  data.frame(chr = 1, start = c(100e3, 200e3), end = c(200e3, 300e3)),
+  data.frame(chr = "1", size = 400e3))
+
+#plot
+plot = TADplot(tad.gr = tad.gr, annot.gr = annot.gr, start = 150e3, stop = 300e3, chr = 1)
+```
+
+We can now take them into account in 2 different ways.
+The first one is to take the real position of the TSS (i.e at the end of the first TAD in our example): 
+
+```{r}
+domainHist(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
+        annot.boundary = "start",
+        ifoverlap = "real", 
+        annot.strand = T)
+```
+
+We observe the same distribution independently of their respective strands. 
+
+Now if we add the uncertainty of the position of the TAD boundaries (i.e. the size of the bins) to our illustration:
+
+```{r, fig.height = 2, fig.width = 8}
+#create 1 genes
+annot.gr <- dataframes2grange(
+  data.frame(chr = 1, start = c(198e3,195e3), end = c(290e3, 205e3), strand = c("+", "*"), names = c("gene", "boundary")),
+  data.frame(chr = "1", size = 400e3),
+  strand.col = 4,
+  name.col = 5
+)
+
+#plot
+plot = TADplot(tad.gr = tad.gr, annot.gr = annot.gr, start = 150e3, stop = 300e3, chr = 1)
+```
+Instead of taking the actual position of the TSS (i.e. at the end of the first TAD) one can ask in which TAD is this gene most likely located? This is it, in the second TAD. Thus the position of the TSS is measured in relation to the TAD where it is most likely located (i.e few kilo bases before the second TAD).
+If we restart `domainHist()` by taking the best match of the genes that overlap the boundaries, we observe that the genes are oriented preferentially towards the center of the TADs.
+
+```{r}
+domainHist(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
+        annot.boundary = "start",
+        ifoverlap = "best", 
+        annot.strand = T)
+```
+
+We can also use the function to check if when we randomize the 3D organization we lose this orientation of the genes. To do that we will used `TADshuffling()` to shuffled TAD positions.
+
+```{r}
+domainHist(domain.gr = TADshuffling(tad_1_10kb.gr), annot.gr = genes.gr,
+        annot.boundary = "start",
+        ifoverlap = "best", 
+        annot.strand = T)
+```
+
+### Coverage
+
+Instead of analyzing the distribution of the TSS within TADs, it is possible to measure the gene density of each bin and plot the smoothed gene density within the TADs:
+```{r}
+domainCov(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
+           bin.width = 10e3,
+           annot.col = "strand", norm = TRUE)
+```
+Again, we observed a symmetrical coverage of the genes according to their strands. We also observe the increase of the genes on the forward strand at the beginning of TADs and inversely for the reverse strand. 
+
+This analysis can also be done by domain class, for example between compartments A and B:
+
+```{r}
+comp.gr = PC1calling(PC1_1_50kb.bedgraph) #call compartment A or B from PC1 values of chr 25
+seqlengths(comp.gr) = 42350435 #add size of chr 25
+
+domainCov(domain.gr = comp.gr, annot.gr = genes.gr,
+           domain.col = 1,
+           bin.width = 50e3, norm = TRUE)
+
+```
+
+As expected the gene density is higher in compartment A (active compartments) than B.
+
+
+# Compartment calling and orientation
+
+Many algorithms allow to compute from an HiC matrix the values of a principal component which allows to identify the compartments A or B. The orientation of these values is random and generally it is oriented from the density in genes or the percentage in GC between compartments A and B. 
+In this package `PC1calling()` allows to call the compartments from the PC1 values and `compOrientation()` allows to orient these values according to the level of expression of the genes.
+
+First let's create gene expression data. For the example raw count of each gene is randomly selected between 0 to 100:
+
+```{r}
+set.seed(1)
+expression.data.frame = data.frame(ID = names(genes.gr), Name = names(genes.gr),
+                                   raw_count = sample(1:100, length(genes.gr), replace = TRUE))
+
+head(expression.data.frame)
+```
+
+Now, knowing that the A compartments are more active than the B compartments, we can use `compOrientation()` to:
+-call the compartments of the A and B compartments,
+-calculate the median expression,
+-invert the PC1 value for the chromosomes with expression rate of B > A.
+
+```{r}
+PC1_1_50kb.gr = suppressWarnings(dataframes2grange(PC1_1_50kb.bedgraph, chromsize, metadata.mcols = 4)) %>% trim #create GRanges from bedgraph and cut bins out-of-bound to suppress warnings
+data = compOrientation(bedgraph = PC1_1_50kb.gr, annot.gr = genes.gr, expression.data.frame = expression.data.frame)
+```
+
+We can compare the expression level between compartments before orientation:
+
+```{r}
+ggplot(data$expression, aes(y = exp, fill = comp))+geom_boxplot()+facet_wrap(.~chr)
+```
+
+In our random data set, the median expression level is higher in the B compartments. As a result, the PC1 values have been inverted. You can visualize the changes with this graph (before and after PC1 values orientation):
+
+```{r}
+comp.gr.lst = list(PC1calling(PC1_1_50kb.gr), PC1calling(data$bedgraph_oriented))
+seqlengths(comp.gr.lst[[1]]) = 42350435 ; seqlengths(comp.gr.lst[[2]]) = 42350435
+names(comp.gr.lst[[1]]) = comp.gr.lst[[1]]$comp ; names(comp.gr.lst[[2]]) = comp.gr.lst[[2]]$comp
+names(comp.gr.lst) = c("before", "after")
+comp.bedgraph.lst =  list(PC1_1_50kb.gr, data$bedgraph_oriented)
+names(comp.bedgraph.lst) = c("before", "after")
+
+mTADplot2(tad.lst = comp.gr.lst, bedgraph.lst = comp.bedgraph.lst, chr = 25, start = 13e6, stop = 15e6, tad.id = TRUE)
+```
+
 # Clear files
 
 ```{r}
@@ -374,9 +578,8 @@ file.remove(
 
 
 
-# Analysis
 
-In progress...
+
 
 
 

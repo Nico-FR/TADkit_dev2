@@ -36,6 +36,6 @@ dataframes2grange(
 GRange file that contains chromosome size.
 }
 \description{
-This function create a GRange object from the first \code{dataframe} and add the size of the chromosomes on the second \code{dataframe}.
-A name of each line is added to the \code{GRanges} output.
+This function create a GRange object from the first \code{dataframe} (annotation.table) and add the size of the chromosomes on the second \code{dataframe}.
+The chromosomes are filtered according to the list of chromosomes contained in the second \code{dataframe} (chromsize).
 }

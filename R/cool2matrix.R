@@ -1,10 +1,10 @@
 #' @title Import matrix from cool or mcool file
 #'
-#' @description From cool or mcool files, `coolFetch` import the interaction matrix for one chromosome.
-#' If balance = `TRUE`, `coolFetch` returns the normalized counts
+#' @description From cool or mcool files, `cool2matrix` import the interaction matrix for one chromosome as a `dgCMatrix` (upper triangular and sparse Matrix).
+#' If balance = `TRUE`, `cool2matrix` returns the normalized counts.
 #'
 #' @details The cool file format is an efficient storage format for high resolution genomic interaction matrices, developed and maintained by the Mirny lab (https://github.com/open2c/cooler)
-#' `coolFetch` use the indexes provided by the cooler data model to extract the intra-chromosomal counts for a given chromosome.
+#' `cool2matrix` use the indexes provided by the cooler data model to extract the intra-chromosomal counts for a given chromosome.
 #' As cool files store genomic interactions for only one resolution, `bin.width` must be set to `NA`.
 #' While, as mcool files store genomic interactions for multiples resolutions, the chosen resolution must be set with the `bin.width` parameter.
 #'
@@ -23,7 +23,7 @@
 #' @export
 #'
 #'
-coolFetch <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
+cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
 
   if (!is.na(bin.width)) {message("\nParsing .mcool file.")} else {message("\nParsing .cool file.")}
 
@@ -50,7 +50,7 @@ coolFetch <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
       }
     }
 
-    # The list of avalaible chromosomes
+    # The list of available chromosomes
     chromosomes = rhdf5::h5read(file = cool.path, name = uri("chroms/name"))
 
     if (!(chr %in% chromosomes)) {

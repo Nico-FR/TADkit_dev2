@@ -8,7 +8,7 @@
 \subsection{\code{matrix_1_chr25_50kb}}{
 
 A dgCMatrix object with 847 rows and columns containing the raw counts (number of interactions).
-For bovine 1, chromosome 25 with a bin width of 50e3 bases pairs.
+For bovine 1, chromosome 25 with a bin width of 50kb.
 Only the upper matrix and non zero count are stored.
 }
 }

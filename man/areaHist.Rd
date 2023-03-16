@@ -2,39 +2,38 @@
 % Please edit documentation in R/areaHist.R
 \name{areaHist}
 \alias{areaHist}
-\title{Histogram of annotations around TAD boundaries}
+\title{Histogram of annotations around boundaries}
 \usage{
 areaHist(
   data.gr,
-  annot.border = "center",
+  annot.boundary = "center",
   annot.strand = TRUE,
   bin.width = NULL
 )
 }
 \arguments{
-\item{data.gr}{Output of \code{TADarea()}.}
+\item{data.gr}{Output of \code{boundArea()}.}
 
-\item{annot.border}{Type of feature to analyzed. \code{"Start"}, \code{"end"} or \code{"center"} of each annotations from \code{annot.gr} input. It is possible to use \code{"closest"} to take the closest border (start or end) independently to the strands.}
+\item{annot.boundary}{Type of feature to analyzed. \code{"Start"}, \code{"end"} or \code{"center"} of each \code{annot.gr}. It is possible to use \code{"closest"} to take the closest border (start or end) independently to the strands.}
 
 \item{annot.strand}{Logical. Default is \code{FALSE} to plot the distribution as histogram. If \code{TRUE}, distributions are separated according to their strands and are display with lines.}
 
-\item{bin.width}{Size of the sliding window in base pair to calculate the mean coverage. Default is \code{NULL} to to use a size in 10 time smaller than \code{window.size} parameter of \code{TADarea()}.}
+\item{bin.width}{Size of the bin in base pair to count the number of annotations features. It should match the bin.width of the matrix used to call the domains. Default is \code{NULL} to to use a size in 10 time smaller than \code{window.size} parameter of \code{TADarea()}.}
 }
 \value{
 \code{ggplot}
 }
 \description{
-Graph of the distribution of the genomic annotations around TAD boundaries (real distance).
-\code{areahist()} measures the distances between TAD boundaries and the annotation borders (start, end, closest or the center) and plot the distribution as an histogram.
-\code{areahist()} takes the output of \code{TADarea()}.
-\code{annot.border = "closest"}, use the closest border (start or stop) to measure the distances from the TAD boundary independently to his strand. Therefore all annotations that overlap a TAD boundary have a distance of 0.
+This function take the output of \code{boundArea()} to produce a graph of the distribution of the genomic annotations around TAD boundaries (real distance).
+\code{areahist()} measures the distances between the boundaries and the annotation features (start, end, closest or the center of annotations) and plot the distribution as an histogram.
+\code{annot.boundary = "closest"}, use the closest border (start or stop) to measure the distances from the boundary independently to the annotation strand. Note that all annotations that overlap a boundary will have a distance of 0.
 }
 \details{
 Several features distances can be count. As an example (see examples for visualizations) of 2 genes which start at 20Kb of a TAD boundary (width of the 2 genes are 10Kb and are on the reverse an forward strand respectively).
--If \code{annot.border = "start"}, the distances from the TAD border are 20Kb,
--If \code{annot.border = "end"}, the distances are 10 and 30Kb respectively,
--If \code{annot.border = "center"}, the distances are 15Kb and 25Kb respectively,
--If \code{annot.border = "closest"}, the distances are 10Kb and 20Kb respectively.
+-If \code{annot.boundary = "start"}, the distances from the boundary are 20Kb,
+-If \code{annot.boundary = "end"}, the distances are 10 and 30Kb respectively,
+-If \code{annot.boundary = "center"}, the distances are 15Kb and 25Kb respectively,
+-If \code{annot.boundary = "closest"}, the distances are 10Kb and 20Kb respectively.
 }
 \examples{
 # create GRange with 2 annotations (genes with same size and start but different strand)
@@ -57,11 +56,11 @@ tad.gr
 TADplot(tad.gr = tad.gr, start = 5e3, stop = 55e3, chr = 1, annot.gr = annot.gr)
 
 # Distribution analysis surrounding the start of the TAD
-data.gr <- TADarea(
-  tad.gr = tad.gr,
+data.gr <- boundArea(
+  domain.gr = tad.gr,
   annot.gr = annot.gr,
   window.size = 50e3,
-  tad.boundary = "start"
+  domain.boundary = "start"
 )
 
 # Visualized differences according to annotation features:
@@ -70,7 +69,7 @@ for (features in c("start", "end", "center", "closest")) {
     data.gr = data.gr,
     annot.strand = FALSE,
     bin.width = 1e3,
-    annot.border = features
+    annot.boundary = features
   )
   print(output)
 }

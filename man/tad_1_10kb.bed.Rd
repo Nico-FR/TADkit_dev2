@@ -3,12 +3,11 @@
 \docType{data}
 \name{tad_1_10kb.bed}
 \alias{tad_1_10kb.bed}
-\title{TAD of bovine 1 and chromosome 25/26.}
+\title{TAD of bovine 1.}
 \format{
 \subsection{\code{tad_1_10kb.bed}}{
 
 A data frame containing TADs (domains) predicted by HiCExplorer on 10kb matrix.
-For bovine 1, chromosome 25 and 26.
 \describe{
 \item{chr}{chromosome name}
 \item{start}{TAD start}
@@ -20,6 +19,6 @@ For bovine 1, chromosome 25 and 26.
 tad_1_10kb.bed
 }
 \description{
-TAD of bovine 1 and chromosome 25/26.
+TAD of bovine 1.
 }
 \keyword{datasets}

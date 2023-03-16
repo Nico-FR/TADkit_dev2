@@ -14,12 +14,12 @@
 #' * `dataframe` with expression of each gene (before orientation).
 #' * `dataframe` with median expression of each compartment (before orientation).
 #'
-#' @param bedgraph `GRanges` file with the score to be used for compartment calling (i.e PC1).
-#' @param gene.gr `GRanges` file with gene annotations.
+#' @param bedgraph `GRanges` file with the score to be used for compartment calling (i.e PC1 values).
+#' @param annot.gr `GRanges` file with gene annotations.
 #' @param expression.data.frame `dataframe` with 3 columns:
-#' * 1: gene IDs, must be identical IDs than `names(gene.gr)`,
-#' * 2: common name for genes, could be the gene ID,
-#' * 3: expression of each gene, such as raw count or `log(raw_count + 1)`.
+#' * 1: gene IDs: must be identical IDs than `names(annot.gr)`,
+#' * 2: common name for genes: could be the gene ID,
+#' * 3: expression of each gene: such as raw count or `log(raw_count + 1)`.
 #'
 #' @return S3 class object with 3 `dataframes`.
 #'
@@ -31,17 +31,17 @@
 #' @export
 #'
 #' @examples
-#' # output <- compOrientation(bedgraph, gene.gr, expression.data.frame)
+#' # output <- compOrientation(bedgraph, annot.gr, expression.data.frame)
 #'
 
-compOrientation <- function(bedgraph, gene.gr, expression.data.frame) {
+compOrientation <- function(bedgraph, annot.gr, expression.data.frame) {
 
   #sanity check
-  if (is.null(names(gene.gr))) {
-    stop("gene.gr object must have names (i.e gene IDs)")
+  if (is.null(names(annot.gr))) {
+    stop("annot.gr object must have names (i.e gene IDs)")
   }
-  if (length(gene.gr[duplicated(names(gene.gr))]) > 0) {
-    stop("gene.gr object must have unique names (i.e gene IDs)")
+  if (length(annot.gr[duplicated(names(annot.gr))]) > 0) {
+    stop("annot.gr object must have unique names (i.e gene IDs)")
   }
   if (length(expression.data.frame[duplicated(expression.data.frame[,1]),1]) > 0) {
     stop("expression.data.frame[,1] must have unique IDs (i.e gene IDs)")
@@ -72,7 +72,7 @@ compOrientation <- function(bedgraph, gene.gr, expression.data.frame) {
   names(undirected_comp.gr) = 1:length(undirected_comp.gr)
 
   # position of the genes in relation to each compartment
-  geneTopo <- TADkit::geneTADtopo(tad.gr = undirected_comp.gr, gene.gr = gene.gr, expression.data.frame = expression.data.frame, ifoverlap = "remove")
+  geneTopo <- TADkit::geneTADtopo(domain.gr = undirected_comp.gr, annot.gr = annot.gr, expression.data.frame = expression.data.frame, ifoverlap = "remove")
 
   # merge gene, domain and expression datas
   undirected_comp.df = undirected_comp.gr %>% as.data.frame() %>% dplyr::select(seqnames, comp)

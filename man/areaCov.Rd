@@ -2,16 +2,16 @@
 % Please edit documentation in R/areaCov.R
 \name{areaCov}
 \alias{areaCov}
-\title{Density plot of annotations around TAD boundaries}
+\title{Density plot of annotations around boundaries}
 \usage{
 areaCov(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE)
 }
 \arguments{
-\item{data.gr}{Output of \code{TADarea()}.}
+\item{data.gr}{Output of \code{boundArea()}.}
 
 \item{annot.strand}{Logical. If \code{TRUE} (default): separate coverage according to their strands.}
 
-\item{bin.width}{Size of the sliding window in base pair to calculate the mean coverage. Default is \code{NULL} to to use a size in 10 time smaller than \code{window.size} parameter of \code{TADarea()}.}
+\item{bin.width}{Size of the sliding window in base pair to calculate the mean coverage. Default is \code{NULL} to to use a size in 10 time smaller than \code{window.size} parameter of \code{boundArea()}.}
 
 \item{norm}{Logical. Normalized density using relative content (zscore of density). Default is \code{FALSE}.}
 }
@@ -19,10 +19,9 @@ areaCov(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE)
 \code{ggplot}
 }
 \description{
-Graph of the density of the genomic annotations around TAD boundaries (real distance).
+This function take the output of \code{boundArea()} to produce a graph of the density of the genomic annotations around TAD boundaries (real distance).
 }
 \details{
-This function take the output of TADarea function.
 If the density is significantly different between strands, it can be useful to use relative density (i.e normalized using the zscore with norm = TRUE parameter).
 }
 \examples{
@@ -48,11 +47,11 @@ TADplot(tad.gr = tad.gr, start = 5e3, stop = 55e3, chr = 1, annot.gr = annot.gr)
 
 
 # Distribution analysis surrounding the start of the TAD
-data.gr <- TADarea(
-  tad.gr = tad.gr,
+data.gr <- boundArea(
+  domain.gr = tad.gr,
   annot.gr = annot.gr,
   window.size = 60e3,
-  tad.boundary = "start"
+  domain.boundary = "start"
 )
 
 # plot coverage

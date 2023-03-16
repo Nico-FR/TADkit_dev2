@@ -3,12 +3,11 @@
 \docType{data}
 \name{IS_1_10kb.bedgraph}
 \alias{IS_1_10kb.bedgraph}
-\title{Insulation score of bovine 1 and chromosome 25/26.}
+\title{Insulation score of bovine 1 and chromosome 25.}
 \format{
 \subsection{\code{IS_1_10kb.bedgraph}}{
 
 A data frame containing insulation score calculated by HiCExplorer on 10kb matrix.
-For bovine 1, chromosome 25 and 26.
 \describe{
 \item{chr}{chromosome name}
 \item{start}{bin start}
@@ -21,6 +20,6 @@ For bovine 1, chromosome 25 and 26.
 IS_1_10kb.bedgraph
 }
 \description{
-Insulation score of bovine 1 and chromosome 25/26.
+Insulation score of bovine 1 and chromosome 25.
 }
 \keyword{datasets}

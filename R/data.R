@@ -1,35 +1,20 @@
 #' Matrix of bovine 1 and chromosome 25.
 #' @format ## `matrix_1_chr25_50kb`
 #' A dgCMatrix object with 847 rows and columns containing the raw counts (number of interactions).
-#' For bovine 1, chromosome 25 with a bin width of 50e3 bases pairs.
+#' For bovine 1, chromosome 25 with a bin width of 50kb.
 #' Only the upper matrix and non zero count are stored.
 "matrix_1_chr25_50kb"
-#'
-#' Matrix of bovine 1 and chromosome 26.
-#' @format ## `matrix_1_chr26_50kb`
-#' A dgCMatrix object with 1040 rows and columns containing the raw counts (number of interactions).
-#' For bovine 1, chromosome 26 with a bin width of 50e3 bases pairs.
-#' Only the upper matrix and non zero count are stored.
-"matrix_1_chr26_50kb"
 #'
 #' Matrix of bovine 2 and chromosome 25.
 #' @format ## `matrix_2_chr25_50kb`
 #' A dgCMatrix object with 847 rows and columns containing the raw counts (number of interactions).
-#' For bovine 2, chromosome 25 with a bin width of 50e3 bases pairs.
+#' For bovine 2, chromosome 25 with a bin width of 50kb.
 #' Only the upper matrix and non zero count are stored.
 "matrix_2_chr25_50kb"
 #'
-#' Matrix of bovine 2 and chromosome 26.
-#' @format ## `matrix_2_chr26_50kb`
-#' A dgCMatrix object with 1040 rows and columns containing the raw counts (number of interactions).
-#' For bovine 2, chromosome 26 with a bin width of 50e3 bases pairs.
-#' Only the upper matrix and non zero count are stored.
-"matrix_2_chr26_50kb"
-#'
-#'TAD of bovine 1 and chromosome 25/26.
+#'TAD of bovine 1.
 #' @format ## `tad_1_10kb.bed`
 #' A data frame containing TADs (domains) predicted by HiCExplorer on 10kb matrix.
-#' For bovine 1, chromosome 25 and 26.
 #' \describe{
 #'   \item{chr}{chromosome name}
 #'   \item{start}{TAD start}
@@ -37,10 +22,9 @@
 #' }
 "tad_1_10kb.bed"
 #'
-#'TAD of bovine 2 and chromosome 25/26.
+#'TAD of bovine 2.
 #' @format ## `tad_2_10kb.bed`
 #' A data frame containing TADs (domains) predicted by HiCExplorer on 10kb matrix.
-#' For bovine 2, chromosome 25 and 26.
 #' \describe{
 #'   \item{chr}{chromosome name}
 #'   \item{start}{TAD start}
@@ -48,10 +32,9 @@
 #' }
 "tad_2_10kb.bed"
 #'
-#' Insulation score of bovine 1 and chromosome 25/26.
+#' Insulation score of bovine 1 and chromosome 25.
 #' @format ## `IS_1_10kb.bedgraph`
 #' A data frame containing insulation score calculated by HiCExplorer on 10kb matrix.
-#' For bovine 1, chromosome 25 and 26.
 #' \describe{
 #'   \item{chr}{chromosome name}
 #'   \item{start}{bin start}
@@ -60,10 +43,9 @@
 #' }
 "IS_1_10kb.bedgraph"
 #'
-#' Insulation score of bovine 2 and chromosome 25/26.
+#' Insulation score of bovine 2 and chromosome 25.
 #' @format ## `IS_2_10kb.bedgraph`
 #' A data frame containing insulation score calculated by HiCExplorer on 10kb matrix.
-#' For bovine 2, chromosome 25 and 26.
 #' \describe{
 #'   \item{chr}{chromosome name}
 #'   \item{start}{bin start}
@@ -72,10 +54,9 @@
 #' }
 "IS_2_10kb.bedgraph"
 #'
-#' First principal component score of bovine 1 and chromosome 25/26.
+#' First principal component score of bovine 1.
 #' @format ## `PC1_1_50kb.bedgraph`
 #' A data frame containing PC1 score calculated by dcHiC on 50kb matrix.
-#' For bovine 1, chromosome 25 and 26.
 #' \describe{
 #'   \item{chr}{chromosome name}
 #'   \item{start}{bin start}
@@ -84,10 +65,9 @@
 #' }
 "PC1_1_50kb.bedgraph"
 #'
-#' First principal component score of bovine 2 and chromosome 25/26.
+#' First principal component score of bovine 2.
 #' @format ## `PC1_2_50kb.bedgraph`
 #' A data frame containing PC1 score calculated by dcHiC on 50kb matrix.
-#' For bovine 2, chromosome 25 and 26.
 #' \describe{
 #'   \item{chr}{chromosome name}
 #'   \item{start}{bin start}
@@ -96,9 +76,9 @@
 #' }
 "PC1_2_50kb.bedgraph"
 #'
-#' Size of cow chromosomes 25 and 26.
+#' Size of cow autosomes.
 #' @format ## `chromsize`
-#' A data frame containing the size of the two bovine chromosomes
+#' A data frame containing the size in base pair of bovine chromosomes
 #' \describe{
 #'   \item{chr}{chromosome name}
 #'   \item{size}{sine in base pair}

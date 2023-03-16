@@ -1,13 +1,13 @@
 #' @title Genes topology according to TAD
 #'
-#' @description For each domain (e.g TAD) the function return a data frame with the numbers, names and strands of genes. It also return some statistics which can be plotted using plot(output).
+#' @description For each domain (e.g TAD) the function return a data frame with the numbers, names and strands of genes. It also return some statistics.
 #'
-#' @details Return a S3 object with 3 dataframes. The second and the third dataframe can be plotted using the plot function.
+#' @details Return a S3 object with 3 dataframes.
 #'
-#' @inheritParams TADhist
-#' @param gene.gr `GRanges` with genomic annotations.
+#' @inheritParams domainHist
+#' @param annot.gr `GRanges` with genomic annotations.
 #' @param expression.data.frame `dataframe` with expression data (raw counts...).
-#' The first two columns should be used to identify the genes. The 1st one must use the same gene id than `names(gene.gr)` (i.e unique ID). The 2nd can be used with usual gene names.
+#' The first two columns should be used to identify the genes. The 1st one must use the same gene id than `names(annot.gr)` (i.e unique ID). The 2nd can be used with usual gene names.
 #' Others columns give expression count, one column per sample/experiment.
 #'
 #' @return Return a S3 class object with 3 data frames.
@@ -19,20 +19,20 @@
 #' @export
 #'
 #' @examples
-#' # output <- geneTADtopo(tad.gr, gene.gr)
+#' # output <- geneTADtopo(domain.gr, annot.gr)
 #' # plot(output)
 #'
-geneTADtopo <- function(tad.gr, gene.gr, ifoverlap = "best", expression.data.frame = NULL) {
+geneTADtopo <- function(domain.gr, annot.gr, ifoverlap = "best", expression.data.frame = NULL) {
 
-  if (length(tad.gr) != length(unique(names(tad.gr)))) {
+  if (length(domain.gr) != length(unique(names(domain.gr)))) {
     stop("domain names must be unique!")
   }
 
-  data1 <- TADhist(tad.gr, gene.gr, output = "data", annot.border = "start", ifoverlap = ifoverlap)
+  data1 <- domainHist(domain.gr, annot.gr, output = "data", annot.boundary = "start", ifoverlap = ifoverlap)
 
   # annot.gr ID [ie names(annot.gr)] must be unique
-  if (length(gene.gr[duplicated(names(gene.gr))]) > 0) {
-    stop("gene.gr must have unique names!")
+  if (length(annot.gr[duplicated(names(annot.gr))]) > 0) {
+    stop("annot.gr must have unique names!")
   }
 
   # Count number of gene of each TAD
@@ -67,7 +67,7 @@ geneTADtopo <- function(tad.gr, gene.gr, ifoverlap = "best", expression.data.fra
 
   # numbers of TAD according to number of genes
   nbTAD_nbgene = nbgene_TAD %>% dplyr::count(nb_genes, name="nb_TADs")
-  nbTAD_nbgene = rbind(c(0, length(tad.gr) - length(nbgene_TAD$TAD_id)), nbTAD_nbgene) # add number of TAD with 0 genes
+  nbTAD_nbgene = rbind(c(0, length(domain.gr) - length(nbgene_TAD$TAD_id)), nbTAD_nbgene) # add number of TAD with 0 genes
 
   # numbers of TAD according to number of genes strand order
   nbTAD_nbgenestrand = nbgene_TAD %>% dplyr::count(gene_strands, nb_genes, name="nb_TADs") %>% arrange(desc(nb_TADs))
@@ -76,7 +76,6 @@ geneTADtopo <- function(tad.gr, gene.gr, ifoverlap = "best", expression.data.fra
                   nbTAD_nbgene = nbTAD_nbgene,
                   nbTAD_nbgenestrand = nbTAD_nbgenestrand)
 
-  class(output) <- "geneTopology"
   return(output)
 }
 

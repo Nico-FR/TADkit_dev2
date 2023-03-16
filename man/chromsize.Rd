@@ -3,11 +3,11 @@
 \docType{data}
 \name{chromsize}
 \alias{chromsize}
-\title{Size of cow chromosomes 25 and 26.}
+\title{Size of cow autosomes.}
 \format{
 \subsection{\code{chromsize}}{
 
-A data frame containing the size of the two bovine chromosomes
+A data frame containing the size in base pair of bovine chromosomes
 \describe{
 \item{chr}{chromosome name}
 \item{size}{sine in base pair}
@@ -18,6 +18,6 @@ A data frame containing the size of the two bovine chromosomes
 chromsize
 }
 \description{
-Size of cow chromosomes 25 and 26.
+Size of cow autosomes.
 }
 \keyword{datasets}

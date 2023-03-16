@@ -4,18 +4,18 @@
 \alias{compOrientation}
 \title{Orientation of PC1 score}
 \usage{
-compOrientation(bedgraph, gene.gr, expression.data.frame)
+compOrientation(bedgraph, annot.gr, expression.data.frame)
 }
 \arguments{
-\item{bedgraph}{\code{GRanges} file with the score to be used for compartment calling (i.e PC1).}
+\item{bedgraph}{\code{GRanges} file with the score to be used for compartment calling (i.e PC1 values).}
 
-\item{gene.gr}{\code{GRanges} file with gene annotations.}
+\item{annot.gr}{\code{GRanges} file with gene annotations.}
 
 \item{expression.data.frame}{\code{dataframe} with 3 columns:
 \itemize{
-\item 1: gene IDs, must be identical IDs than \code{names(gene.gr)},
-\item 2: common name for genes, could be the gene ID,
-\item 3: expression of each gene, such as raw count or \code{log(raw_count + 1)}.
+\item 1: gene IDs: must be identical IDs than \code{names(annot.gr)},
+\item 2: common name for genes: could be the gene ID,
+\item 3: expression of each gene: such as raw count or \code{log(raw_count + 1)}.
 }}
 }
 \value{
@@ -42,6 +42,6 @@ Return a list with 3 \code{dataframe}.
 }
 }
 \examples{
-# output <- compOrientation(bedgraph, gene.gr, expression.data.frame)
+# output <- compOrientation(bedgraph, annot.gr, expression.data.frame)
 
 }

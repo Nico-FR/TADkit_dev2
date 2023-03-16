@@ -1,13 +1,12 @@
 #' @title Density plot of annotations around boundaries
 #'
-#' @description Graph of the density of the genomic annotations around TAD boundaries (real distance).
+#' @description This function take the output of `boundArea()` to produce a graph of the density of the genomic annotations around TAD boundaries (real distance).
 #'
-#' @details This function take the output of TADarea function.
-#' If the density is significantly different between strands, it can be useful to use relative density (i.e normalized using the zscore with norm = TRUE parameter).
+#' @details If the density is significantly different between strands, it can be useful to use relative density (i.e normalized using the zscore with norm = TRUE parameter).
 #'
-#' @param data.gr Output of `TADarea()`.
+#' @param data.gr Output of `boundArea()`.
 #' @param annot.strand Logical. If `TRUE` (default): separate coverage according to their strands.
-#' @param bin.width Size of the sliding window in base pair to calculate the mean coverage. Default is `NULL` to to use a size in 10 time smaller than `window.size` parameter of `TADarea()`.
+#' @param bin.width Size of the sliding window in base pair to calculate the mean coverage. Default is `NULL` to to use a size in 10 time smaller than `window.size` parameter of `boundArea()`.
 #' @param norm Logical. Normalized density using relative content (zscore of density). Default is `FALSE`.
 #'
 #' @return `ggplot`
@@ -43,11 +42,11 @@
 #'
 #'
 #' # Distribution analysis surrounding the start of the TAD
-#' data.gr <- domainArea(
-#'   tad.gr = tad.gr,
+#' data.gr <- boundArea(
+#'   domain.gr = tad.gr,
 #'   annot.gr = annot.gr,
 #'   window.size = 60e3,
-#'   tad.boundary = "start"
+#'   domain.boundary = "start"
 #' )
 #'
 #' # plot coverage

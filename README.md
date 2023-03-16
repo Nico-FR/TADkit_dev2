@@ -3,22 +3,17 @@
 
 # 1 TADkit
 
-The main objective of the TADkit R package is to make the visualization
-of data associated with HiC analyses accessible to biologists without
-the need for bioinformatics skills. To this end, two pairs of functions
-(based on gviz and ggplot packages) have been created to visualize :
+The TADkit package has 2 objectives. The first one is to facilitate the
+visualization of HiC matrices and the data that are generally associated
+with them. To this end, two pairs of functions (based on gviz and ggplot
+packages) have been created to visualize :
 
 -   domains such as TADs (topological Associated Domain) or compartments
     (compartment A and B),
 -   interaction matrices.
 
-Other tools has been added in order to analysed genomic annotations in
-the light of the 3D organisation.
-
-In this tutorial, we are going to start with the visualization of
-domains and matrices with the datas included in the package. Note that
-most of the functions refer to the so called TAD but it also work for
-other kind of domains (e.g compartments).
+The second objective of the package is to allow the analysis of the
+distribution of genomic annotations in the light of the 3D organisation.
 
 ## 1.1 Installation
 
@@ -56,17 +51,17 @@ memory for only one chromosome (intra chromosomal interactions).
 
 A basic storage is a compressed data frame for each chromosome in which
 each row and columns represent a bin. Bovine matrices for chromosome 25
-and 26 are available in the TADkit package as a sparse `dgCMatrix`
-format (i.e upper part of the matrix without the zeros).
+are available in the TADkit package as a sparse `dgCMatrix` format (i.e
+upper part of the matrix without the zeros).
 
 ``` r
-class(TADkit::matrix_1_chr25_50kb)
+class(matrix_1_chr25_50kb)
 #> [1] "dgCMatrix"
 #> attr(,"package")
 #> [1] "Matrix"
 
 #raw count between bins 60 to 70
-TADkit::matrix_1_chr25_50kb[60:70,60:70]
+matrix_1_chr25_50kb[60:70,60:70]
 #> 11 x 11 sparse Matrix of class "dgCMatrix"
 #>                                                             
 #>  [1,] 3959 1024  312  256  325  269  181  133  165  269   83
@@ -85,7 +80,7 @@ TADkit::matrix_1_chr25_50kb[60:70,60:70]
 Let’s write the matrix as data frame on the current directory:
 
 ``` r
-write.table(as.data.frame(as.matrix(TADkit::matrix_1_chr25_50kb)), #dgCMatrix 2 data frame
+write.table(as.data.frame(as.matrix(matrix_1_chr25_50kb)), #dgCMatrix 2 data frame
             "./matrix_1_chr25_50kb.df", 
             row.names = TRUE, #add row names
             col.names = TRUE, #add column names
@@ -109,14 +104,14 @@ mat1.dgcmat = as(mat1.mat, "dgCMatrix") #translate to dgCMatrix
 One of the most common HiC array storage formats is the .cool or .mcool
 format which store matrices for 1 resolution and multiple resolutions
 respectively. To load HiC matrix for one chromosome from cool/.mcool as
-a matrix (`dgCMatrix`) use `coolFetch()`:
+a matrix (`dgCMatrix`) use `cool2matrix()`:
 
 ``` r
 #read .cool file
-my_matrix.10kb = coolFetch("my_matrix.10kb.cool", chr = "chr_name")
+my_matrix.10kb = cool2matrix("my_matrix.10kb.cool", chr = "chr_name")
 
 #read .mcool file
-my_matrix.10kb = coolFetch("my_matrix.mcool", chr = "chr_name", bin.width = 10e3)
+my_matrix.10kb = cool2matrix("my_matrix.mcool", chr = "chr_name", bin.width = 10e3)
 ```
 
 ## 2.2 .bed
@@ -125,14 +120,14 @@ Domains are usely stored in bed file format which contains at least 3
 columns (chromosome name, the start and the end of the TAD).
 
 ``` r
-head(TADkit::tad_1_10kb.bed) #TAD for bovine 1 estimated from 10kb matrix
+head(tad_1_10kb.bed) #TAD for bovine 1 estimated from 10kb matrix
 #>   chr   start     end
-#> 1  25  360000  550000
-#> 2  25  550000  680000
-#> 3  25  680000  870000
-#> 4  25  870000 1050000
-#> 5  25 1050000 1360000
-#> 6  25 1360000 1520000
+#> 1   1  830000 1120000
+#> 2   1 1120000 1650000
+#> 3   1 1650000 1920000
+#> 4   1 1920000 2080000
+#> 5   1 2080000 2200000
+#> 6   1 2200000 2390000
 ```
 
 Other columns can be added like the stand, any score or character. In
@@ -142,36 +137,46 @@ To create a `GRanges` with the size of the chromosomes use
 `dataframe2grange()`:
 
 ``` r
-#chromosomes sizes
-TADkit::chromsize
-#>   chr     size
-#> 1  25 42350435
-#> 2  26 51992305
+#chromosomes sizes:
+head(chromsize)
+#>   chr      size
+#> 1   1 158534110
+#> 2   2 136231102
+#> 3   3 121005158
+#> 4   4 120000601
+#> 5   5 120089316
+#> 6   6 117806340
 
 #create GRanges with chr sizes:
-tad_1_10kb.gr = dataframes2grange(TADkit::tad_1_10kb.bed, TADkit::chromsize)
+tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
 tad_1_10kb.gr
-#> GRanges object with 262 ranges and 0 metadata columns:
-#>               seqnames            ranges strand
-#>                  <Rle>         <IRanges>  <Rle>
-#>     25_360000       25     360000-550000      *
-#>     25_550000       25     550000-680000      *
-#>     25_680000       25     680000-870000      *
-#>     25_870000       25    870000-1050000      *
-#>    25_1050000       25   1050000-1360000      *
-#>           ...      ...               ...    ...
-#>   26_50505000       26 50505000-50615000      *
-#>   26_50615000       26 50615000-50890000      *
-#>   26_50890000       26 50890000-51140000      *
-#>   26_51140000       26 51140000-51250000      *
-#>   26_51250000       26 51250000-51670000      *
+#> GRanges object with 6330 ranges and 0 metadata columns:
+#>               seqnames              ranges strand
+#>                  <Rle>           <IRanges>  <Rle>
+#>      1_830000        1      830000-1120000      *
+#>     1_1120000        1     1120000-1650000      *
+#>     1_1650000        1     1650000-1920000      *
+#>     1_1920000        1     1920000-2080000      *
+#>     1_2080000        1     2080000-2200000      *
+#>           ...      ...                 ...    ...
+#>   9_102960000        9 102960000-103180000      *
+#>   9_103180000        9 103180000-103510000      *
+#>   9_103510000        9 103510000-103550000      *
+#>   9_103550000        9 103550000-103940000      *
+#>   9_103940000        9 103940000-104165000      *
 #>   -------
-#>   seqinfo: 2 sequences from an unspecified genome
+#>   seqinfo: 29 sequences from an unspecified genome
 
-#chromsize within GRanges object
+#chromsize within GRanges object:
 seqlengths(tad_1_10kb.gr)
-#>       25       26 
-#> 42350435 51992305
+#>         1        10        11        12        13        14        15        16 
+#> 158534110 103308737 106982474  87216183  83472345  82403003  85007780  81013979 
+#>        17        18        19         2        20        21        22        23 
+#>  73167244  65820629  63449741 136231102  71974595  69862954  60773035  52498615 
+#>        24        25        26        27        28        29         3         4 
+#>  62317253  42350435  51992305  45612108  45940150  51098607 121005158 120000601 
+#>         5         6         7         8         9 
+#> 120089316 117806340 110682743 113319770 105454467
 ```
 
 TADs are often stored in the form of domains and each domain gives the
@@ -187,63 +192,64 @@ boundaries = data.frame(chr = seqnames(tad_1_10kb.gr),
                       end = start(tad_1_10kb.gr) + 5e3)
 head(boundaries)
 #>   chr   start     end
-#> 1  25  355000  365000
-#> 2  25  545000  555000
-#> 3  25  675000  685000
-#> 4  25  865000  875000
-#> 5  25 1045000 1055000
-#> 6  25 1355000 1365000
+#> 1   1  825000  835000
+#> 2   1 1115000 1125000
+#> 3   1 1645000 1655000
+#> 4   1 1915000 1925000
+#> 5   1 2075000 2085000
+#> 6   1 2195000 2205000
 ```
 
 Then boundaries can be translated as domains with `boundary2domain()`:
 
 ``` r
 boundary2domain(boundaries)
-#> GRanges object with 260 ranges and 0 metadata columns:
-#>               seqnames            ranges strand
-#>                  <Rle>         <IRanges>  <Rle>
-#>     25_360000       25     360000-550000      *
-#>     25_550000       25     550000-680000      *
-#>     25_680000       25     680000-870000      *
-#>     25_870000       25    870000-1050000      *
-#>    25_1050000       25   1050000-1360000      *
-#>           ...      ...               ...    ...
-#>   26_50125000       26 50125000-50505000      *
-#>   26_50505000       26 50505000-50615000      *
-#>   26_50615000       26 50615000-50890000      *
-#>   26_50890000       26 50890000-51140000      *
-#>   26_51140000       26 51140000-51250000      *
+#> GRanges object with 6301 ranges and 0 metadata columns:
+#>               seqnames              ranges strand
+#>                  <Rle>           <IRanges>  <Rle>
+#>      1_830000        1      830000-1120000      *
+#>     1_1120000        1     1120000-1650000      *
+#>     1_1650000        1     1650000-1920000      *
+#>     1_1920000        1     1920000-2080000      *
+#>     1_2080000        1     2080000-2200000      *
+#>           ...      ...                 ...    ...
+#>   9_102600000        9 102600000-102960000      *
+#>   9_102960000        9 102960000-103180000      *
+#>   9_103180000        9 103180000-103510000      *
+#>   9_103510000        9 103510000-103550000      *
+#>   9_103550000        9 103550000-103940000      *
 #>   -------
-#>   seqinfo: 2 sequences from an unspecified genome; no seqlengths
+#>   seqinfo: 29 sequences from an unspecified genome; no seqlengths
 ```
 
 In addition to TADs, we can also plot any type of annotations. For this
 tutorial we will use genes annotations available on Ensembl:
 
 ``` r
-txdb <- makeTxDbFromBiomart(biomart="ensembl", dataset="btaurus_gene_ensembl")
+txdb <- makeTxDbFromBiomart(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
 #> Download and preprocess the 'transcripts' data frame ... OK
 #> Download and preprocess the 'chrominfo' data frame ... OK
 #> Download and preprocess the 'splicings' data frame ... OK
 #> Download and preprocess the 'genes' data frame ... OK
 #> Prepare the 'metadata' data frame ... OK
 #> Make the TxDb object ... OK
-genomic.gr = genes(txdb, columns=c("TXTYPE"))
+genomic.gr = genes(txdb, columns = c("TXTYPE"))
+genomic.gr$TXTYPE = as.character(genomic.gr$TXTYPE)
 genomic.gr
 #> GRanges object with 27607 ranges and 1 metadata column:
-#>                      seqnames              ranges strand |          TXTYPE
-#>                         <Rle>           <IRanges>  <Rle> | <CharacterList>
-#>   ENSBTAG00000000005       17   65389743-65505336      + |  protein_coding
-#>   ENSBTAG00000000008       29   32214439-32244810      - |  protein_coding
-#>   ENSBTAG00000000009       18   12338037-12342272      + |  protein_coding
-#>   ENSBTAG00000000010       21   34209956-34223394      + |  protein_coding
-#>   ENSBTAG00000000011        8     7950815-7971600      - |  protein_coding
-#>                  ...      ...                 ...    ... .             ...
-#>   ENSBTAG00000055312        2   96551552-96557130      + |  protein_coding
-#>   ENSBTAG00000055313       21   65169462-65169520      + |           miRNA
-#>   ENSBTAG00000055314       19   24021135-24051219      - |  protein_coding
-#>   ENSBTAG00000055315        8 102574538-102575815      + |  protein_coding
-#>   ENSBTAG00000055316        2   94738416-94738887      + |  protein_coding
+#>                      seqnames              ranges strand |         TXTYPE
+#>                         <Rle>           <IRanges>  <Rle> |    <character>
+#>   ENSBTAG00000000005       17   65389743-65505336      + | protein_coding
+#>   ENSBTAG00000000008       29   32214439-32244810      - | protein_coding
+#>   ENSBTAG00000000009       18   12338037-12342272      + | protein_coding
+#>   ENSBTAG00000000010       21   34209956-34223394      + | protein_coding
+#>   ENSBTAG00000000011        8     7950815-7971600      - | protein_coding
+#>                  ...      ...                 ...    ... .            ...
+#>   ENSBTAG00000055312        2   96551552-96557130      + | protein_coding
+#>   ENSBTAG00000055313       21   65169462-65169520      + |          miRNA
+#>   ENSBTAG00000055314       19   24021135-24051219      - | protein_coding
+#>   ENSBTAG00000055315        8 102574538-102575815      + | protein_coding
+#>   ENSBTAG00000055316        2   94738416-94738887      + | protein_coding
 #>   -------
 #>   seqinfo: 2211 sequences (1 circular) from an unspecified genome
 ```
@@ -265,24 +271,25 @@ possible to specify the file paths instead of an R object:
 
 ``` r
 # insulation score for indiv 1:
-head(TADkit::IS_1_10kb.bedgraph)
-#>   chr start   end        IS
-#> 1  25  5000 15000 -1.646012
-#> 2  25 15000 25000 -1.621941
-#> 3  25 25000 35000 -1.552033
-#> 4  25 35000 45000 -1.444361
-#> 5  25 45000 55000 -1.265504
-#> 6  25 55000 65000 -1.203068
+head(IS_1_10kb.bedgraph)
+#>   chr start   end    IS
+#> 1  25  5000 15000 -1.65
+#> 2  25 15000 25000 -1.62
+#> 3  25 25000 35000 -1.55
+#> 4  25 35000 45000 -1.44
+#> 5  25 45000 55000 -1.27
+#> 6  25 55000 65000 -1.20
 
 #write bedgraph in a file
-write.table(TADkit::IS_1_10kb.bedgraph, "./IS_1_10kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t")
+write.table(IS_1_10kb.bedgraph, "./IS_1_10kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t")
 ```
 
 ## 2.4 .bigwig
 
 Similar to bedgraph, bigwig files are used to store a score for each
 interval in an indexed and compressed form. Insulation scores stored as
-a bigwig format can be translated to a `GRranges` with `bw2grange()`.
+a bigwig format can be translated as a bedgraph format (i.e `GRranges`)
+with `bw2grange()`.
 
 For this tutorial we are going to use coverage data from RNA sequencing
 experiment available on Ensembl:
@@ -302,6 +309,9 @@ In addition to domains, few others tracks can be plotted:
 -   bedgraph to plot bin scores (e.g insulation score…),
 -   bigwig to plot coverage datas (e.g RNAseq…),
 -   bed to plot annotations (e.g genes…).
+
+Note that most of the functions refer to the so called TAD but it also
+work for other kind of domains (e.g compartments).
 
 ## 3.1 TADplot
 
@@ -342,12 +352,12 @@ how to use the paths of bedgraph files. Datas for the 2 bovines:
 
 ``` r
 #create GRanges with TADs
-tad_2_10kb.gr = dataframes2grange(TADkit::tad_2_10kb.bed, TADkit::chromsize) 
+tad_2_10kb.gr = dataframes2grange(tad_2_10kb.bed, chromsize) 
 
-#write bedgraph as file
-write.table(TADkit::IS_2_10kb.bedgraph, "./IS_2_10kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
-write.table(TADkit::PC1_1_50kb.bedgraph, "./PC1_1_50kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
-write.table(TADkit::PC1_2_50kb.bedgraph, "./PC1_2_50kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
+#write bedgraph as files
+write.table(IS_2_10kb.bedgraph, "./IS_2_10kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
+write.table(PC1_1_50kb.bedgraph, "./PC1_1_50kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
+write.table(PC1_2_50kb.bedgraph, "./PC1_2_50kb.bedgraph", col.names = FALSE, quote = FALSE, row.names = FALSE, sep = "\t") 
 ```
 
 ### 3.2.1 Create list
@@ -437,7 +447,7 @@ mTADplot2(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
 
 When you master TADplot(), mTADplot() is much more powerful and flexible
 to make the desired graphics. Moreover there are many options to change
-some of the graphic parameters:
+some of the track parameters:
 
 ### 3.3.1 bigwigPath.lst
 
@@ -571,7 +581,323 @@ mMATplot(matrix.upper = matrix_1_chr25_50kb,
 
 <img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
 
-# 5 Clear files
+# 5 Analysis
+
+Two functions allow to analyzed and visualized distributions of any
+annotations:
+
+-   on both sides of the TAD boundaries,
+-   or within TAD domains.
+
+## 5.1 Around boundaries
+
+Suppose we want to analyze the distribution of genes around the TAD
+boundaries. We can either analyze the gene coverage (i.e gene density)
+or the distribution of the genes features (i.e start or stop of the
+genes). These analyses are done in two steps. The first is to use the
+`TADarea()` to return all the genes that are around each TAD boundary.
+It is possible to analyze the distribution of genes around the TAD
+starts, TAD ends or even the center of TADs.
+
+Let’s analyzed genes around TAD starts +/- 50kb.
+
+``` r
+#filter protein coding genes
+genes.gr = genomic.gr[as.character(genomic.gr$TXTYPE) == "protein_coding"]
+
+data.gr = boundArea(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
+                  window.size = 50e3, 
+                  domain.boundary = "start")
+```
+
+### 5.1.1 Coverage
+
+``` r
+areaCov(data.gr)
+```
+
+<img src="man/figures/README-unnamed-chunk-28-1.png" width="100%" /> The
+`areaCov()`function return the plot with the gene coverage on a sliding
+window of 5kb. As the cumulative size of genes are different according
+to the strands:
+
+``` r
+genes.gr %>% as.data.frame() %>% group_by(strand) %>% summarise(sum = sum(width))
+#> # A tibble: 2 × 2
+#>   strand       sum
+#>   <fct>      <int>
+#> 1 +      501088224
+#> 2 -      459755211
+```
+
+We can normalized the coverage between strands with the Z-score to
+obtain a nice symmetrical coverage of the genes according to their
+strands:
+
+``` r
+areaCov(data.gr, norm = TRUE)
+```
+
+<img src="man/figures/README-unnamed-chunk-30-1.png" width="100%" />
+
+### 5.1.2 Distribution
+
+Let’s now look at the distribution of the genes starts (TSS) around the
+TAD boundaries:
+
+``` r
+areaHist(data.gr,
+         annot.boundary = "start",
+         annot.strand = FALSE,
+         bin.width = 10e3)
+#> Warning: Removed 763 rows containing non-finite values (stat_bin).
+```
+
+<img src="man/figures/README-unnamed-chunk-31-1.png" width="100%" />
+
+This time, we have defined the size of the bins at 10kb which
+corresponds to the resolution of the matrix and thus of the range in
+which the position of the boundaries are predicted. What we observe is
+an increase of the TSS in the bin of the borders.
+
+## 5.2 Within domains
+
+### 5.2.1 Distribution
+
+Let’s do the same analysis (TSS distribution) but this time within the
+domains (i.e relative position of the TSS according to the TADs).
+
+``` r
+domainHist(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
+        annot.boundary = "start",
+        ifoverlap = "remove", #parameter explained latter
+        annot.strand = F)
+#> 1381/21861 annotations are outside domains
+#> 2568/21861 annotations are overlapping with a boundary
+#> 17912/21861 annotations are within domains and do not overlap a boundary
+```
+
+<img src="man/figures/README-unnamed-chunk-32-1.png" width="100%" />
+
+As before, we observe an increase in TSS near the borders. In the
+message return by `domainHist()` we also observe that 2568 genes overlap
+a boundary. In the example above, these genes were not taken into
+account (\`ifoverlap = “remove”).
+
+To illustrate the two other available options for considering these
+genes let’s create an illustration:
+
+``` r
+#create 1 genes
+annot.gr <- dataframes2grange(
+  data.frame(chr = 1, start = 198e3, end = 290e3, strand = "+", names = "gene"),
+  data.frame(chr = "1", size = 400e3),
+  strand.col = 4,
+  name.col = 5)
+
+#Create 2 TADs
+tad.gr <- dataframes2grange(
+  data.frame(chr = 1, start = c(100e3, 200e3), end = c(200e3, 300e3)),
+  data.frame(chr = "1", size = 400e3))
+
+#plot
+plot = TADplot(tad.gr = tad.gr, annot.gr = annot.gr, start = 150e3, stop = 300e3, chr = 1)
+```
+
+<img src="man/figures/README-unnamed-chunk-33-1.png" width="100%" />
+
+We can now take them into account in 2 different ways. The first one is
+to take the real position of the TSS (i.e at the end of the first TAD in
+our example):
+
+``` r
+domainHist(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
+        annot.boundary = "start",
+        ifoverlap = "real", 
+        annot.strand = T)
+#> 1381/21861 annotations are outside domains
+#> 2568/21861 annotations are overlapping with a boundary
+#> 17912/21861 annotations are within domains and do not overlap a boundary
+#> Warning: Removed 4 row(s) containing missing values (geom_path).
+```
+
+<img src="man/figures/README-unnamed-chunk-34-1.png" width="100%" />
+
+We observe the same distribution independently of their respective
+strands.
+
+Now if we add the uncertainty of the position of the TAD boundaries
+(i.e. the size of the bins) to our illustration:
+
+``` r
+#create 1 genes
+annot.gr <- dataframes2grange(
+  data.frame(chr = 1, start = c(198e3,195e3), end = c(290e3, 205e3), strand = c("+", "*"), names = c("gene", "boundary")),
+  data.frame(chr = "1", size = 400e3),
+  strand.col = 4,
+  name.col = 5
+)
+
+#plot
+plot = TADplot(tad.gr = tad.gr, annot.gr = annot.gr, start = 150e3, stop = 300e3, chr = 1)
+```
+
+<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" />
+Instead of taking the actual position of the TSS (i.e. at the end of the
+first TAD) one can ask in which TAD is this gene most likely located?
+This is it, in the second TAD. Thus the position of the TSS is measured
+in relation to the TAD where it is most likely located (i.e few kilo
+bases before the second TAD). If we restart `domainHist()` by taking the
+best match of the genes that overlap the boundaries, we observe that the
+genes are oriented preferentially towards the center of the TADs.
+
+``` r
+domainHist(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
+        annot.boundary = "start",
+        ifoverlap = "best", 
+        annot.strand = T)
+#> 1381/21861 annotations are outside domains
+#> 2568/21861 annotations are overlapping with a boundary
+#> 17912/21861 annotations are within domains and do not overlap a boundary
+#> Warning: Removed 320 rows containing non-finite values (stat_bin).
+#> Removed 320 rows containing non-finite values (stat_bin).
+#> Warning: Removed 4 row(s) containing missing values (geom_path).
+```
+
+<img src="man/figures/README-unnamed-chunk-36-1.png" width="100%" />
+
+We can also use the function to check if when we randomize the 3D
+organization we lose this orientation of the genes. To do that we will
+used `TADshuffling()` to shuffled TAD positions.
+
+``` r
+domainHist(domain.gr = TADshuffling(tad_1_10kb.gr), annot.gr = genes.gr,
+        annot.boundary = "start",
+        ifoverlap = "best", 
+        annot.strand = T)
+#> 1381/21861 annotations are outside domains
+#> 2024/21861 annotations are overlapping with a boundary
+#> 18456/21861 annotations are within domains and do not overlap a boundary
+#> Warning: Removed 327 rows containing non-finite values (stat_bin).
+#> Removed 327 rows containing non-finite values (stat_bin).
+#> Warning: Removed 4 row(s) containing missing values (geom_path).
+```
+
+<img src="man/figures/README-unnamed-chunk-37-1.png" width="100%" />
+
+### 5.2.2 Coverage
+
+Instead of analyzing the distribution of the TSS within TADs, it is
+possible to measure the gene density of each bin and plot the smoothed
+gene density within the TADs:
+
+``` r
+domainCov(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
+           bin.width = 10e3,
+           annot.col = "strand", norm = TRUE)
+#> `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+```
+
+<img src="man/figures/README-unnamed-chunk-38-1.png" width="100%" />
+Again, we observed a symmetrical coverage of the genes according to
+their strands. We also observe the increase of the genes on the forward
+strand at the beginning of TADs and inversely for the reverse strand.
+
+This analysis can also be done by domain class, for example between
+compartments A and B:
+
+``` r
+comp.gr = PC1calling(PC1_1_50kb.bedgraph) #call compartment A or B from PC1 values of chr 25
+seqlengths(comp.gr) = 42350435 #add size of chr 25
+#> Warning in valid.GenomicRanges.seqinfo(x, suggest.trim = TRUE): GRanges object contains 1 out-of-bound range located on sequence 25.
+#>   Note that ranges located on a sequence whose length is unknown (NA) or
+#>   on a circular sequence are not considered out-of-bound (use
+#>   seqlengths() and isCircular() to get the lengths and circularity flags
+#>   of the underlying sequences). You can use trim() to trim these ranges.
+#>   See ?`trim,GenomicRanges-method` for more information.
+
+domainCov(domain.gr = comp.gr, annot.gr = genes.gr,
+           domain.col = 1,
+           bin.width = 50e3, norm = TRUE)
+#> `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+```
+
+<img src="man/figures/README-unnamed-chunk-39-1.png" width="100%" />
+
+As expected the gene density is higher in compartment A (active
+compartments) than B.
+
+# 6 Compartment calling and orientation
+
+Many algorithms allow to compute from an HiC matrix the values of a
+principal component which allows to identify the compartments A or B.
+The orientation of these values is random and generally it is oriented
+from the density in genes or the percentage in GC between compartments A
+and B. In this package `PC1calling()` allows to call the compartments
+from the PC1 values and `compOrientation()` allows to orient these
+values according to the level of expression of the genes.
+
+First let’s create gene expression data. For the example raw count of
+each gene is randomly selected between 0 to 100:
+
+``` r
+set.seed(1)
+expression.data.frame = data.frame(ID = names(genes.gr), Name = names(genes.gr),
+                                   raw_count = sample(1:100, length(genes.gr), replace = TRUE))
+
+head(expression.data.frame)
+#>                   ID               Name raw_count
+#> 1 ENSBTAG00000000005 ENSBTAG00000000005        68
+#> 2 ENSBTAG00000000008 ENSBTAG00000000008        39
+#> 3 ENSBTAG00000000009 ENSBTAG00000000009         1
+#> 4 ENSBTAG00000000010 ENSBTAG00000000010        34
+#> 5 ENSBTAG00000000011 ENSBTAG00000000011        87
+#> 6 ENSBTAG00000000012 ENSBTAG00000000012        43
+```
+
+Now, knowing that the A compartments are more active than the B
+compartments, we can use `compOrientation()` to: -call the compartments
+of the A and B compartments, -calculate the median expression, -invert
+the PC1 value for the chromosomes with expression rate of B \> A.
+
+``` r
+PC1_1_50kb.gr = suppressWarnings(dataframes2grange(PC1_1_50kb.bedgraph, chromsize, metadata.mcols = 4)) %>% trim #create GRanges from bedgraph and cut bins out-of-bound to suppress warnings
+data = compOrientation(bedgraph = PC1_1_50kb.gr, annot.gr = genes.gr, expression.data.frame = expression.data.frame)
+#> 21152/21861 annotations are outside domains
+#> 24/21861 annotations are overlapping with a boundary
+#> 685/21861 annotations are within domains and do not overlap a boundary
+#> 685/685 genes have data expression
+#> 1/1 chromosomes have been reversed
+```
+
+We can compare the expression level between compartments before
+orientation:
+
+``` r
+ggplot(data$expression, aes(y = exp, fill = comp))+geom_boxplot()+facet_wrap(.~chr)
+```
+
+<img src="man/figures/README-unnamed-chunk-42-1.png" width="100%" />
+
+In our random data set, the median expression level is higher in the B
+compartments. As a result, the PC1 values have been inverted. You can
+visualize the changes with this graph (before and after PC1 values
+orientation):
+
+``` r
+comp.gr.lst = list(PC1calling(PC1_1_50kb.gr), PC1calling(data$bedgraph_oriented))
+seqlengths(comp.gr.lst[[1]]) = 42350435 ; seqlengths(comp.gr.lst[[2]]) = 42350435
+names(comp.gr.lst[[1]]) = comp.gr.lst[[1]]$comp ; names(comp.gr.lst[[2]]) = comp.gr.lst[[2]]$comp
+names(comp.gr.lst) = c("before", "after")
+comp.bedgraph.lst =  list(PC1_1_50kb.gr, data$bedgraph_oriented)
+names(comp.bedgraph.lst) = c("before", "after")
+
+mTADplot2(tad.lst = comp.gr.lst, bedgraph.lst = comp.bedgraph.lst, chr = 25, start = 13e6, stop = 15e6, tad.id = TRUE)
+```
+
+<img src="man/figures/README-unnamed-chunk-43-1.png" width="100%" />
+
+# 7 Clear files
 
 ``` r
 file.remove(list.files(full.names = TRUE, pattern = ".bw"))

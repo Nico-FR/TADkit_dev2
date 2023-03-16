@@ -46,11 +46,11 @@
 #' TADplot(tad.gr = tad.gr, start = 5e3, stop = 55e3, chr = 1, annot.gr = annot.gr)
 #'
 #' # Distribution analysis surrounding the start of the TAD
-#' data.gr <- TADarea(
-#'   tad.gr = tad.gr,
+#' data.gr <- boundArea(
+#'   domain.gr = tad.gr,
 #'   annot.gr = annot.gr,
 #'   window.size = 50e3,
-#'   tad.boundary = "start"
+#'   domain.boundary = "start"
 #' )
 #'
 #' # Visualized differences according to annotation features:

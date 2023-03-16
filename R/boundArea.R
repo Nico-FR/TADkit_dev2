@@ -36,7 +36,7 @@
 #'   metadata.mcols = 4
 #' )
 #'
-#' TADarea(domain.gr = tad.gr, annot.gr = annot.gr, window.size = 2e6)
+#' boundArea(domain.gr = tad.gr, annot.gr = annot.gr, window.size = 2e6)
 boundArea <- function(domain.gr, annot.gr, window.size = 50e3, domain.boundary = "start") {
   GenomeInfoDb::seqlengths(annot.gr) <- NA # remove seqlengths to prevent out-of-bound ranges
   ##############################

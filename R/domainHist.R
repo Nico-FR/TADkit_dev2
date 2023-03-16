@@ -4,7 +4,7 @@
 #' Measures the relative distances of annotation border (start, end) within the domain and plot the distribution as an histogram.
 #'
 #'
-#' @details As an example, `domainHist()` take all domains and count the relative position of all annotation features (see detais of `areaHist()`).
+#' @details `domainHist()` measures the relative positions of annotation features (start, end, closest or the center of annotations, more details in `areahist()`) within domains and plot the distribution as an histogram.
 #' It is possible that some annotations overlap a boundary, in this cases few option are available to get the relative positions (see `ifoverlap` parameter and the example for better understanding):
 #'     * remove those annotations,
 #'     * uses the domain in which the feature (`"start"`, `"end"` or `"center"` of the annotation) is located,
@@ -12,7 +12,8 @@
 #'     Therefore, in some cases, the `"start"` of an `annot.gr` can be located before the domain (i.e before the domain with the best overlap). In that case, the distance between the `"start"` of `annot.boundary` and the domain is represented with the real distance (in base pair).
 #'
 #'
-#' @inheritParams areaHist
+#' @inheritParams boundArea
+#' @param annot.boundary Type of feature to analyzed. `"Start"`, `"end"` or `"center"` of each `annot.gr`. It is possible to use `"closest"` to take the closest border (start or end) independently to the strands.
 #' @param annot.strand Default is `FALSE` to plot the distribution as histogram. If `TRUE`, distributions are separated according to their strands and are displayed with lines.
 #' @param bin.width Size of the bin in percent to count the number of annotations features, default is 5%. if `ifoverlap = "best"`: the real bin distances (measured outside of domains) are equal to `bin.width * 1000`. Therefore default real bin size is 5kb.
 #' @param ifoverlap In case of annotation overlap a TAD boundary, few options are available to measure the `annot.boundary` positions:
@@ -46,25 +47,25 @@
 #' TADplot(tad.gr = tad.gr, annot.gr = annot.gr, start = 150e3, stop = 300e3, chr = 1)
 #'
 #' #see distribution of gene starts according to the "ifoverlap" parameters:
-#' domainHist(tad.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "real")
-#' domainHist(tad.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "remove")
-#' domainHist(tad.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "best")
+#' domainHist(domain.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "real")
+#' domainHist(domain.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "remove")
+#' domainHist(domain.gr = tad.gr, annot.gr = annot.gr, ifoverlap = "best")
 #'
 domainHist <- function(domain.gr, annot.gr, annot.boundary = "start", ifoverlap = "remove", annot.strand = FALSE, bin.width = 5, output = "plot") {
 
-  if (is.na(mean(seqlengths(tad.gr), na.rm=T))) {
-    stop("tad.gr must have seqlengths datas (see dataframes2grange function)")
+  if (is.na(mean(seqlengths(domain.gr), na.rm=T))) {
+    stop("domain.gr must have seqlengths datas (see dataframes2grange function)")
   }
 
   # create interTAD annotation and merged them with TADs
-  interTAD.gr <- GenomicRanges::gaps(tad.gr)[BiocGenerics::strand(GenomicRanges::gaps(tad.gr)) == "*"]
-  interTAD.gr$TAD <- FALSE
-  tad.gr$TAD <- TRUE
-  genome.gr <- c(interTAD.gr, tad.gr)
+  interdomain.gr <- GenomicRanges::gaps(domain.gr)[BiocGenerics::strand(GenomicRanges::gaps(domain.gr)) == "*"]
+  interdomain.gr$TAD <- FALSE
+  domain.gr$TAD <- TRUE
+  genome.gr <- c(interdomain.gr, domain.gr)
 
 
-  annot.gr$nb_overlap_tad <- GenomicRanges::countOverlaps(annot.gr, tad.gr) # number of TAD overlapped
-  annot.gr$nb_overlap_gap <- GenomicRanges::countOverlaps(annot.gr, interTAD.gr) # number of interTAD overlapped
+  annot.gr$nb_overlap_tad <- GenomicRanges::countOverlaps(annot.gr, domain.gr) # number of TAD overlapped
+  annot.gr$nb_overlap_gap <- GenomicRanges::countOverlaps(annot.gr, interdomain.gr) # number of interTAD overlapped
   annot.gr$nb_overlap <- GenomicRanges::countOverlaps(annot.gr, genome.gr) # number of TAD or interTAD overlapped (ie boundaries overlapped)
 
   message(paste0(length(annot.gr[annot.gr$nb_overlap_tad == 0]),"/", length(annot.gr)," annotations are outside domains"))

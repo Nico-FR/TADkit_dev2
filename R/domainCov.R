@@ -6,7 +6,7 @@
 #' @details As an example, this function take all TAD domains and calculate the density of annotations by:
 #' * calculate the annotations density per bin,
 #' * calculate the relative positions of each bin within his corresponding TAD,
-#' * plot the smoothed bin density (and zscore bin density) according to relative positions.
+#' * plot the smoothed bin density (or zscore bin density) according to relative positions.
 #'
 #' @param domain.gr `GRanges` with domains (TADs, compartments...).
 #' @param annot.gr `GRanges` with genomic annotations (genes, repeat elements...).
@@ -14,6 +14,7 @@
 #' @param domain.col Column number (metadata columns) used to split domain classes (e.g. column to differentiate compartments A and B). By default, domain.col is `NULL`.
 #' @param bin.width Size of the bin in base pairs. It should match the bin.width of the matrix used to call the domains.
 #' @param output Default is `"plot"` to return a `ggplot`. Use `"data"` to return the `dataframe` used to produce the plot.
+#' @param norm Logical. Normalized density using relative content (zscore of density). Default is `FALSE`.
 #'
 #' @return `ggplot`
 #'
