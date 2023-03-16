@@ -2,7 +2,7 @@
 % Please edit documentation in R/mTADplot.R
 \name{mTADplot}
 \alias{mTADplot}
-\title{Plot TADs for multiple individuals}
+\title{Plot domains for multiple individuals}
 \usage{
 mTADplot(
   tad.lst,
@@ -17,64 +17,71 @@ mTADplot(
   bigwig.yaxis = NULL,
   annot.lst = NULL,
   annot.col = NULL,
-  bedgraphPath.lst = NULL,
+  bedgraph.lst = NULL,
   bedgraph.name = "bedgraph",
   bedgraph_outliers = 0,
-  col.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F",
+  colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F",
     "#E5C494", "#B3B3B3")
 )
 }
 \arguments{
-\item{tad.lst}{List of GRange object with TADs. It must have chromosomes lengths (see dataframes2grange function).}
+\item{tad.lst}{List of GRange object with domains. Those files must have chromosomes lengths (see dataframes2grange function).}
 
 \item{chr}{Chromosome name to plot.}
 
-\item{start, stop}{region of interest in base pair.}
+\item{start, stop}{Region of interest in base pair.}
 
-\item{tad.id}{Default is FALSE to write the size of each TAD instead of their names.}
+\item{tad.id}{Logical. Default is \code{FALSE} to label the domain with their sizes \code{width(tad.gr)} instead of their names \code{names(tad.gr)}.}
 
 \item{bigwigPath.lst}{List of path for the bigwig file(s) plotted as histogram. Default = NULL (ie no track is plotted).}
 
 \item{bigwig.binsize}{Bin sizes for the histogram of the bigwig track. Default = 1e3.}
 
-\item{bigwig.xaxis}{Function used to transforming the x-axis of bigwig values among each bigwig.binsize. Defaults = "mean".
-Alternatively, other predefined functions can be supplied as character (mean, median, sum, min, max or extreme).}
+\item{bigwig.xaxis}{Function used to transform the x-axis of the bigwig values among each bigwig.binwidth. Defaults = \code{"median"}.
+Alternatively, other predefined functions can be supplied as character (\code{"mean"}, \code{"median"}, \code{"sum"}, \code{"min"}, \code{"max"} or \code{"extreme"}).}
 
-\item{bigwig.chr}{Chromosome name used for the bigwig file(s). Default = NULL to used the same name as chr.}
+\item{bigwig.chr}{Chromosome name used for the bigwig file. Default = \code{NULL} to used the same name as chr.}
 
-\item{bigwig.yaxis}{Function used to transforming the y-axis of bigwig values. Default = NULL. Use "log2" to use the function log2(x + 1) to transform the y-axis or provide any other function.}
+\item{bigwig.yaxis}{Function used to transforming the y-axis of bigwig values. Default = \code{NULL}. Use \code{"log2"} to use the function \code{log2(x + 1)} to transform the y-axis or provide any other function.}
 
 \item{annot.lst}{List of GRange file(s) with genomic annotations. Default = NULL (ie no track is plotted).}
 
 \item{annot.col}{Column number of the metadata from annot.gr file(s) used to group the annotation tracks. Default = NULL.}
 
-\item{bedgraphPath.lst}{List of path for the bedgraph file(s) plotted as line. Default = NULL (ie no track is plotted).
-it is possible to create several bedgraph tracks (each containing 1 or more lines) by using a list containing another list of path (see exemple). All list must have names.}
+\item{bedgraph.lst}{\code{data.frame}, \code{GRanges} or list of path for the bedgraph file(s) plotted as line. Default = NULL (i.e no track is plotted).
+it is possible to create several bedgraph tracks (each containing 1 or more lines) by using a list containing few others lists (see vignette). All list must have names.}
 
 \item{bedgraph.name}{Name of the bedgraph track when there is only one track (default = "bedgraph"). Otherwise it takes the names of each list.}
 
 \item{bedgraph_outliers}{Ratio to remove outliers of all bedgraph files. Default is 0 (ie no filter). To remove the first and last 2 percentiles use 0.02.}
 
-\item{col.lst}{Set of 8 colors used for each files within a list.}
+\item{colors.lst}{Set of 8 colors used for each files within a list.}
 }
 \value{
-Plot with TAD track(s) and other track(s) as a list of GenomeGraph tracks (see Gviz::plotTracks for details).
+Plot with domains and other tracks as a list of GenomeGraph tracks (see \code{Gviz::plotTracks} for details).
 }
 \description{
-mTADplot is similar to the TADplot function but it allows to compare several individuals.
+\code{mTADplot()} is similar to the \code{TADplot()} but it allows to plot and compare several individuals.
+The simplest graph allows you to view the domains of one or more individuals.
+Other tracks can be added:
+\itemize{
+\item bed files with annotations (genes...),
+\item bigwig files (read depth sequencing...),
+\item bedgraph with bin values (insulation score...).
+}
 }
 \details{
-This create a plot with at least the track with TADs annotations (from 1 or more files).
-Tad.gr file(s) must be in a list and each file(s) in the list must have name(s).
-TAD file(s) must have chromosome length (see dataframes2grange function).
+\code{mTADplot()} create a plot with at least the track with TADs annotations (from 1 or more files).
+TAD annotation(s) must be in a list and element in the list must have name(s).
+TAD annotation(s) must have chromosome size (see \code{dataframes2grange()}).
 
 Another track from a list of bigwig file(s) can be added, like read depth sequencing (RNAseq...) as an histogram.
 The bin size of the histogram is 1Kb by default, the read depth is smoothed using the median value of each bin.
-If the chromosome name is different (between the bigwig file(s) and the chr parameter), it can be fix using the bigwig.chr parameter (e.g chr="1" versus bigwig.chr="chr1").
+If the chromosome name is different (between the bigwig file(s) and the \code{chr} parameter), it can be fix using the \code{bigwig.ch}r parameter (e.g \code{chr="1"} while \code{bigwig.chr="chr1"}).
 
-Another track from a list of GRange objects with any annotations can be added.
-This track(s) can be group using factors in a specified column of each GRange file(s) (metadata), otherwise the names of each annotation is used.
+Another track from a list of \code{GRanges} object(s) with any annotations can be added.
+This track(s) can be group using factors in a specified column of each \code{GRanges} (metadata), otherwise the names of each annotation is used.
 
-Another track from a list of bedgraph files (file of 4 columns, chr, stat, stop and value) can be added. The list must contain the path (not the file) of each bedgraph and each path must have a name.
-It is also possible to put a list containing another list of bedgraph. In this case, each list will be represented in a different track.
+Another track from a list of bedgraph file(s) (file of 4 columns, chr, stat, stop and value) can be added. The list must contain the path (not the file) of each bedgraph and each path must have a name.
+It is also possible to use a list containing another list of bedgraph path. In this case, the first level of list will be represented in a different track.
 }

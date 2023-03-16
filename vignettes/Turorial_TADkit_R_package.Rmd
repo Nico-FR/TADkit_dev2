@@ -236,7 +236,7 @@ names(IS.lst) = c("bov1", "bov2")
 
 Do the plot:
 ```{r, fig.height = 2.5, fig.width = 8}
-mTADplot2(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
+mTADplot(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
         bedgraph.lst = IS.lst, bedgraph.name = "IS")
 ```
 
@@ -265,7 +265,7 @@ bedgraphs.lst
 
 Do the plot:
 ```{r, fig.height = 3.5, fig.width = 8}
-mTADplot2(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
+mTADplot(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
         bedgraph.lst = bedgraphs.lst)
 ```
 
@@ -566,7 +566,7 @@ names(comp.gr.lst) = c("before", "after")
 comp.bedgraph.lst =  list(PC1_1_50kb.gr, data$bedgraph_oriented)
 names(comp.bedgraph.lst) = c("before", "after")
 
-mTADplot2(tad.lst = comp.gr.lst, bedgraph.lst = comp.bedgraph.lst, chr = 25, start = 13e6, stop = 15e6, tad.id = TRUE)
+mTADplot(tad.lst = comp.gr.lst, bedgraph.lst = comp.bedgraph.lst, chr = 25, start = 13e6, stop = 15e6, tad.id = TRUE)
 ```
 
 # Clear files

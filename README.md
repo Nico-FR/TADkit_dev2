@@ -388,7 +388,7 @@ names(IS.lst) = c("bov1", "bov2")
 Do the plot:
 
 ``` r
-mTADplot2(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
+mTADplot(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
         bedgraph.lst = IS.lst, bedgraph.name = "IS")
 ```
 
@@ -437,7 +437,7 @@ bedgraphs.lst
 Do the plot:
 
 ``` r
-mTADplot2(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
+mTADplot(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
         bedgraph.lst = bedgraphs.lst)
 ```
 
@@ -776,10 +776,10 @@ domainHist(domain.gr = TADshuffling(tad_1_10kb.gr), annot.gr = genes.gr,
         ifoverlap = "best", 
         annot.strand = T)
 #> 1381/21861 annotations are outside domains
-#> 2024/21861 annotations are overlapping with a boundary
-#> 18456/21861 annotations are within domains and do not overlap a boundary
-#> Warning: Removed 327 rows containing non-finite values (stat_bin).
-#> Removed 327 rows containing non-finite values (stat_bin).
+#> 2019/21861 annotations are overlapping with a boundary
+#> 18461/21861 annotations are within domains and do not overlap a boundary
+#> Warning: Removed 326 rows containing non-finite values (stat_bin).
+#> Removed 326 rows containing non-finite values (stat_bin).
 #> Warning: Removed 4 row(s) containing missing values (geom_path).
 ```
 
@@ -892,7 +892,7 @@ names(comp.gr.lst) = c("before", "after")
 comp.bedgraph.lst =  list(PC1_1_50kb.gr, data$bedgraph_oriented)
 names(comp.bedgraph.lst) = c("before", "after")
 
-mTADplot2(tad.lst = comp.gr.lst, bedgraph.lst = comp.bedgraph.lst, chr = 25, start = 13e6, stop = 15e6, tad.id = TRUE)
+mTADplot(tad.lst = comp.gr.lst, bedgraph.lst = comp.bedgraph.lst, chr = 25, start = 13e6, stop = 15e6, tad.id = TRUE)
 ```
 
 <img src="man/figures/README-unnamed-chunk-43-1.png" width="100%" />

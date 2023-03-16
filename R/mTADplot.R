@@ -45,7 +45,7 @@
 #'
 #' @export
 #'
-mTADplot2 <- function(tad.lst, chr, start, stop, tad.id = FALSE,
+mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
                      bigwigPath.lst = NULL, bigwig.binsize = 1e3, bigwig.xaxis = "mean", bigwig.chr = NULL, bigwig.yaxis = NULL,
                      annot.lst = NULL, annot.col = NULL,
                      bedgraph.lst = NULL, bedgraph.name = "bedgraph", bedgraph_outliers = 0,
