@@ -7,7 +7,7 @@
 #' Otherwise (if `NA` are between compartment A and B) they are not called, thus leaving a gap between two compartments.
 #'
 #'
-#' @param bedgraph `GRanges` or `data.frame` object or bedgraph path (4 columns: chr, star, end, score).
+#' @param bedgraph `GRanges` or `data.frame` object or bedgraph path (data frame without header and 4 columns tab separated).
 #'
 #' @return `GRanges`
 #'
@@ -20,8 +20,7 @@
 #' @export
 #'
 #' @examples
-#' # output <- geneTADtopo(tad.gr, gene.gr)
-#' # plot(output)
+#' PC1calling(PC1_1_50kb.bedgraph)
 #'
 
 PC1calling <- function(bedgraph) {

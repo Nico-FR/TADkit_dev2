@@ -39,3 +39,8 @@ GRange file that contains chromosome size.
 This function create a GRange object from the first \code{dataframe} (annotation.table) and add the size of the chromosomes on the second \code{dataframe}.
 The chromosomes are filtered according to the list of chromosomes contained in the second \code{dataframe} (chromsize).
 }
+\examples{
+bed.df = data.frame(chr = 1, start = 198e3, end = 290e3, strand = "+", names = "geneID")
+chromsize = data.frame(chr = "1", size = 400e3)
+dataframes2grange(bed.df, chromsize, strand.col = 4,name.col = 5)
+}

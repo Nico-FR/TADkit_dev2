@@ -10,6 +10,7 @@
 #' @import GenomicRanges
 #' @import GenomeInfoDb
 #' @import rtracklayer
+#'
 #' @export
 #'
 bw2grange <- function(bigwig.path, bin.width = NULL) {

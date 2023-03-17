@@ -39,9 +39,6 @@
 #'   data.frame(chr = "1", size = 60e3)
 #' )
 #'
-#' annot.gr
-#' tad.gr
-#'
 #' # Vizualisation
 #' TADplot(tad.gr = tad.gr, start = 5e3, stop = 55e3, chr = 1, annot.gr = annot.gr)
 #'

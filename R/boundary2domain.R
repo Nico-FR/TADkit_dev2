@@ -12,6 +12,13 @@
 #'
 #' @export
 #'
+#' @example
+#' boundaries = data.frame(chr = seqnames(tad_1_10kb.gr),
+#'                           start = start(tad_1_10kb.gr) - 5e3,
+#'                           end = start(tad_1_10kb.gr) + 5e3)
+#'
+#' boundary2domain(boundaries)
+#'
 boundary2domain <- function(boundaries) {
 
   if (class(boundaries) == "GRanges") {

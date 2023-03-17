@@ -26,11 +26,11 @@
 #'
 #' @examples
 #' mMATplot(matrix.upper = matrix_1_chr25_50kb,
-#' matrix.lower = matrix_1_chr25_50kb,
-#' start = 10e6, stop = 30e6,
-#' bin.width = 50e3, log2 = TRUE,
-#' scale.colors = "H", #color of matrix, try "D" or "H"
-#' annotations.color = "red")
+#'     matrix.lower = matrix_1_chr25_50kb,
+#'     start = 10e6, stop = 30e6,
+#'     bin.width = 50e3, log2 = TRUE,
+#'     scale.colors = "H", #color of matrix, try "D" or "H"
+#'     annotations.color = "red")
 
 mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = T, scale.colors = "H",
                     matrix.upper.txt = NULL, matrix.lower.txt = NULL,

@@ -18,7 +18,13 @@
 #' @importFrom S4Vectors Rle
 #' @importFrom IRanges IRanges
 #' @import GenomeInfoDb
+#'
 #' @export
+#'
+#' @examples
+#' bed.df = data.frame(chr = 1, start = 198e3, end = 290e3, strand = "+", names = "geneID")
+#' chromsize = data.frame(chr = "1", size = 400e3)
+#' dataframes2grange(bed.df, chromsize, strand.col = 4,name.col = 5)
 
 
 dataframes2grange <- function(annotation.table, chromsize, chr.col = 1, start.col = 2, end.col = 3, strand.col = NULL, name.col = NULL, metadata.mcols = NULL) {

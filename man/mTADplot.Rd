@@ -85,3 +85,17 @@ This track(s) can be group using factors in a specified column of each \code{GRa
 Another track from a list of bedgraph file(s) (file of 4 columns, chr, stat, stop and value) can be added. The list must contain the path (not the file) of each bedgraph and each path must have a name.
 It is also possible to use a list containing another list of bedgraph path. In this case, the first level of list will be represented in a different track.
 }
+\examples{
+#list of TADs
+tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
+tad_2_10kb.gr = dataframes2grange(tad_2_10kb.bed, chromsize)
+tad.lst = list(tad_1_10kb.gr, tad_2_10kb.gr)
+names(tad.lst) = c("bov1", "bov2")
+
+#insulation score (path) list
+IS.lst = list(IS_1_10kb.bedgraph, IS_2_10kb.bedgraph)
+names(IS.lst) = c("bov1", "bov2")
+
+mTADplot(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6, bedgraph.lst = IS.lst, bedgraph.name = "IS")
+
+}

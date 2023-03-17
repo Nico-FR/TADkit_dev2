@@ -7,7 +7,7 @@
 PC1calling(bedgraph)
 }
 \arguments{
-\item{bedgraph}{\code{GRanges} or \code{data.frame} object or bedgraph path (4 columns: chr, star, end, score).}
+\item{bedgraph}{\code{GRanges} or \code{data.frame} object or bedgraph path (data frame without header and 4 columns tab separated).}
 }
 \value{
 \code{GRanges}
@@ -21,7 +21,6 @@ From bedgraph as input (\code{GRanges} object or path) output a \code{GRanges} w
 Otherwise (if \code{NA} are between compartment A and B) they are not called, thus leaving a gap between two compartments.
 }
 \examples{
-# output <- geneTADtopo(tad.gr, gene.gr)
-# plot(output)
+PC1calling(PC1_1_50kb.bedgraph)
 
 }

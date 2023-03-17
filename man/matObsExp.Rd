@@ -22,3 +22,11 @@ The expected number of interaction corresponds to the average of the interaction
 Bins with zero counts are not considered.
 Only the upper part of the matrix is used.
 }
+\examples{
+mat_obsexp = matObsExp(matrix_1_chr25_50kb)
+MATplot(matrix = mat_obsexp,
+    start = 10e6, stop = 30e6,
+    bin.width = 50e3,
+    log2 = T, scale.colors = "OE")
+
+}

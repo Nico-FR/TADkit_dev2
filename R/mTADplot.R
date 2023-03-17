@@ -45,6 +45,19 @@
 #'
 #' @export
 #'
+#' @examples
+#' #list of TADs
+#' tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
+#' tad_2_10kb.gr = dataframes2grange(tad_2_10kb.bed, chromsize)
+#' tad.lst = list(tad_1_10kb.gr, tad_2_10kb.gr)
+#' names(tad.lst) = c("bov1", "bov2")
+#'
+#' #insulation score (path) list
+#' IS.lst = list(IS_1_10kb.bedgraph, IS_2_10kb.bedgraph)
+#' names(IS.lst) = c("bov1", "bov2")
+#'
+#' mTADplot(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6, bedgraph.lst = IS.lst, bedgraph.name = "IS")
+#'
 mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
                      bigwigPath.lst = NULL, bigwig.binsize = 1e3, bigwig.xaxis = "mean", bigwig.chr = NULL, bigwig.yaxis = NULL,
                      annot.lst = NULL, annot.col = NULL,

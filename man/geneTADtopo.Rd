@@ -38,6 +38,5 @@ Return a S3 object with 3 dataframes.
 }
 \examples{
 # output <- geneTADtopo(domain.gr, annot.gr)
-# plot(output)
 
 }

@@ -40,7 +40,6 @@
 #' # Vizualisation
 #' TADplot(tad.gr = tad.gr, start = 5e3, stop = 55e3, chr = 1, annot.gr = annot.gr)
 #'
-#'
 #' # Distribution analysis surrounding the start of the TAD
 #' data.gr <- boundArea(
 #'   domain.gr = tad.gr,

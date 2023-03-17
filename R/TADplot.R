@@ -32,7 +32,7 @@
 #' @param bigwig.chr Chromosome name used for the bigwig file. Default = `NULL` to used the same name as chr.
 #' @param bigwig.yaxis Function used to transforming the y-axis of bigwig values. Default = `NULL`. Use `"log2"` to use the function `log2(x + 1)` to transform the y-axis or provide any other function.
 #' @param annot.col Column number of the metadata from `annot.gr` file used to group the annotation tracks. Default = `NULL`.
-#' @param bedgraph `data.frame`, `GRanges` or path for the bedgraph file plotted as line. Default = NULL (i.e no track is plotted).
+#' @param bedgraph `data.frame`, `GRanges` or path for the bedgraph file (data frame without header and 4 columns tab separated) plotted as line. Default = NULL (i.e no track is plotted).
 #'
 #' @return Plot with domains and other tracks as a list of GenomeGraph tracks (see `Gviz::plotTracks` for details).
 #'

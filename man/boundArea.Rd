@@ -44,4 +44,5 @@ annot.gr <- dataframes2grange(
 )
 
 boundArea(domain.gr = tad.gr, annot.gr = annot.gr, window.size = 2e6)
+
 }

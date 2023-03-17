@@ -46,10 +46,10 @@
 #'
 #' @examples
 #' MATplot(matrix_1_chr25_50kb,
-#' start = 10e6, stop = 30e6,
-#' bin.width = 50e3, log2 = TRUE,
-#' scale.colors = "H", #color of matrix, try "D" or "H"
-#' annotations.color = "red")
+#'     start = 10e6, stop = 30e6,
+#'     bin.width = 50e3, log2 = TRUE,
+#'     scale.colors = "H", #color of matrix, try "D" or "H"
+#'     annotations.color = "red")
 
 MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H", matrix.diag = T,
                     tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL, tad.chr = NULL, annotations.color = "red",

@@ -20,7 +20,6 @@
 #'
 #' @examples
 #' # output <- geneTADtopo(domain.gr, annot.gr)
-#' # plot(output)
 #'
 geneTADtopo <- function(domain.gr, annot.gr, ifoverlap = "best", expression.data.frame = NULL) {
 

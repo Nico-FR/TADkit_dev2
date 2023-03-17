@@ -16,6 +16,10 @@
 #'
 #' @export
 #'
+#' @example
+#' tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
+#' TADshuffling(tad_1_10kb.gr)
+#'
 TADshuffling <- function(tad.gr) {
 
   output = NULL
@@ -43,6 +47,8 @@ TADshuffling <- function(tad.gr) {
 output.gr = TADkit::dataframes2grange(output, data.frame(chr = as.character(levels(seqnames(tad.gr))),
                                                  size = as.numeric(seqlengths(tad.gr))),
                               metadata.mcols = if (length(output)>4) {5:length(output)} else {NULL})
+
+  return(output.gr)
 }
 
 

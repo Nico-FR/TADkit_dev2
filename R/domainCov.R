@@ -27,9 +27,6 @@
 #'
 #' @export
 #'
-#' @examples
-#' #to do
-#'
 domainCov <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, bin.width = 50e3, norm = FALSE, output = "plot") {
 
   #annot.col parameter

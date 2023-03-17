@@ -44,7 +44,3 @@ As an example, this function take all TAD domains and calculate the density of a
 \item plot the smoothed bin density (or zscore bin density) according to relative positions.
 }
 }
-\examples{
-#to do
-
-}
