@@ -3,34 +3,19 @@
     -   [1.1 Installation](#11-installation)
 -   [2 Data format](#2-data-format)
     -   [2.1 matrix](#21-matrix)
-        -   [2.1.1 data frame](#211-data-frame)
-        -   [2.1.2 .cool / .mcool](#212-cool--mcool)
     -   [2.2 .bed](#22-bed)
     -   [2.3 .bedgraph](#23-bedgraph)
     -   [2.4 .bigwig](#24-bigwig)
 -   [3 Domains plot](#3-domains-plot)
     -   [3.1 TADplot](#31-tadplot)
     -   [3.2 mTADplot](#32-mtadplot)
-        -   [3.2.1 Create list](#321-create-list)
-        -   [3.2.2 Create multiple lists](#322-create-multiple-lists)
     -   [3.3 Options](#33-options)
-        -   [3.3.1 bigwigPath.lst](#331-bigwigpathlst)
-        -   [3.3.2 annotation.lst](#332-annotationlst)
-        -   [3.3.3 bedgraphPath.lst](#333-bedgraphpathlst)
 -   [4 Matrix plot](#4-matrix-plot)
     -   [4.1 MATplot](#41-matplot)
-        -   [4.1.1 matrix + triangles](#411-matrix--triangles)
-        -   [4.1.2 matrix + triangles + loops +
-            lines](#412-matrix--triangles--loops--lines)
     -   [4.2 mMATplot](#42-mmatplot)
-        -   [4.2.1 2 matrices + triangles](#421-2-matrices--triangles)
 -   [5 Analysis](#5-analysis)
     -   [5.1 Around boundaries](#51-around-boundaries)
-        -   [5.1.1 Coverage](#511-coverage)
-        -   [5.1.2 Distribution](#512-distribution)
     -   [5.2 Within domains](#52-within-domains)
-        -   [5.2.1 Distribution](#521-distribution)
-        -   [5.2.2 Coverage](#522-coverage)
 -   [6 Compartment calling and
     orientation](#6-compartment-calling-and-orientation)
 -   [7 Clear files](#7-clear-files)
@@ -39,17 +24,17 @@
 
 # 1 TADkit
 
-The TADkit package has 2 objectives. The first one is to facilitate the
-visualization of HiC matrices and the data that are generally associated
-with them. To this end, two pairs of functions (based on gviz and ggplot
-packages) have been created to visualize :
+The TADkit package has 2 objectives. The first one is to facilitate
+visualizations of HiC matrices and the data that are generally
+associated. To this end, two pairs of functions (based on gviz and
+ggplot packages) have been created to visualize :
 
 -   domains such as TADs (topological Associated Domain) or compartments
     (compartment A and B),
 -   interaction matrices.
 
-The second objective of the package is to allow the analysis of the
-distribution of genomic annotations in the light of the 3D organisation.
+The second objective of the package is to allow distribution analysis of
+genomic annotations in the light of the 3D organisation.
 
 ## 1.1 Installation
 
@@ -806,10 +791,10 @@ domainHist(domain.gr = TADshuffling(tad_1_10kb.gr), annot.gr = genes.gr,
         ifoverlap = "best", 
         annot.strand = T)
 #> 1381/21861 annotations are outside domains
-#> 2069/21861 annotations are overlapping with a boundary
-#> 18411/21861 annotations are within domains and do not overlap a boundary
-#> Warning: Removed 362 rows containing non-finite values (stat_bin).
-#> Removed 362 rows containing non-finite values (stat_bin).
+#> 2080/21861 annotations are overlapping with a boundary
+#> 18400/21861 annotations are within domains and do not overlap a boundary
+#> Warning: Removed 367 rows containing non-finite values (stat_bin).
+#> Removed 367 rows containing non-finite values (stat_bin).
 #> Warning: Removed 4 row(s) containing missing values (geom_path).
 ```
 
@@ -859,7 +844,7 @@ compartments) than B.
 
 # 6 Compartment calling and orientation
 
-Many algorithms allow to compute from an HiC matrix the values of a
+Many algorithms allow to compute from an HiC matrix values of a
 principal component which allows to identify compartments A or B. The
 orientation of these values is random and generally it is oriented from
 the density in genes or the percentage in GC between compartments A and
@@ -885,8 +870,8 @@ head(expression.data.frame)
 #> 6 ENSBTAG00000000012 ENSBTAG00000000012        43
 ```
 
-Now, knowing that the A compartments are more active than the B
-compartments, we can use `compOrientation()` to:
+Now, knowing that A compartments are more active than B compartments, we
+can use `compOrientation()` to:
 
 -   call A and B compartments,
 -   calculate median expression,

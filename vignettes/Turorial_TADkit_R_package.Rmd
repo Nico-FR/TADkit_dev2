@@ -5,6 +5,8 @@ output:
       self_contained: true
       number_sections: yes
       toc: yes
+      toc_depth: 2
+      toc_float: true
 editor_options:
   chunk_output_type: inline
 vignette: >
@@ -22,12 +24,12 @@ knitr::opts_chunk$set(
 # TADkit
 
 The TADkit package has 2 objectives. 
-The first one is to facilitate the visualization of HiC matrices and the data that are generally associated with them. To this end, two pairs of functions (based on gviz and ggplot packages) have been created to visualize :
+The first one is to facilitate visualizations of HiC matrices and the data that are generally associated. To this end, two pairs of functions (based on gviz and ggplot packages) have been created to visualize :
 
 * domains such as TADs (topological Associated Domain) or compartments (compartment A and B),
 * interaction matrices.
 
-The second objective of the package is to allow the analysis of the distribution of genomic annotations in the light of the 3D organisation.
+The second objective of the package is to allow distribution analysis of genomic annotations in the light of the 3D organisation.
 
 ## Installation
 

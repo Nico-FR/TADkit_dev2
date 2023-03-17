@@ -3,6 +3,7 @@ output:
   github_document:
     number_sections: yes
     toc: yes
+    toc_depth: 2
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -19,12 +20,12 @@ knitr::opts_chunk$set(
 # TADkit
 
 The TADkit package has 2 objectives. 
-The first one is to facilitate the visualization of HiC matrices and the data that are generally associated with them. To this end, two pairs of functions (based on gviz and ggplot packages) have been created to visualize :
+The first one is to facilitate visualizations of HiC matrices and the data that are generally associated. To this end, two pairs of functions (based on gviz and ggplot packages) have been created to visualize :
 
 * domains such as TADs (topological Associated Domain) or compartments (compartment A and B),
 * interaction matrices.
 
-The second objective of the package is to allow the analysis of the distribution of genomic annotations in the light of the 3D organisation.
+The second objective of the package is to allow distribution analysis of genomic annotations in the light of the 3D organisation.
 
 ## Installation
 
@@ -522,7 +523,7 @@ As expected the gene density is higher in compartment A (active compartments) th
 
 # Compartment calling and orientation
 
-Many algorithms allow to compute from an HiC matrix the values of a principal component which allows to identify compartments A or B. The orientation of these values is random and generally it is oriented from the density in genes or the percentage in GC between compartments A and B. 
+Many algorithms allow to compute from an HiC matrix values of a principal component which allows to identify compartments A or B. The orientation of these values is random and generally it is oriented from the density in genes or the percentage in GC between compartments A and B. 
 In this package `PC1calling()` allows to call the compartments from the PC1 values and `compOrientation()` allows to orient these values according to gene expressions.
 
 First let's create gene expression data. For the example raw count of each gene is randomly selected between 0 to 100:
@@ -535,7 +536,7 @@ expression.data.frame = data.frame(ID = names(genes.gr), Name = names(genes.gr),
 head(expression.data.frame)
 ```
 
-Now, knowing that the A compartments are more active than the B compartments, we can use `compOrientation()` to:
+Now, knowing that A compartments are more active than B compartments, we can use `compOrientation()` to:
 
 * call A and B compartments,
 * calculate median expression,
