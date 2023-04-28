@@ -78,18 +78,18 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   if(matrix.diag) {melted_mat = rbind(upper_mat, lower_mat, diag_mat)} else {melted_mat = rbind(upper_mat, lower_mat)}
 
   #add genomic coordinates
-  melted_mat$j = (melted_mat$j + from - 1) * - bin.width + bin.width / 2
-  melted_mat$i = (melted_mat$i + from - 1) * bin.width - bin.width / 2
+  melted_mat$j = (melted_mat$j + from - 1) * bin.width - bin.width / 2
+  melted_mat$i = (melted_mat$i + from - 1) * - bin.width + bin.width / 2
 
   if (scale.colors == "OE" | scale.colors == "ObsExp") {
-    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = i, y = j, fill = x))+
+    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(y = i, x = j, fill = x))+
       ggplot2::scale_fill_gradient2(low = "blue", high ="red",midpoint = 0, mid="white", na.value = "white")+
       ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
       ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
       ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
 
   } else {
-    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(x = i, y = j, fill = x))+
+    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(y = i, x = j, fill = x))+
       viridis::scale_fill_viridis(na.value = "black", option = scale.colors)+
       ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
       ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+

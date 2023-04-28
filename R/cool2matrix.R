@@ -45,7 +45,7 @@ cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
       ar = (rhdf5::h5ls(cool.path) %>% filter(group == "/resolutions"))$name
 
       #if bin.width not available
-      if (is.na(match(bin.width, ar))) {
+      if (is.na(match(bin.width, as.numeric(ar)))) {
         stop("\n '", bin.width, "' is not an available resolution.", " Available resolutions are:\n", ar %>% as.numeric %>% sort %>% paste0(collapse = ", "), ".")
       }
     }
@@ -108,7 +108,10 @@ cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
       mat_weight = Matrix::triu((w %*% t(w)))
       mat_weight[is.na(mat_weight)] <- 0 #remove NaN
       #cell by cell multiplication by the matrix weight
-      return(m * mat_weight)
+      mat = m * mat_weight
+      if (class(mat)[1] != "dgCMatrix") {
+        mat = methods::as(m * mat_weight, "CsparseMatrix")}
+      return(mat)
     } else {
       return(m)
     }
