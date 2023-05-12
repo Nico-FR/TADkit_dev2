@@ -12,6 +12,7 @@
 #' @param bin.width Bin width in base pair (i.e resolution) for mcool file. Default is `NA` for cool file.
 #' @param chr The selected chromosome.
 #' @param balance Logical. Weather or not to use balanced counts instead of raw counts. Default = `FALSE`.
+#' @param balancing_name Character that must correspond to the name given to the normalization method used. The most common names (for HiC normalisation) are "weight" (default), "KR", "VC".
 #'
 #' @return A `dgCMatrix` object: upper triangular and sparse Matrix
 #'
@@ -23,7 +24,7 @@
 #' @export
 #'
 #'
-cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
+cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE, balancing_name = "weight") {
 
   if (!is.na(bin.width)) {message("\nParsing .mcool file.")} else {message("\nParsing .cool file.")}
 
@@ -42,7 +43,7 @@ cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
 
     if (!is.na(bin.width)) {
       #available resolutions
-      ar = (rhdf5::h5ls(cool.path) %>% filter(group == "/resolutions"))$name
+      ar = (rhdf5::h5ls(cool.path) %>% dplyr::filter(group == "/resolutions"))$name
 
       #if bin.width not available
       if (is.na(match(bin.width, as.numeric(ar)))) {
@@ -55,7 +56,14 @@ cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
 
     if (!(chr %in% chromosomes)) {
        stop("\n '", chr, "' is not a valid chromosome.", "\nChromosomes available are: ", paste0(chromosomes, collapse = ", "), ".")
-   }
+    }
+
+    # the list of available normalisation names
+    tmp = as.data.frame(rhdf5::h5read(file = cool.path, name = uri("bins/"))) %>% dplyr::filter(chrom == chr) %>% names
+    an = tmp[!tmp %in% c("start", "end", "chrom")]
+    if (!(balancing_name %in% an)) {
+      stop("\n '", balancing_name, "' normalisation is not available.", "\nNormalisations available are: ", paste0(an, collapse = ", "), ".")
+    }
 
     # Index of chrom in the chromosome list
     cid = match(chr, chromosomes)
@@ -102,8 +110,8 @@ cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE) {
     if (balance) {
       message("\nBalancing")
       # Fetch the weights corresponding to the chromosome
-      bins <- as.data.frame(rhdf5::h5read(file = cool.path, name = uri("bins/"))) %>% filter(chrom == chr)
-      w = bins$weight
+      bins <- as.data.frame(rhdf5::h5read(file = cool.path, name = uri("bins/"))) %>% dplyr::filter(chrom == chr)
+      w = bins[,balancing_name]
       #upper matrix weight for balancing
       mat_weight = Matrix::triu((w %*% t(w)))
       mat_weight[is.na(mat_weight)] <- 0 #remove NaN

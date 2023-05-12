@@ -1,15 +1,14 @@
 Package: TADkit
-Title: TAD and hiC matrix visualisation tool kit
-Version: 0.0.9.2000
+Title: TAD and HiC matrix visualisation tool kit
+Version: 0.0.9.3000
 Authors@R: 
     person("Nicolas", "MARY", , "nicolas.mary@envt.fr", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-7304-5555 "))
 URL: https://github.com/Nico-FR/TADkit
 BugReports: https://github.com/Nico-FR/TADkit/issues
-Description: Tools to plot domains (e.g Topological Associated Domain) with other tracks (covegares, annotations and bedgraph datas) and to plot matrix with few tracks (domains and loops). 
-    Tools to analyzed: Distributions of genomic annotations in relations to domains...
+Description: Tools to plot domains (e.g Topological Associated Domain) with other tracks (covegares, annotations and bedgraph datas) and to plot matrix with few tracks (domains and loops). Tools to analyzed distributions of genomic annotations in relations to domains...
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Suggests: 
     knitr,
     rmarkdown,
@@ -38,7 +37,7 @@ Imports:
     Matrix,
     rhdf5
 Depends: 
-    R (>= 2.10)
+    R (>= 4.1.1)
 LazyData: true
 License: MIT + file LICENSE
 Config/testthat/edition: 3

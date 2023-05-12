@@ -4,7 +4,13 @@
 \alias{cool2matrix}
 \title{Import matrix from cool or mcool file}
 \usage{
-cool2matrix(cool.path, chr, bin.width = NA, balance = FALSE)
+cool2matrix(
+  cool.path,
+  chr,
+  bin.width = NA,
+  balance = FALSE,
+  balancing_name = "weight"
+)
 }
 \arguments{
 \item{cool.path}{The full path of the cool or mcool file.}
@@ -14,6 +20,8 @@ cool2matrix(cool.path, chr, bin.width = NA, balance = FALSE)
 \item{bin.width}{Bin width in base pair (i.e resolution) for mcool file. Default is \code{NA} for cool file.}
 
 \item{balance}{Logical. Weather or not to use balanced counts instead of raw counts. Default = \code{FALSE}.}
+
+\item{balancing_name}{Character that must correspond to the name given to the normalization method used. The most common names (for HiC normalisation) are "weight" (default), "KR", "VC".}
 }
 \value{
 A \code{dgCMatrix} object: upper triangular and sparse Matrix
