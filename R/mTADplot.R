@@ -56,7 +56,9 @@
 #' IS.lst = list(IS_1_10kb.bedgraph, IS_2_10kb.bedgraph)
 #' names(IS.lst) = c("bov1", "bov2")
 #'
-#' mTADplot(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6, bedgraph.lst = IS.lst, bedgraph.name = "IS")
+#' mTADplot(tad.lst = tad.lst, chr = 25,
+#'   start = 13e6, stop = 15e6,
+#'   bedgraph.lst = IS.lst, bedgraph.name = "IS")
 #'
 mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
                      bigwigPath.lst = NULL, bigwig.binsize = 1e3, bigwig.xaxis = "mean", bigwig.chr = NULL, bigwig.yaxis = NULL,
@@ -262,7 +264,7 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
     }
 
     #If bedgraphPath[[1]] is not a list (list within list)
-    if (class(bedgraph.lst[[1]]) != "list") {
+    if (!inherits(bedgraph.lst[[1]], "list")) {
       bedgraph.lst = list(bedgraph.lst)
       names(bedgraph.lst) = bedgraph.name
     }
@@ -286,7 +288,7 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
           data0 = utils::read.table(bedgraph.lst[[l]][[i]], header = FALSE, sep = "\t")[,1:4]
         }
         ##if GRanges
-        if (class(bedgraph.lst[[l]][[i]]) == "GRanges") {
+        if (inherits(bedgraph.lst[[l]][[i]], "GRanges")) {
           data0 = as.data.frame(bedgraph.lst[[l]][[i]], row.names = NULL)[,c(1:3,6)]
         }
 

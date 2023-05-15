@@ -254,7 +254,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
       data1 = TADkit::dataframes2grange(data0, chromsize, metadata.mcols = 4)
     }
     ##if GRanges
-    if (class(bedgraph) == "GRanges") {
+    if (inherits(bedgraph, "GRanges")) {
       data1 = bedgraph[,1]
     }
 

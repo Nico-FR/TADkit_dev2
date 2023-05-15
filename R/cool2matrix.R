@@ -117,7 +117,7 @@ cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE, balanci
       mat_weight[is.na(mat_weight)] <- 0 #remove NaN
       #cell by cell multiplication by the matrix weight
       mat = m * mat_weight
-      if (class(mat)[1] != "dgCMatrix") {
+      if (!inherits(mat[1], "dgCMatrix")) {
         mat = methods::as(m * mat_weight, "CsparseMatrix")}
       return(mat)
     } else {

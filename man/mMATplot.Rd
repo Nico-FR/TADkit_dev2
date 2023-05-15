@@ -83,7 +83,5 @@ Chromosome domains and loops can be filter using \code{tad.chr} parameter.
 mMATplot(matrix.upper = matrix_1_chr25_50kb,
     matrix.lower = matrix_1_chr25_50kb,
     start = 10e6, stop = 30e6,
-    bin.width = 50e3, log2 = TRUE,
-    scale.colors = "H", #color of matrix, try "D" or "H"
-    annotations.color = "red")
+    bin.width = 50e3, log2 = TRUE)
 }

@@ -52,7 +52,7 @@ compOrientation <- function(bedgraph, annot.gr, expression.data.frame) {
   if (length(expression.data.frame) > 3) {
     warning("expression.data.frame have more than 3 columns, the third column is used for expression values")
   }
-  if (class(bedgraph)!="GRanges") {
+  if (!inherits(bedgraph, "GRanges")) {
     stop("bedgraph must be a GRange object")
   }
   if (is.na(mean(seqlengths(bedgraph), na.rm=T))) {

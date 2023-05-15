@@ -24,7 +24,7 @@
 #'
 boundary2domain <- function(boundaries) {
 
-  if (class(boundaries) == "GRanges") {
+  if (inherits(boundaries, "GRanges")) {
     boundaries = as.data.frame(boundaries)[,1:3]}
 
   boundaries$mean = apply(boundaries[,2:3], 1, mean)

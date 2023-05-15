@@ -30,11 +30,11 @@ PC1calling <- function(bedgraph) {
     grange = GenomicRanges::makeGRangesFromDataFrame(bedgraph, start.field="V2", end.field = "V3", seqnames.field = "V1", keep.extra.columns = T)
   }
 
-  if (class(bedgraph)=="data.frame") {
+  if (is.data.frame(bedgraph)) {
     grange = bedgraph %>% dplyr::mutate(comp = dplyr::case_when(bedgraph[,4] < 0 ~ 'B', bedgraph[,4] >= 0 ~ 'A', is.na(bedgraph[,4]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
   }
 
-  if (class(bedgraph)=="GRanges") {
+  if (inherits(bedgraph, "GRanges")) {
     grange = bedgraph %>% as.data.frame %>% dplyr::mutate(comp = dplyr::case_when(GenomicRanges::mcols(bedgraph)[,1] < 0 ~ 'B', GenomicRanges::mcols(bedgraph)[,1] >= 0 ~ 'A', is.na(GenomicRanges::mcols(bedgraph)[,1]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
   }
 

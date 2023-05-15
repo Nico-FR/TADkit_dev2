@@ -57,7 +57,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
                     tad.upper.line = NULL, tad.lower.line = NULL, tad.line.col = NULL, line.colors = c("red", "blue")) {
 
   #sanity check
-  if(isFALSE(class(matrix)[1] %in% c("dgCMatrix", "matrix"))) {
+  if(!inherits(matrix, c("dgCMatrix", "matrix"))) {
     stop("input matrix is not a matrix or dgCMatrix object")}
 
   #bin to read
@@ -105,7 +105,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
       tad = read.table(tad.upper.tri, header = F, sep = "\t")[,1:3]
     }
 
-    if (class(tad.upper.tri) == "GRanges") {
+    if (inherits(tad.upper.tri, "GRanges")) {
       tad = as.data.frame(tad.upper.tri, row.names = NULL)[,1:3]
     }
 
@@ -132,7 +132,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
       tad = read.table(tad.lower.tri, header = F, sep = "\t")[,1:3]
     }
 
-    if (class(tad.lower.tri) == "GRanges") {
+    if (inherits(tad.lower.tri, "GRanges")) {
       tad = as.data.frame(tad.lower.tri, row.names = NULL)[,1:3]
     }
 
@@ -160,7 +160,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
       tad = read.table(tad.upper.line, header = F, sep = "\t")[, c(1:3, tad.line.col)]
     }
 
-    if (class(tad.upper.line) == "GRanges") {
+    if (inherits(tad.upper.line, "GRanges")) {
 
       if (is.null(tad.line.col)) {
         tad = as.data.frame(tad.upper.line, row.names = NULL)[, c(1:3)]
@@ -205,7 +205,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
       tad = read.table(tad.lower.line, header = F, sep = "\t")[, c(1:3, tad.line.col)]
     }
 
-    if (class(tad.lower.line) == "GRanges") {
+    if (inherits(tad.lower.line, "GRanges")) {
 
       if (is.null(tad.line.col)) {
         tad = as.data.frame(tad.lower.line, row.names = NULL)[, c(1:3)]

@@ -96,6 +96,8 @@ names(tad.lst) = c("bov1", "bov2")
 IS.lst = list(IS_1_10kb.bedgraph, IS_2_10kb.bedgraph)
 names(IS.lst) = c("bov1", "bov2")
 
-mTADplot(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6, bedgraph.lst = IS.lst, bedgraph.name = "IS")
+mTADplot(tad.lst = tad.lst, chr = 25,
+  start = 13e6, stop = 15e6,
+  bedgraph.lst = IS.lst, bedgraph.name = "IS")
 
 }
