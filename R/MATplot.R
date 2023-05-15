@@ -37,10 +37,11 @@
 #'
 #' @return `ggplot`
 #'
-#' @import Matrix
+#' @importFrom Matrix triu summary diag tril
 #' @importFrom viridis scale_fill_viridis
 #' @importFrom scales unit_format
 #' @importFrom dplyr filter
+#' @importFrom BiocGenerics t
 #' @import ggplot2
 #' @export
 #'
@@ -72,7 +73,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   #melt matrix
   upper_mat = Matrix::summary(Matrix::triu(mat, 1))
   diag_mat = data.frame(i = 1:nrow(mat), j = 1:nrow(mat), x = Matrix::diag(mat))
-  lower_mat = Matrix::summary(Matrix::tril(t(mat), -1))
+  lower_mat = Matrix::summary(Matrix::tril(BiocGenerics::t(mat), -1))
 
   #diag
   if(matrix.diag) {melted_mat = rbind(upper_mat, lower_mat, diag_mat)} else {melted_mat = rbind(upper_mat, lower_mat)}

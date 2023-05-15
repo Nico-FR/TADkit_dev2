@@ -27,6 +27,6 @@ mat_obsexp = matObsExp(matrix_1_chr25_50kb)
 MATplot(matrix = mat_obsexp,
     start = 10e6, stop = 30e6,
     bin.width = 50e3,
-    log2 = T, scale.colors = "OE")
+    log2 = TRUE, scale.colors = "OE")
 
 }

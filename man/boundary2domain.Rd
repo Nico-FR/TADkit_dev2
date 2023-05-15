@@ -18,3 +18,14 @@ From datas with each boundaries stored by line (chromosome, start and end), \cod
 \details{
 Start and end of domains are the middle of boundaries.
 }
+\examples{
+#create GRanges with chr sizes:
+tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
+boundaries = data.frame(chr = tad_1_10kb.bed$chr,
+                          start = tad_1_10kb.bed$start - 5e3,
+                          end = tad_1_10kb.bed$end + 5e3)
+
+boundary2domain(boundaries)
+tad_1_10kb.gr
+
+}

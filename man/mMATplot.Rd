@@ -10,7 +10,7 @@ mMATplot(
   start,
   stop,
   bin.width,
-  log2 = T,
+  log2 = TRUE,
   scale.colors = "H",
   matrix.upper.txt = NULL,
   matrix.lower.txt = NULL,

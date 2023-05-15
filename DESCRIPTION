@@ -32,12 +32,11 @@ Imports:
     magrittr,
     utils,
     tidyr,
-    reshape2,
     viridis,
     Matrix,
     rhdf5
 Depends: 
-    R (>= 4.1.1)
+    R (>= 4.2.0)
 LazyData: true
 License: MIT + file LICENSE
 Config/testthat/edition: 3

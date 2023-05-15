@@ -1,24 +1,27 @@
 
--   [1 TADkit](#1-tadkit)
-    -   [1.1 Installation](#11-installation)
--   [2 Data format](#2-data-format)
-    -   [2.1 matrix](#21-matrix)
-    -   [2.2 .bed](#22-bed)
-    -   [2.3 .bedgraph](#23-bedgraph)
-    -   [2.4 .bigwig](#24-bigwig)
--   [3 Domains plot](#3-domains-plot)
-    -   [3.1 TADplot](#31-tadplot)
-    -   [3.2 mTADplot](#32-mtadplot)
-    -   [3.3 Options](#33-options)
--   [4 Matrix plot](#4-matrix-plot)
-    -   [4.1 MATplot](#41-matplot)
-    -   [4.2 mMATplot](#42-mmatplot)
--   [5 Analysis](#5-analysis)
-    -   [5.1 Around boundaries](#51-around-boundaries)
-    -   [5.2 Within domains](#52-within-domains)
--   [6 Compartment calling and
-    orientation](#6-compartment-calling-and-orientation)
--   [7 Clear files](#7-clear-files)
+- <a href="#1-tadkit" id="toc-1-tadkit">1 TADkit</a>
+  - <a href="#11-installation" id="toc-11-installation">1.1 Installation</a>
+- <a href="#2-data-format" id="toc-2-data-format">2 Data format</a>
+  - <a href="#21-matrix" id="toc-21-matrix">2.1 matrix</a>
+  - <a href="#22-bed" id="toc-22-bed">2.2 .bed</a>
+  - <a href="#23-bedgraph" id="toc-23-bedgraph">2.3 .bedgraph</a>
+  - <a href="#24-bigwig" id="toc-24-bigwig">2.4 .bigwig</a>
+- <a href="#3-domains-plot" id="toc-3-domains-plot">3 Domains plot</a>
+  - <a href="#31-tadplot" id="toc-31-tadplot">3.1 TADplot</a>
+  - <a href="#32-mtadplot" id="toc-32-mtadplot">3.2 mTADplot</a>
+  - <a href="#33-options" id="toc-33-options">3.3 Options</a>
+- <a href="#4-matrix-plot" id="toc-4-matrix-plot">4 Matrix plot</a>
+  - <a href="#41-matplot" id="toc-41-matplot">4.1 MATplot</a>
+  - <a href="#42-mmatplot" id="toc-42-mmatplot">4.2 mMATplot</a>
+- <a href="#5-analysis" id="toc-5-analysis">5 Analysis</a>
+  - <a href="#51-around-boundaries" id="toc-51-around-boundaries">5.1 Around
+    boundaries</a>
+  - <a href="#52-within-domains" id="toc-52-within-domains">5.2 Within
+    domains</a>
+- <a href="#6-compartment-calling-and-orientation"
+  id="toc-6-compartment-calling-and-orientation">6 Compartment calling and
+  orientation</a>
+- <a href="#7-clear-files" id="toc-7-clear-files">7 Clear files</a>
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -29,9 +32,9 @@ visualizations of HiC matrices and the data that are generally
 associated. To this end, two pairs of functions (based on gviz and
 ggplot packages) have been created to visualize :
 
--   domains such as TADs (topological Associated Domain) or compartments
-    (compartment A and B),
--   interaction matrices.
+- domains such as TADs (topological Associated Domain) or compartments
+  (compartment A and B),
+- interaction matrices.
 
 The second objective of the package is to allow distribution analysis of
 genomic annotations in the light of the 3D organisation.
@@ -59,6 +62,8 @@ library(dplyr)
 library(GenomicRanges)
 library(GenomicFeatures)
 library(ggplot2)
+library(rtracklayer)
+library(TxDb.Btaurus.UCSC.bosTau9.refGene)
 ```
 
 ## 2.1 matrix
@@ -245,16 +250,11 @@ boundary2domain(boundaries)
 ```
 
 In addition to TADs, we can also plot any type of annotations. For this
-tutorial we will use genes annotations available on Ensembl:
+tutorial we will use genes annotations available as a package
+(TxDb.Btaurus.UCSC.bosTau9.refGene):
 
 ``` r
 txdb <- makeTxDbFromBiomart(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
-#> Download and preprocess the 'transcripts' data frame ... OK
-#> Download and preprocess the 'chrominfo' data frame ... OK
-#> Download and preprocess the 'splicings' data frame ... OK
-#> Download and preprocess the 'genes' data frame ... OK
-#> Prepare the 'metadata' data frame ... OK
-#> Make the TxDb object ... OK
 
 genomic.gr = genes(txdb, columns = c("TXTYPE"))
 genomic.gr$TXTYPE = as.character(genomic.gr$TXTYPE)
@@ -312,11 +312,15 @@ a bigwig format can be translated as a bedgraph format (i.e `GRranges`)
 with `bw2grange()`.
 
 For this tutorial we are going to use coverage data from RNA sequencing
-experiment available on Ensembl:
+experiment downloaded on Ensembl and available within the package as a
+bedgraph:
 
 ``` r
-#download expression data (RNAseq) of bovine:
-download.file("http://ftp.ensembl.org/pub/release-104/bamcov/bos_taurus/genebuild/ARS-UCD1.2.ENA.heart.1.bam.bw", destfile = "./rna_seq_bov.bw", method = "curl") #if it fails: remove the method parameter or download it manually in the current directory
+if (.Platform$OS.type != "windows") { #do no not work on window
+  
+  #translate bedgraph to bigwig file
+  export.bw(rna_seq_chr25_13to16mb.bedgraph, "./rna_seq_chr25_13to16mb.bw")
+  }
 ```
 
 # 3 Domains plot
@@ -326,9 +330,9 @@ Two functions have been built to plot TADs: for one indiviual
 
 In addition to domains, few others tracks can be plotted:
 
--   bedgraph to plot bin scores (e.g insulation score…),
--   bigwig to plot coverage datas (e.g RNAseq…),
--   bed to plot annotations (e.g genes…).
+- bedgraph to plot bin scores (e.g insulation score…),
+- bigwig to plot coverage datas (e.g RNAseq…),
+- bed to plot annotations (e.g genes…).
 
 ## 3.1 TADplot
 
@@ -343,15 +347,14 @@ TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6)
 Note that the area is extended to the first and last TAD of the window.
 
 Add insulation score (bedgraph), RNAseq (bigwig) and genomic annotations
-grouped according to the “TXTYPE” column (i.e first metadata column) to
-the graph:
+to the graph:
 
 ``` r
 TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6,
         bedgraph = IS_1_10kb.bedgraph, #dataframe, GRanges or path ("./IS_1_10kb.bedgraph")
-        annot.gr = genomic.gr, 
+        annot.gr = genomic.gr,
         annot.col = 1, #column number to group annotations
-        bigwig.path = "./rna_seq_bov.bw", 
+        bigwig.path = "./rna_seq_chr25_13to16mb.bw", 
         bigwig.yaxis = "log2" #log2 of RNAseq values
         )
 ```
@@ -382,7 +385,7 @@ write.table(PC1_2_50kb.bedgraph, "./PC1_2_50kb.bedgraph", col.names = FALSE, quo
 Let’s create lists for the 2 individuals (then named as “bov1” and
 “bov2”):
 
--   TADs:
+- TADs:
 
 ``` r
 #list of TADs
@@ -390,7 +393,7 @@ tad.lst = list(tad_1_10kb.gr, tad_2_10kb.gr)
 names(tad.lst) = c("bov1", "bov2")
 ```
 
--   insulation scores:
+- insulation scores:
 
 ``` r
 #insulation score (path) list
@@ -464,36 +467,35 @@ some of the track parameters:
 
 ### 3.3.1 bigwigPath.lst
 
--   bigwig.binsize: Bin sizes for the histogram. Default = 1e3.
+- bigwig.binsize: Bin sizes for the histogram. Default = 1e3.
 
--   bigwig.xaxis: Function used to transform the x-axis among each
-    bigwig.binsize. Defaults = “median”. Alternatively, other predefined
-    functions can be supplied as character (“mean”, “median”, “sum”,
-    “min”, “max” or “extreme”).
+- bigwig.xaxis: Function used to transform the x-axis among each
+  bigwig.binsize. Defaults = “median”. Alternatively, other predefined
+  functions can be supplied as character (“mean”, “median”, “sum”,
+  “min”, “max” or “extreme”).
 
--   bigwig.chr: Chromosome name used to filter chromosome names that can
-    be different from chr (e.g chr = “1” and bigwig.chr = “chr1”).
-    Default = NULL to used the same name as chr.
+- bigwig.chr: Chromosome name used to filter chromosome names that can
+  be different from chr (e.g chr = “1” and bigwig.chr = “chr1”). Default
+  = NULL to used the same name as chr.
 
--   bigwig.yaxis: Function used to transforming the y-axis values.
-    Default = NULL. Use “log2” to use the function log2(x + 1) to
-    transform the y-axis (for RNA seq) or provide any other function.
+- bigwig.yaxis: Function used to transforming the y-axis values. Default
+  = NULL. Use “log2” to use the function log2(x + 1) to transform the
+  y-axis (for RNA seq) or provide any other function.
 
 ### 3.3.2 annotation.lst
 
--   annot.col: Column number of the metadata from annot.gr file(s) used
-    to group the annotation tracks. Default = NULL and the name of each
-    annotation is added.
+- annot.col: Column number of the metadata from annot.gr file(s) used to
+  group the annotation tracks. Default = NULL and the name of each
+  annotation is added.
 
 ### 3.3.3 bedgraphPath.lst
 
--   bedgraph.name: Name of the bedgraph track when there is only one
-    track (default = “bedgraph”). Otherwise it takes the names of each
-    list.
+- bedgraph.name: Name of the bedgraph track when there is only one track
+  (default = “bedgraph”). Otherwise it takes the names of each list.
 
--   bedgraph_outliers: Ratio to remove outliers of all each bedgraph
-    values. Default is 0 (ie no filter). To remove the first and last 2
-    percentiles (i.e extreme values / outliers) use 0.02.
+- bedgraph_outliers: Ratio to remove outliers of all each bedgraph
+  values. Default is 0 (ie no filter). To remove the first and last 2
+  percentiles (i.e extreme values / outliers) use 0.02.
 
 # 4 Matrix plot
 
@@ -502,8 +504,8 @@ one matrix `MATplot()` and 2 matrices `mMATplot()` (on the upper or
 lower part) as a ggplot graph. In addition to matrices, 3 others tracks
 can be plotted:
 
--   bed file type to visualized domains as lines or a triangles,
--   bedpe file type to hightlight interactions between 2 areas (loops).
+- bed file type to visualized domains as lines or a triangles,
+- bedpe file type to hightlight interactions between 2 areas (loops).
 
 ## 4.1 MATplot
 
@@ -520,8 +522,8 @@ MATplot(matrix = matrix_1_chr25_50kb, start = 10e6, stop = 30e6,
         scale.colors = "H", #color of matrix, try "D" or "H"
         annotations.color = "red")+
   ggtitle("log2(raw count): chr25 bov1")
-#> Warning: Removed 1 rows containing missing values (geom_segment).
-#> Removed 1 rows containing missing values (geom_segment).
+#> Warning: Removed 1 rows containing missing values (`geom_segment()`).
+#> Removed 1 rows containing missing values (`geom_segment()`).
 ```
 
 <img src="man/figures/README-unnamed-chunk-23-1.png" width="100%" />
@@ -531,8 +533,8 @@ MATplot(matrix = matrix_1_chr25_50kb, start = 10e6, stop = 30e6,
 bedpe file are used to highlight 2 areas. For example let’s create a
 bedpe file to highlight a region on chromosome 25 between :
 
--   11Mb to 13Mb,
--   26Mb to 27Mb:
+- 11Mb to 13Mb,
+- 26Mb to 27Mb:
 
 ``` r
 bedpe = data.frame(chr1 = "25", start1 = 11e6, end1 = 13e6,
@@ -544,9 +546,9 @@ bedpe
 
 In addition to bedpe file, let’s see 2 others functions:
 
--   `matObsExp()` to produce the observed / expected ratio of
-    interaction counts,
--   `PC1calling()` to call the compartments A and B from PC1 values.
+- `matObsExp()` to produce the observed / expected ratio of interaction
+  counts,
+- `PC1calling()` to call the compartments A and B from PC1 values.
 
 ``` r
 MATplot(matrix = matObsExp(matrix_1_chr25_50kb), 
@@ -561,8 +563,8 @@ MATplot(matrix = matObsExp(matrix_1_chr25_50kb),
         tad.line.col = 1 #use the fist metadata columns with vectors A and B
         )+
   ggtitle("log2(obs/exp): chr25 bov1")
-#> Warning: Removed 1 rows containing missing values (geom_segment).
-#> Removed 1 rows containing missing values (geom_segment).
+#> Warning: Removed 1 rows containing missing values (`geom_segment()`).
+#> Removed 1 rows containing missing values (`geom_segment()`).
 ```
 
 <img src="man/figures/README-unnamed-chunk-25-1.png" width="100%" />
@@ -586,10 +588,10 @@ mMATplot(matrix.upper = matrix_1_chr25_50kb,
          tad.lower.tri = tad_2_10kb.gr,
          tad.chr = 25)+
   ggtitle("log2(raw count): chr25 bov1 vs bov2")
-#> Warning: Removed 1 rows containing missing values (geom_segment).
-#> Removed 1 rows containing missing values (geom_segment).
-#> Removed 1 rows containing missing values (geom_segment).
-#> Removed 1 rows containing missing values (geom_segment).
+#> Warning: Removed 1 rows containing missing values (`geom_segment()`).
+#> Removed 1 rows containing missing values (`geom_segment()`).
+#> Removed 1 rows containing missing values (`geom_segment()`).
+#> Removed 1 rows containing missing values (`geom_segment()`).
 ```
 
 <img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
@@ -599,8 +601,8 @@ mMATplot(matrix.upper = matrix_1_chr25_50kb,
 Several functions allow to analyzed and visualized distributions of any
 annotations, in two different ways:
 
--   on both sides of TAD boundaries,
--   or within TADs.
+- on both sides of TAD boundaries,
+- or within TADs.
 
 ## 5.1 Around boundaries
 
@@ -663,7 +665,7 @@ areaHist(data.gr,
          annot.boundary = "start",
          annot.strand = FALSE,
          bin.width = 10e3)
-#> Warning: Removed 763 rows containing non-finite values (stat_bin).
+#> Warning: Removed 763 rows containing non-finite values (`stat_bin()`).
 ```
 
 <img src="man/figures/README-unnamed-chunk-31-1.png" width="100%" />
@@ -732,7 +734,14 @@ domainHist(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
 #> 1381/21861 annotations are outside domains
 #> 2568/21861 annotations are overlapping with a boundary
 #> 17912/21861 annotations are within domains and do not overlap a boundary
-#> Warning: Removed 4 row(s) containing missing values (geom_path).
+#> Warning: The dot-dot notation (`..count..`) was deprecated in ggplot2 3.4.0.
+#> ℹ Please use `after_stat(count)` instead.
+#> ℹ The deprecated feature was likely used in the TADkit package.
+#>   Please report the issue at <https://github.com/Nico-FR/TADkit/issues>.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
+#> Warning: Removed 4 rows containing missing values (`geom_path()`).
 ```
 
 <img src="man/figures/README-unnamed-chunk-34-1.png" width="100%" />
@@ -774,9 +783,9 @@ domainHist(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
 #> 1381/21861 annotations are outside domains
 #> 2568/21861 annotations are overlapping with a boundary
 #> 17912/21861 annotations are within domains and do not overlap a boundary
-#> Warning: Removed 320 rows containing non-finite values (stat_bin).
-#> Removed 320 rows containing non-finite values (stat_bin).
-#> Warning: Removed 4 row(s) containing missing values (geom_path).
+#> Warning: Removed 320 rows containing non-finite values (`stat_bin()`).
+#> Removed 320 rows containing non-finite values (`stat_bin()`).
+#> Warning: Removed 4 rows containing missing values (`geom_path()`).
 ```
 
 <img src="man/figures/README-unnamed-chunk-36-1.png" width="100%" />
@@ -791,11 +800,11 @@ domainHist(domain.gr = TADshuffling(tad_1_10kb.gr), annot.gr = genes.gr,
         ifoverlap = "best", 
         annot.strand = T)
 #> 1381/21861 annotations are outside domains
-#> 2080/21861 annotations are overlapping with a boundary
-#> 18400/21861 annotations are within domains and do not overlap a boundary
-#> Warning: Removed 367 rows containing non-finite values (stat_bin).
-#> Removed 367 rows containing non-finite values (stat_bin).
-#> Warning: Removed 4 row(s) containing missing values (geom_path).
+#> 2120/21861 annotations are overlapping with a boundary
+#> 18360/21861 annotations are within domains and do not overlap a boundary
+#> Warning: Removed 348 rows containing non-finite values (`stat_bin()`).
+#> Removed 348 rows containing non-finite values (`stat_bin()`).
+#> Warning: Removed 4 rows containing missing values (`geom_path()`).
 ```
 
 <img src="man/figures/README-unnamed-chunk-37-1.png" width="100%" />
@@ -810,7 +819,7 @@ gene density within TADs:
 domainCov(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
            bin.width = 10e3,
            annot.col = "strand", norm = TRUE)
-#> `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'
+#> `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
 ```
 
 <img src="man/figures/README-unnamed-chunk-38-1.png" width="100%" />
@@ -834,7 +843,7 @@ seqlengths(comp.gr) = 42350435 #add size of chr 25
 domainCov(domain.gr = comp.gr, annot.gr = genes.gr,
            domain.col = 1,
            bin.width = 50e3, norm = TRUE)
-#> `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 ```
 
 <img src="man/figures/README-unnamed-chunk-39-1.png" width="100%" />
@@ -873,9 +882,9 @@ head(expression.data.frame)
 Now, knowing that A compartments are more active than B compartments, we
 can use `compOrientation()` to:
 
--   call A and B compartments,
--   calculate median expression,
--   invert PC1 values for chromosomes with expression rate of B > A.
+- call A and B compartments,
+- calculate median expression,
+- invert PC1 values for chromosomes with expression rate of B \> A.
 
 ``` r
 PC1_1_50kb.gr = suppressWarnings(dataframes2grange(PC1_1_50kb.bedgraph, chromsize, metadata.mcols = 4)) %>% trim #create GRanges from bedgraph and cut bins out-of-bound to suppress warnings

@@ -21,6 +21,7 @@
 #' @importFrom viridis scale_fill_viridis
 #' @importFrom scales unit_format
 #' @importFrom dplyr full_join select
+#' @importFrom BiocGenerics t
 #' @import ggplot2
 #' @export
 #'
@@ -28,11 +29,9 @@
 #' mMATplot(matrix.upper = matrix_1_chr25_50kb,
 #'     matrix.lower = matrix_1_chr25_50kb,
 #'     start = 10e6, stop = 30e6,
-#'     bin.width = 50e3, log2 = TRUE,
-#'     scale.colors = "H", #color of matrix, try "D" or "H"
-#'     annotations.color = "red")
+#'     bin.width = 50e3, log2 = TRUE)
 
-mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = T, scale.colors = "H",
+mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = TRUE, scale.colors = "H",
                     matrix.upper.txt = NULL, matrix.lower.txt = NULL,
                     tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL, tad.chr = NULL, annotations.color = "red",
                     tad.upper.line = NULL, tad.lower.line = NULL, tad.line.col = NULL, line.colors = c("red", "blue")) {
@@ -69,7 +68,7 @@ mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = 
   if (log2 == T) {mat2@x = log2(mat2@x)}
 
   #melt matrix
-  lower_mat = Matrix::summary(Matrix::tril(t(mat2), -1))
+  lower_mat = Matrix::summary(Matrix::tril(BiocGenerics::t(mat2), -1))
 
   ####################
 

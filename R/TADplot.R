@@ -13,7 +13,7 @@
 #' On the first track the alternating TADs are represented in grey and black while the interTAD regions are represented in white.
 #' The second track is a zoom in the area of interest. This area is extend to the border of the TADs on both sides.
 #'
-#' Another track from a bigwig file can be added like read depth sequencing (RNAseq...) as an histogram.
+#' Another track from a bigwig file can be added like read depth sequencing (RNAseq...) as an histogram. However bigwig files can not be read on Windows.
 #' The bin size of the histogram is 1Kb by default, the read depth is smoothed using the median value of each bin.
 #' If the chromosome name is different (between the bigwig and the `chr` parameter), it can be fix using the `bigwig.chr` parameter (e.g `chr="1"` while `bigwig.chr="chr1"`).
 #'
@@ -24,7 +24,7 @@
 #' @param chr Chromosome name to plot.
 #' @param start,stop Region of interest in base pair.
 #' @param tad.id Logical. Default is `FALSE` to label the domain with their sizes `width(tad.gr)` instead of their names `names(tad.gr)`.
-#' @param bigwig.path Path for the bigwig file plotted as histogram. Default = `NULL` (i.e the track is not plotted).
+#' @param bigwig.path Path for the bigwig file plotted as histogram. Default = `NULL` (i.e the track is not plotted). Note that bigwig file can not be read on Windows.
 #' @param annot.gr `GRanges` object with genomic annotations. Default = `NULL` (i.e the track is not plotted).
 #' @param bigwig.binwidth Bin sizes for the histogram of the bigwig track. Default = `1e3`.
 #' @param bigwig.xaxis Function used to transform the x-axis of the bigwig values among each bigwig.binwidth. Defaults = `"median"`.
@@ -126,6 +126,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
   ##############################
   # bigwigTrack
   ##############################
+  if (.Platform$OS.type == "windows") {bigwig.path = NULL}
   if (is.null(bigwig.path)) {
     bigwigTrack <- NULL
   } else {

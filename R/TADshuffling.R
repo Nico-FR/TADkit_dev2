@@ -16,7 +16,7 @@
 #'
 #' @export
 #'
-#' @example
+#' @examples
 #' tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
 #' TADshuffling(tad_1_10kb.gr)
 #'

@@ -49,6 +49,7 @@ library(dplyr)
 library(GenomicRanges)
 library(GenomicFeatures)
 library(ggplot2)
+library(rtracklayer)
 ```
 
 ## matrix
@@ -132,8 +133,8 @@ Then boundaries can be translated as domains with `boundary2domain()`:
 boundary2domain(boundaries)
 ```
 
-In addition to TADs, we can also plot any type of annotations. For this tutorial we will use genes annotations available on Ensembl:
-```{r}
+In addition to TADs, we can also plot any type of annotations. For this tutorial we will use genes annotations available as a package (TxDb.Btaurus.UCSC.bosTau9.refGene):
+```{r, warning=FALSE, message=FALSE}
 txdb <- makeTxDbFromBiomart(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
 
 genomic.gr = genes(txdb, columns = c("TXTYPE"))
@@ -159,10 +160,13 @@ write.table(IS_1_10kb.bedgraph, "./IS_1_10kb.bedgraph", col.names = FALSE, quote
 Similar to bedgraph, bigwig files are used to store a score for each interval in an indexed and compressed form. 
 Insulation scores stored as a bigwig format can be translated as a bedgraph format (i.e `GRranges`) with `bw2grange()`.
 
-For this tutorial we are going to use coverage data from RNA sequencing experiment available on Ensembl:
+For this tutorial we are going to use coverage data from RNA sequencing experiment downloaded on Ensembl and available within the package as a bedgraph:
 ```{r}
-#download expression data (RNAseq) of bovine:
-download.file("http://ftp.ensembl.org/pub/release-104/bamcov/bos_taurus/genebuild/ARS-UCD1.2.ENA.heart.1.bam.bw", destfile = "./rna_seq_bov.bw", method = "curl") #if it fails: remove the method parameter or download it manually in the current directory
+if (.Platform$OS.type != "windows") { #do no not work on window
+  
+  #translate bedgraph to bigwig file
+  export.bw(rna_seq_chr25_13to16mb.bedgraph, "./rna_seq_chr25_13to16mb.bw")
+  }
 ```
 
 # Domains plot
@@ -185,13 +189,13 @@ TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6)
 
 Note that the area is extended to the first and last TAD of the window.
 
-Add insulation score (bedgraph), RNAseq (bigwig) and genomic annotations grouped according to the "TXTYPE" column (i.e first metadata column) to the graph:
+Add insulation score (bedgraph), RNAseq (bigwig) and genomic annotations to the graph:
 ```{r, fig.height = 4, fig.width = 8}
 TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6,
         bedgraph = IS_1_10kb.bedgraph, #dataframe, GRanges or path ("./IS_1_10kb.bedgraph")
-        annot.gr = genomic.gr, 
+        annot.gr = genomic.gr,
         annot.col = 1, #column number to group annotations
-        bigwig.path = "./rna_seq_bov.bw", 
+        bigwig.path = "./rna_seq_chr25_13to16mb.bw", 
         bigwig.yaxis = "log2" #log2 of RNAseq values
         )
 ```
@@ -526,7 +530,7 @@ As expected the gene density is higher in compartment A (active compartments) th
 
 # Compartment calling and orientation
 
-Many algorithms allow to compute from an HiC matrix the values of a principal component which allows to identify compartments A or B. The orientation of these values is random and generally it is oriented from the density in genes or the percentage in GC between compartments A and B. 
+Many algorithms allow to compute from an HiC matrix values of a principal component which allows to identify compartments A or B. The orientation of these values is random and generally it is oriented from the density in genes or the percentage in GC between compartments A and B. 
 In this package `PC1calling()` allows to call the compartments from the PC1 values and `compOrientation()` allows to orient these values according to gene expressions.
 
 First let's create gene expression data. For the example raw count of each gene is randomly selected between 0 to 100:
@@ -539,7 +543,7 @@ expression.data.frame = data.frame(ID = names(genes.gr), Name = names(genes.gr),
 head(expression.data.frame)
 ```
 
-Now, knowing that the A compartments are more active than the B compartments, we can use `compOrientation()` to:
+Now, knowing that A compartments are more active than B compartments, we can use `compOrientation()` to:
 
 * call A and B compartments,
 * calculate median expression,

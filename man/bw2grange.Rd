@@ -15,5 +15,5 @@ bw2grange(bigwig.path, bin.width = NULL)
 \code{GRanges}
 }
 \description{
-From the full path of a bigwig files, return a \code{GRanges} object. The bin width of the \code{GRanges} can be specify with \code{bin.width} parameter.
+From the full path of a bigwig files, return a \code{GRanges} object. The bin width of the \code{GRanges} can be specify with \code{bin.width} parameter. These functions do not work on Windows.
 }

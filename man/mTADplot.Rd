@@ -33,7 +33,7 @@ mTADplot(
 
 \item{tad.id}{Logical. Default is \code{FALSE} to label the domain with their sizes \code{width(tad.gr)} instead of their names \code{names(tad.gr)}.}
 
-\item{bigwigPath.lst}{List of path for the bigwig file(s) plotted as histogram. Default = NULL (ie no track is plotted).}
+\item{bigwigPath.lst}{List of path for the bigwig file(s) plotted as histogram. Default = NULL (ie no track is plotted). Note that bigwig files can not be read on Windows..}
 
 \item{bigwig.binsize}{Bin sizes for the histogram of the bigwig track. Default = 1e3.}
 
@@ -75,7 +75,7 @@ Other tracks can be added:
 TAD annotation(s) must be in a list and element in the list must have name(s).
 TAD annotation(s) must have chromosome size (see \code{dataframes2grange()}).
 
-Another track from a list of bigwig file(s) can be added, like read depth sequencing (RNAseq...) as an histogram.
+Another track from a list of bigwig file(s) can be added, like read depth sequencing (RNAseq...) as an histogram. However bigwig files can not be read on Windows.
 The bin size of the histogram is 1Kb by default, the read depth is smoothed using the median value of each bin.
 If the chromosome name is different (between the bigwig file(s) and the \code{chr} parameter), it can be fix using the \code{bigwig.ch}r parameter (e.g \code{chr="1"} while \code{bigwig.chr="chr1"}).
 

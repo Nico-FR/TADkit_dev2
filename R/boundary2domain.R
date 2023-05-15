@@ -12,12 +12,15 @@
 #'
 #' @export
 #'
-#' @example
-#' boundaries = data.frame(chr = seqnames(tad_1_10kb.gr),
-#'                           start = start(tad_1_10kb.gr) - 5e3,
-#'                           end = start(tad_1_10kb.gr) + 5e3)
+#' @examples
+#' #create GRanges with chr sizes:
+#' tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
+#' boundaries = data.frame(chr = tad_1_10kb.bed$chr,
+#'                           start = tad_1_10kb.bed$start - 5e3,
+#'                           end = tad_1_10kb.bed$end + 5e3)
 #'
 #' boundary2domain(boundaries)
+#' tad_1_10kb.gr
 #'
 boundary2domain <- function(boundaries) {
 

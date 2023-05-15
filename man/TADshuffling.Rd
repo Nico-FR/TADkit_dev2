@@ -19,3 +19,8 @@ From an ordered set of TADs, this function return un random set of TADs.
 \code{TADshuffling} shuffle the TADs order for each chromosomes (i.e keep the TADs sizes).
 The TADs input should not have gaps (region between two TADs) excepted for the extremities of chromosomes.
 }
+\examples{
+tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
+TADshuffling(tad_1_10kb.gr)
+
+}

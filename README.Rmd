@@ -46,6 +46,7 @@ library(dplyr)
 library(GenomicRanges)
 library(GenomicFeatures)
 library(ggplot2)
+library(rtracklayer)
 ```
 
 ## matrix
@@ -129,8 +130,8 @@ Then boundaries can be translated as domains with `boundary2domain()`:
 boundary2domain(boundaries)
 ```
 
-In addition to TADs, we can also plot any type of annotations. For this tutorial we will use genes annotations available on Ensembl:
-```{r}
+In addition to TADs, we can also plot any type of annotations. For this tutorial we will use genes annotations available as a package (TxDb.Btaurus.UCSC.bosTau9.refGene):
+```{r, warning=FALSE, message=FALSE}
 txdb <- makeTxDbFromBiomart(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
 
 genomic.gr = genes(txdb, columns = c("TXTYPE"))
@@ -156,10 +157,13 @@ write.table(IS_1_10kb.bedgraph, "./IS_1_10kb.bedgraph", col.names = FALSE, quote
 Similar to bedgraph, bigwig files are used to store a score for each interval in an indexed and compressed form. 
 Insulation scores stored as a bigwig format can be translated as a bedgraph format (i.e `GRranges`) with `bw2grange()`.
 
-For this tutorial we are going to use coverage data from RNA sequencing experiment available on Ensembl:
+For this tutorial we are going to use coverage data from RNA sequencing experiment downloaded on Ensembl and available within the package as a bedgraph:
 ```{r}
-#download expression data (RNAseq) of bovine:
-download.file("http://ftp.ensembl.org/pub/release-104/bamcov/bos_taurus/genebuild/ARS-UCD1.2.ENA.heart.1.bam.bw", destfile = "./rna_seq_bov.bw", method = "curl") #if it fails: remove the method parameter or download it manually in the current directory
+if (.Platform$OS.type != "windows") { #do no not work on window
+  
+  #translate bedgraph to bigwig file
+  export.bw(rna_seq_chr25_13to16mb.bedgraph, "./rna_seq_chr25_13to16mb.bw")
+  }
 ```
 
 # Domains plot
@@ -182,13 +186,13 @@ TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6)
 
 Note that the area is extended to the first and last TAD of the window.
 
-Add insulation score (bedgraph), RNAseq (bigwig) and genomic annotations grouped according to the "TXTYPE" column (i.e first metadata column) to the graph:
+Add insulation score (bedgraph), RNAseq (bigwig) and genomic annotations to the graph:
 ```{r, fig.height = 4, fig.width = 8}
 TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6,
         bedgraph = IS_1_10kb.bedgraph, #dataframe, GRanges or path ("./IS_1_10kb.bedgraph")
-        annot.gr = genomic.gr, 
+        annot.gr = genomic.gr,
         annot.col = 1, #column number to group annotations
-        bigwig.path = "./rna_seq_bov.bw", 
+        bigwig.path = "./rna_seq_chr25_13to16mb.bw", 
         bigwig.yaxis = "log2" #log2 of RNAseq values
         )
 ```

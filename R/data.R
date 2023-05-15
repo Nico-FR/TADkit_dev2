@@ -84,3 +84,9 @@
 #'   \item{size}{sine in base pair}
 #' }
 "chromsize"
+#'
+#' RNA seq datas for chr 25 download on Ensembl
+#' "http://ftp.ensembl.org/pub/release-104/bamcov/bos_taurus/genebuild/ARS-UCD1.2.ENA.heart.1.bam.bw).
+#' @format ## `rna_seq_chr25_13to16mb.bedgraph`
+#' Grange with mean coverage.
+"rna_seq_chr25_13to16mb.bedgraph"
