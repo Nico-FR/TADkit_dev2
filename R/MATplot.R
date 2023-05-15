@@ -56,6 +56,8 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
                     tad.upper.tri = NULL, tad.lower.tri = NULL, loop.bedpe = NULL, tad.chr = NULL, annotations.color = "red",
                     tad.upper.line = NULL, tad.lower.line = NULL, tad.line.col = NULL, line.colors = c("red", "blue")) {
 
+  #local variables:
+  i <- j <- x <- e <- s <- chr <- e2 <- s2 <-start1 <- end1 <- start2 <- end2 <- chr1 <- chr2 <- NULL
   #sanity check
   if(!inherits(matrix, c("dgCMatrix", "matrix"))) {
     stop("input matrix is not a matrix or dgCMatrix object")}

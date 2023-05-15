@@ -55,6 +55,9 @@
 areaCov <- function(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE) {
   window.size <- unique(data.gr$window.size) # window.size used in TADarea function
 
+  #local variables:
+  density <- zscore <- NULL
+
   if (is.null(bin.width)) {
     bin <- unique(data.gr$window.size) / 10
   } else {

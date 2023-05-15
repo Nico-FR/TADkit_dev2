@@ -26,6 +26,7 @@
 #' @import GenomeInfoDb
 #' @importFrom dplyr select group_by summarise arrange
 #' @importFrom tidyr spread
+#' @importFrom stats median
 #' @import GenomicRanges
 #'
 #' @export
@@ -35,6 +36,9 @@
 #'
 
 compOrientation <- function(bedgraph, annot.gr, expression.data.frame) {
+
+  #local variables:
+  comp <- chr <- med_exp <- A <- B <- NULL
 
   #sanity check
   if (is.null(names(annot.gr))) {

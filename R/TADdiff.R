@@ -26,6 +26,9 @@
 #'
 TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = NULL, restrict = 2.e6) {
 
+  #local variables:
+  i <- j <- x <- e <- s <- chr <- e2 <- s2 <-start1 <- end1 <- start2 <- end2 <- chr1 <- chr2 <- NULL
+
   #parameters
   if (is.null(bin.width)) {
     bin.width <- round(IRanges::median(BiocGenerics::width(unlist(methods::as(boundaries.lst, "GRangesList")))) /2)  * 2
