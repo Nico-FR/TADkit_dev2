@@ -152,7 +152,7 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
       ranges = IRanges::IRanges(start = start, end = stop),
       strand = "*"
     )
-    GenomeInfoDb::seqlengths(bin.gr) <- GenomeInfoDb::seqlengths(tad.lst[[1]])[chr]
+    GenomeInfoDb::seqlengths(bin.gr) <- GenomeInfoDb::seqlengths(tad.lst[[1]])[as.character(chr)]
 
     GenomeInfoDb::seqlevels(bin.gr) <- as.character(bigwig.chr)
 
@@ -326,7 +326,7 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
         # join dataframes, sort columns according to names (mcols names from GRange must be sorted) and create GRange
         data.gr <- data %>%
           Reduce(function(...) dplyr::full_join(..., by = c("chr", "start", "end")), .) %>%
-          dplyr::select(sort(c("chr", "start", "end", base::sapply(1:length(bedgraph.lst[[l]]), function(x){names(data[[x]][4])})))) %>%
+          dplyr::select("chr", "start", "end", base::sapply(1:length(bedgraph.lst[[l]]), function(x){names(data[[x]][4])})) %>%
           GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
 
         bedgraphTracks.temp <- Gviz::DataTrack(
