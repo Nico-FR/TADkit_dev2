@@ -66,7 +66,7 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
                      bedgraph.lst = NULL, bedgraph.name = "bedgraph", bedgraph_outliers = 0,
                      colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")) {
 
-  V1 <- V2 <- V3 <- V4 <- NULL
+  V1 <- V2 <- V3 <- V4 <- . <- NULL
    #sanity check
   if (!is.list(tad.lst)) {
     stop("tad.lst must be a list")

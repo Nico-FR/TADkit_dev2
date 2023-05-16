@@ -61,6 +61,10 @@
 #'   print(output)
 #' }
 areaHist <- function(data.gr, annot.boundary = "center", annot.strand = TRUE, bin.width = NULL) {
+
+  #local variables:
+  count <- NULL
+
   window.size <- unique(data.gr$window.size) # window.size used in TADarea function
   GenomeInfoDb::seqlengths(data.gr) <- NA # remove seqlengths to prevent out-of-bound ranges
 
@@ -103,7 +107,7 @@ areaHist <- function(data.gr, annot.boundary = "center", annot.strand = TRUE, bi
     p <- ggplot2::ggplot(as.data.frame(data2.gr), ggplot2::aes(x = distance, color = strand)) +
       ggplot2::geom_freqpoly(binwidth = bin, boundary = bin / 2, size = 0.75, alpha = 0.75) +
       ggplot2::scale_color_manual(values = c("#33A02C", "#1F78B4")) +
-      ggplot2::geom_point(stat = "bin", aes(y = ..count..), binwidth = bin, boundary = bin / 2, size = 1, alpha = 0.75)
+      ggplot2::geom_point(stat = "bin", aes(y = after_stat(count)), binwidth = bin, boundary = bin / 2, size = 1, alpha = 0.75)
   }
 
   return(

@@ -32,10 +32,19 @@ The second objective of the package is to allow distribution analysis of genomic
 
 ## Installation
 
-You can install the development version of TADkit from [GitHub](https://github.com/) with:
+First of all, we need to install some packages:
 
 ```{r, eval=FALSE}
-# install.packages("devtools")
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("biocViews")
+install.packages("devtools")
+```
+
+Now you shoul be abale to install the development version of TADkit from [GitHub](https://github.com/) with:
+
+```{r, eval=FALSE}
 devtools::install_github("Nico-FR/TADkit")
 ```
 
@@ -161,6 +170,7 @@ Similar to bedgraph, bigwig files are used to store a score for each interval in
 Insulation scores stored as a bigwig format can be translated as a bedgraph format (i.e `GRranges`) with `bw2grange()`.
 
 For this tutorial we are going to use coverage data from RNA sequencing experiment downloaded on Ensembl and available within the package as a bedgraph:
+
 ```{r}
 if (.Platform$OS.type != "windows") { #do no not work on window
   
@@ -342,7 +352,7 @@ MATplot(matrix = matObsExp(matrix_1_chr25_50kb),
         annotations.color = "red",
         loop.bedpe = bedpe,
         tad.upper.line = PC1calling(PC1_1_50kb.bedgraph), #compartments
-        tad.line.col = 1 #use the fist metadata columns with vectors A and B
+        tad.line.col = 1 #use the fist metadata columns with factors A or B
         )+
   ggtitle("log2(obs/exp): chr25 bov1")
 ```

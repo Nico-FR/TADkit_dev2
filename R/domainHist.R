@@ -177,7 +177,7 @@ domainHist <- function(domain.gr, annot.gr, annot.boundary = "start", ifoverlap 
     p <- ggplot2::ggplot(as.data.frame(data2.gr), ggplot2::aes(x = mixed_position, color = strand)) +
       ggplot2::geom_freqpoly(binwidth = bin.width * 1e3, boundary = 0, size = 0.75, alpha = 0.75) +
       ggplot2::scale_color_manual(values = c("#33A02C", "#1F78B4")) +
-      ggplot2::geom_point(stat = "bin", ggplot2::aes(y = ..count..), binwidth = bin.width * 1e3, boundary = 0, size = 1, alpha = 0.75)
+      ggplot2::geom_point(stat = "bin", ggplot2::aes(y = after_stat(count)), binwidth = bin.width * 1e3, boundary = 0, size = 1, alpha = 0.75)
   }
 
 

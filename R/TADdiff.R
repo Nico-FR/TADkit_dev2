@@ -18,6 +18,7 @@
 #'
 #' @return list of GRanges
 #' @importFrom methods as
+#' @importFrom IRanges %outside%
 #' @import GenomicRanges
 #' @import GenomeInfoDb
 #'

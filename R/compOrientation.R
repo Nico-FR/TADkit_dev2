@@ -38,7 +38,7 @@
 compOrientation <- function(bedgraph, annot.gr, expression.data.frame) {
 
   #local variables:
-  comp <- chr <- med_exp <- A <- B <- NULL
+  comp <- chr <- med_exp <- A <- B <- . <- NULL
 
   #sanity check
   if (is.null(names(annot.gr))) {
