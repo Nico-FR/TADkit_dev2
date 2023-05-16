@@ -36,3 +36,7 @@ The cool file format is an efficient storage format for high resolution genomic 
 As cool files store genomic interactions for only one resolution, \code{bin.width} must be set to \code{NA}.
 While, as mcool files store genomic interactions for multiples resolutions, the chosen resolution must be set with the \code{bin.width} parameter.
 }
+\examples{
+# see vignette("Turorial_TADkit_R_package") or github (https://github.com/Nico-FR/TADkit)
+
+}

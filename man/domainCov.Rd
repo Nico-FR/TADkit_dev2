@@ -44,3 +44,6 @@ As an example, this function take all TAD domains and calculate the density of a
 \item plot the smoothed bin density (or zscore bin density) according to relative positions.
 }
 }
+\examples{
+# see vignette("Turorial_TADkit_R_package") or on github (https://github.com/Nico-FR/TADkit)
+}

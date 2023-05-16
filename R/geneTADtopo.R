@@ -1,8 +1,13 @@
 #' @title Genes topology according to TAD
 #'
-#' @description For each domain (e.g TAD) the function return a data frame with the numbers, names and strands of genes. It also return some statistics.
+#' @description From the annotation of TADs and genes, this function return 3 data frames:
+#' 1- for each TAD: numbers of genes, their strands and IDs (and the expression data if it is provided).
+#' It also return some statistics:
+#' 2- the number of TAD according to the number of genes,
+#' 3- the number of TAD according to the number of genes and strand.
 #'
-#' @details Return a S3 object with 3 dataframes.
+#'
+#' @details Return a list of 3 dataframes.
 #'
 #' @inheritParams domainHist
 #' @param annot.gr `GRanges` with genomic annotations.
@@ -19,7 +24,18 @@
 #' @export
 #'
 #' @examples
-#' # output <- geneTADtopo(domain.gr, annot.gr)
+#' # not run
+#'
+#' # get gene annotation
+#' # txdb <- makeTxDbFromBiomart(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
+#' # genomic.gr = genes(txdb)
+#' #
+#' # create expression data set with random raw count
+#' # expression.data.frame = data.frame(ID = names(genes.gr), Name = names(genes.gr),
+#' #   raw_count = sample(1:100, length(genes.gr), replace = TRUE))
+#'
+#' # output <- geneTADtopo(dataframes2grange(tad_1_10kb.bed, chromsize),
+#' #   genomic.gr, expression.data.frame = expression.data.frame)
 #'
 geneTADtopo <- function(domain.gr, annot.gr, ifoverlap = "best", expression.data.frame = NULL) {
 
@@ -74,7 +90,7 @@ geneTADtopo <- function(domain.gr, annot.gr, ifoverlap = "best", expression.data
   # numbers of TAD according to number of genes strand order
   nbTAD_nbgenestrand = nbgene_TAD %>% dplyr::count(gene_strands, nb_genes, name="nb_TADs") %>% arrange(desc(nb_TADs))
 
-  output <- list( geneTADtopo = nbgene_TAD,
+  output <- list(geneTADtopo = nbgene_TAD,
                   nbTAD_nbgene = nbTAD_nbgene,
                   nbTAD_nbgenestrand = nbTAD_nbgenestrand)
 

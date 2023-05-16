@@ -1,6 +1,6 @@
 #' Convert bigwig file to `GRanges`
 #'
-#' @description From the full path of a bigwig files, return a `GRanges` object. The bin width of the `GRanges` can be specify with `bin.width` parameter. These functions do not work on Windows.
+#' @description From the full path of a bigwig files, return a `GRanges` object. The bin width of the `GRanges` can be specify with `bin.width` parameter. These function does not work on Windows.
 #'
 #'
 #' @param bigwig.path path of bigwig file.
@@ -10,6 +10,14 @@
 #' @import GenomicRanges
 #' @import GenomeInfoDb
 #' @import rtracklayer
+#' @examples
+#' library("rtracklayer")
+#' if (.Platform$OS.type != "windows") { #do no not work on window
+#' #translate bedgraph to bigwig file
+#' export.bw(rna_seq_chr25_13to16mb.bedgraph, "./rna_seq_chr25_13to16mb.bw")
+#' }
+#' bw2grange("./rna_seq_chr25_13to16mb.bw")
+#' file.remove("./rna_seq_chr25_13to16mb.bw")
 #'
 #' @export
 #'

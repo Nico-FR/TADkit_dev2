@@ -24,7 +24,8 @@
 #' @import GenomicRanges
 #' @importFrom tidyr gather
 #' @importFrom magrittr %>%
-#'
+#' @examples
+#' # see vignette("Turorial_TADkit_R_package") or on github (https://github.com/Nico-FR/TADkit)
 #' @export
 #'
 domainCov <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, bin.width = 50e3, norm = FALSE, output = "plot") {

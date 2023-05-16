@@ -20,6 +20,8 @@
 #' @importFrom rhdf5 h5read
 #' @importFrom methods as
 #' @importFrom magrittr %>%
+#' @examples
+#' # see vignette("Turorial_TADkit_R_package") or github (https://github.com/Nico-FR/TADkit)
 #'
 #' @export
 #'

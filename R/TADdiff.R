@@ -19,8 +19,29 @@
 #' @return list of GRanges
 #' @importFrom methods as
 #' @importFrom IRanges %outside%
+#' @importFrom GenomeInfoDb seqnames seqlengths
 #' @import GenomicRanges
-#' @import GenomeInfoDb
+#' @examples
+#' #create boundaries from domains:
+#' boundary_1_10kb.df = data.frame(chr = tad_1_10kb.bed$chr,
+#'   start = tad_1_10kb.bed$start - 5e3,
+#'   end = tad_1_10kb.bed$start + 5e3)
+#' boundary_2_10kb.df = data.frame(chr = tad_2_10kb.bed$chr,
+#'   start = tad_2_10kb.bed$start - 5e3,
+#'   end = tad_2_10kb.bed$start + 5e3)
+#'
+#' # create list of GRanges boundaries
+#' boundary_1_10kb.gr = dataframes2grange(boundary_1_10kb.df, chromsize)
+#' boundary_2_10kb.gr = dataframes2grange(boundary_2_10kb.df, chromsize)
+#' boundary.lst=list(boundary_1_10kb.gr, boundary_2_10kb.gr);names(boundary.lst)=c("ind1", "ind2")
+#'
+#' # create list of GRanges with insulation scores
+#' is_1.gr = dataframes2grange(IS_1_10kb.bedgraph, chromsize, metadata.mcols = 4)
+#' is_2.gr = dataframes2grange(IS_2_10kb.bedgraph, chromsize, metadata.mcols = 4)
+#' IS.lst=list(is_1.gr, is_2.gr);names(IS.lst)=c("ind1", "ind2")
+#'
+#' TADdiff(boundaries.lst = boundary.lst, score.lst = IS.lst)
+#'
 #'
 #' @export
 #'
@@ -28,7 +49,7 @@
 TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = NULL, restrict = 2.e6) {
 
   #local variables:
-  i <- j <- x <- e <- s <- chr <- e2 <- s2 <-start1 <- end1 <- start2 <- end2 <- chr1 <- chr2 <- NULL
+  i <- j <- x <- e <- s <- chr <- e2 <- s2 <-start1 <- end1 <- start2 <- end2 <- chr1 <- chr2 <- output <- output.names <- NULL
 
   #parameters
   if (is.null(bin.width)) {
@@ -41,12 +62,10 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = N
 
   message("######################################################")
   message(paste0("Bin width used is: ", bin.width, "bp."))
-  message(paste0("New TAD boundary is FALSE if there is another TAD boundary in the vicinity +/-", window.size, "bp."))
+  message(paste0("New boundary is FALSE if there is another boundary in the vicinity +/-", window.size, "bp."))
   message(paste0("TAD boundaries for the first and last ", restrict, "bp of each chromosomes are removed from the analysis."))
   message("######################################################")
 
-  output = NULL
-  output.names = NULL
   for (ind1 in names(boundaries.lst)) {
 
     message("######################################################")
@@ -55,15 +74,19 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = N
 
     # insulation score from itself
     ind1_ins.gr = score.lst[[ind1]]
-    ind1_boundaries.gr = GenomicRanges::restrict(boundaries.lst[[ind1]],
-                                  start = GenomeInfoDb::seqlengths(boundaries.lst[[ind1]]) - GenomeInfoDb::seqlengths(boundaries.lst[[ind1]]) + restrict,
-                                  end = GenomeInfoDb::seqlengths(boundaries.lst[[ind1]]) - restrict)
+    tmp.boundaries.gr = boundaries.lst[[ind1]][as.character(GenomeInfoDb::seqnames(boundaries.lst[[ind1]])) %in% GenomeInfoDb::seqlevels(ind1_ins.gr)] #filter chr
+    ind1_boundaries.gr = GenomicRanges::restrict(tmp.boundaries.gr,
+                                  start = GenomeInfoDb::seqlengths(tmp.boundaries.gr) - GenomeInfoDb::seqlengths(tmp.boundaries.gr) + restrict,
+                                  end = GenomeInfoDb::seqlengths(tmp.boundaries.gr) - restrict)
 
     #correct width(boundaries) < bin.width (i.e cut by the restric function)
     width(ind1_boundaries.gr) = ifelse(width(ind1_boundaries.gr) < bin.width + 1, bin.width + 1, width(ind1_boundaries.gr))
 
     #findoverlap between boundary and bedgraph
-    bin_hit = GenomicRanges::findOverlaps(subject = ind1_ins.gr, query = ind1_boundaries.gr, ignore.strand=TRUE, select="arbitrary", minoverlap = bin.width/2)
+    bin_hit = GenomicRanges::findOverlaps(subject = ind1_ins.gr,
+                                          query = ind1_boundaries.gr,
+                                          ignore.strand=TRUE, select = "arbitrary",
+                                          minoverlap = bin.width/2)
     GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind1)]] = GenomicRanges::mcols(ind1_ins.gr[bin_hit])[,1]
 
 
@@ -80,15 +103,15 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = N
       bin_hit = GenomicRanges::findOverlaps(subject = ind2_ins.gr, query = ind1_boundaries.gr, ignore.strand=TRUE, select="arbitrary", minoverlap = bin.width/2)
       GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind2)]] = GenomicRanges::mcols(ind2_ins.gr[bin_hit])[,1]
 
-      # #add column to specify if there is a TAD in the other sample (+/- window.size). "newTAD" means no TAD boundaries in the vicinity i.e. +/- window.size_value.
-      GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("newTAD_",ind2)]] = ind1_boundaries.gr %outside% (ind2_boundaries.gr + window.size - 1) # "minus 1" to count TAD with start(indiv1) = end(indiv2)+window.size or end(indiv1) = start(indiv2)-window.size as new TAD
+      # #add column to specify if there is a TAD in the other sample (+/- window.size). "newBoundary" means no TAD boundaries in the vicinity i.e. +/- window.size_value.
+      GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("newBoundary_",ind2)]] = ind1_boundaries.gr %outside% (ind2_boundaries.gr + window.size - 1) # "minus 1" to count TAD with start(indiv1) = end(indiv2)+window.size or end(indiv1) = start(indiv2)-window.size as new TAD
 
       # Delta score
       GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("delta_score_",ind2)]] =  GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind1)]] - GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind2)]]
 
-      nb_newTAD = length(ind1_boundaries.gr[ GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("newTAD_",ind2)]]==TRUE])
+      nb_newBoundary = length(ind1_boundaries.gr[ GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("newBoundary_",ind2)]]==TRUE])
       nb_TAD = length(ind1_boundaries.gr)
-      message(paste0(nb_newTAD , "/", nb_TAD," (", round(nb_newTAD / nb_TAD * 100), "%)"," new boundaries compared to ", ind2))
+      message(paste0(nb_newBoundary , "/", nb_TAD," (", round(nb_newBoundary / nb_TAD * 100), "%)"," new boundaries compared to ", ind2))
     }
 
     output = append(output,list(ind1_boundaries.gr))

@@ -15,5 +15,15 @@ bw2grange(bigwig.path, bin.width = NULL)
 \code{GRanges}
 }
 \description{
-From the full path of a bigwig files, return a \code{GRanges} object. The bin width of the \code{GRanges} can be specify with \code{bin.width} parameter. These functions do not work on Windows.
+From the full path of a bigwig files, return a \code{GRanges} object. The bin width of the \code{GRanges} can be specify with \code{bin.width} parameter. These function does not work on Windows.
+}
+\examples{
+library("rtracklayer")
+if (.Platform$OS.type != "windows") { #do no not work on window
+#translate bedgraph to bigwig file
+export.bw(rna_seq_chr25_13to16mb.bedgraph, "./rna_seq_chr25_13to16mb.bw")
+}
+bw2grange("./rna_seq_chr25_13to16mb.bw")
+file.remove("./rna_seq_chr25_13to16mb.bw")
+
 }

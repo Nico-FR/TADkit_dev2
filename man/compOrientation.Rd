@@ -42,6 +42,7 @@ Return a list with 3 \code{dataframe}.
 }
 }
 \examples{
+# see vignette("Turorial_TADkit_R_package") or on github (https://github.com/Nico-FR/TADkit)
 # output <- compOrientation(bedgraph, annot.gr, expression.data.frame)
 
 }

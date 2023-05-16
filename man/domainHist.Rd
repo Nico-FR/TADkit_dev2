@@ -50,6 +50,8 @@ It is possible that some annotations overlap a boundary, in this cases few optio
 Therefore, in some cases, the \code{"start"} of an \code{annot.gr} can be located before the domain (i.e before the domain with the best overlap). In that case, the distance between the \code{"start"} of \code{annot.boundary} and the domain is represented with the real distance (in base pair).
 }
 \examples{
+# see vignette("Turorial_TADkit_R_package") or on github (https://github.com/Nico-FR/TADkit)
+
 #Create 20 genes
 annot.gr <- dataframes2grange(
   data.frame(chr = 1, start = seq(190.5e3, 209.5e3, 1e3), end = 290e3, strand = "+"),

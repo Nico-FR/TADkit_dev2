@@ -31,12 +31,27 @@ Others columns give expression count, one column per sample/experiment.}
 Return a S3 class object with 3 data frames.
 }
 \description{
-For each domain (e.g TAD) the function return a data frame with the numbers, names and strands of genes. It also return some statistics.
+From the annotation of TADs and genes, this function return 3 data frames:
+1- for each TAD: numbers of genes, their strands and IDs (and the expression data if it is provided).
+It also return some statistics:
+2- the number of TAD according to the number of genes,
+3- the number of TAD according to the number of genes and strand.
 }
 \details{
-Return a S3 object with 3 dataframes.
+Return a list of 3 dataframes.
 }
 \examples{
-# output <- geneTADtopo(domain.gr, annot.gr)
+# not run
+
+# get gene annotation
+# txdb <- makeTxDbFromBiomart(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
+# genomic.gr = genes(txdb)
+#
+# create expression data set with random raw count
+# expression.data.frame = data.frame(ID = names(genes.gr), Name = names(genes.gr),
+#   raw_count = sample(1:100, length(genes.gr), replace = TRUE))
+
+# output <- geneTADtopo(dataframes2grange(tad_1_10kb.bed, chromsize),
+#   genomic.gr, expression.data.frame = expression.data.frame)
 
 }
