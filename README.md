@@ -41,11 +41,20 @@ genomic annotations in the light of the 3D organisation.
 
 ## 1.1 Installation
 
-You can install the development version of TADkit from
+First of all, we need to install some packages:
+
+``` r
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("biocViews")
+install.packages("devtools")
+```
+
+Now you shoul be abale to install the development version of TADkit from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
 devtools::install_github("Nico-FR/TADkit")
 ```
 
@@ -63,7 +72,6 @@ library(GenomicRanges)
 library(GenomicFeatures)
 library(ggplot2)
 library(rtracklayer)
-library(TxDb.Btaurus.UCSC.bosTau9.refGene)
 ```
 
 ## 2.1 matrix
@@ -342,7 +350,7 @@ Let start with the most basic usage:
 TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6)
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-15-1.png" width="100%" />
 
 Note that the area is extended to the first and last TAD of the window.
 
@@ -359,7 +367,7 @@ TADplot(tad.gr = tad_1_10kb.gr, chr = 25, start = 13e6, stop = 15e6,
         )
 ```
 
-<img src="man/figures/README-unnamed-chunk-15-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-16-1.png" width="100%" />
 
 ## 3.2 mTADplot
 
@@ -408,7 +416,7 @@ mTADplot(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
         bedgraph.lst = IS.lst, bedgraph.name = "IS")
 ```
 
-<img src="man/figures/README-unnamed-chunk-19-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" />
 
 ### 3.2.2 Create multiple lists
 
@@ -457,7 +465,7 @@ mTADplot(tad.lst = tad.lst, chr = 25, start = 13e6, stop = 15e6,
         bedgraph.lst = bedgraphs.lst)
 ```
 
-<img src="man/figures/README-unnamed-chunk-22-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-23-1.png" width="100%" />
 
 ## 3.3 Options
 
@@ -526,7 +534,7 @@ MATplot(matrix = matrix_1_chr25_50kb, start = 10e6, stop = 30e6,
 #> Removed 1 rows containing missing values (`geom_segment()`).
 ```
 
-<img src="man/figures/README-unnamed-chunk-23-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-24-1.png" width="100%" />
 
 ### 4.1.2 matrix + triangles + loops + lines
 
@@ -567,7 +575,7 @@ MATplot(matrix = matObsExp(matrix_1_chr25_50kb),
 #> Removed 1 rows containing missing values (`geom_segment()`).
 ```
 
-<img src="man/figures/README-unnamed-chunk-25-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
 
 ## 4.2 mMATplot
 
@@ -594,7 +602,7 @@ mMATplot(matrix.upper = matrix_1_chr25_50kb,
 #> Removed 1 rows containing missing values (`geom_segment()`).
 ```
 
-<img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-27-1.png" width="100%" />
 
 # 5 Analysis
 
@@ -631,7 +639,7 @@ data.gr = boundArea(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
 areaCov(data.gr)
 ```
 
-<img src="man/figures/README-unnamed-chunk-28-1.png" width="100%" /> The
+<img src="man/figures/README-unnamed-chunk-29-1.png" width="100%" /> The
 `areaCov()`function return the graph with the gene coverage on a sliding
 window of 5kb. As the cumulative size of genes are different according
 to the strands:
@@ -653,7 +661,7 @@ strands:
 areaCov(data.gr, norm = TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-30-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-31-1.png" width="100%" />
 
 ### 5.1.2 Distribution
 
@@ -668,7 +676,7 @@ areaHist(data.gr,
 #> Warning: Removed 763 rows containing non-finite values (`stat_bin()`).
 ```
 
-<img src="man/figures/README-unnamed-chunk-31-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-32-1.png" width="100%" />
 
 This time, we have defined the size of the bins at 10kb which
 corresponds to the resolution of the matrix and thus of the range in
@@ -693,7 +701,7 @@ domainHist(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
 #> 17912/21861 annotations are within domains and do not overlap a boundary
 ```
 
-<img src="man/figures/README-unnamed-chunk-32-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-33-1.png" width="100%" />
 
 As before, we observe an increase in TSS near the TAD borders. In the
 message return by `domainHist()` we also observe that 2568 genes overlap
@@ -720,7 +728,7 @@ tad.gr <- dataframes2grange(
 plot = TADplot(tad.gr = tad.gr, annot.gr = annot.gr, start = 150e3, stop = 300e3, chr = 1)
 ```
 
-<img src="man/figures/README-unnamed-chunk-33-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-34-1.png" width="100%" />
 
 We can now take the overlapping genes into account in 2 different ways:
 The first one is to take the real position of the TSS (i.e at the end of
@@ -734,17 +742,10 @@ domainHist(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
 #> 1381/21861 annotations are outside domains
 #> 2568/21861 annotations are overlapping with a boundary
 #> 17912/21861 annotations are within domains and do not overlap a boundary
-#> Warning: The dot-dot notation (`..count..`) was deprecated in ggplot2 3.4.0.
-#> ℹ Please use `after_stat(count)` instead.
-#> ℹ The deprecated feature was likely used in the TADkit package.
-#>   Please report the issue at <https://github.com/Nico-FR/TADkit/issues>.
-#> This warning is displayed once every 8 hours.
-#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-#> generated.
 #> Warning: Removed 4 rows containing missing values (`geom_path()`).
 ```
 
-<img src="man/figures/README-unnamed-chunk-34-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" />
 
 We observe the same distribution independently of their respective
 strands.
@@ -765,7 +766,7 @@ annot.gr <- dataframes2grange(
 plot = TADplot(tad.gr = tad.gr, annot.gr = annot.gr, start = 150e3, stop = 300e3, chr = 1)
 ```
 
-<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-36-1.png" width="100%" />
 
 Instead of taking the actual position of the TSS (i.e. at the end of the
 first TAD) one can ask in which TAD is this gene most likely located?
@@ -788,7 +789,7 @@ domainHist(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
 #> Warning: Removed 4 rows containing missing values (`geom_path()`).
 ```
 
-<img src="man/figures/README-unnamed-chunk-36-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-37-1.png" width="100%" />
 
 To check for methodological bias, let’s randomize the 3D organization
 and check if it loses this orientation of the genes. To do that we will
@@ -800,14 +801,14 @@ domainHist(domain.gr = TADshuffling(tad_1_10kb.gr), annot.gr = genes.gr,
         ifoverlap = "best", 
         annot.strand = T)
 #> 1381/21861 annotations are outside domains
-#> 2120/21861 annotations are overlapping with a boundary
-#> 18360/21861 annotations are within domains and do not overlap a boundary
-#> Warning: Removed 348 rows containing non-finite values (`stat_bin()`).
-#> Removed 348 rows containing non-finite values (`stat_bin()`).
+#> 2112/21861 annotations are overlapping with a boundary
+#> 18368/21861 annotations are within domains and do not overlap a boundary
+#> Warning: Removed 346 rows containing non-finite values (`stat_bin()`).
+#> Removed 346 rows containing non-finite values (`stat_bin()`).
 #> Warning: Removed 4 rows containing missing values (`geom_path()`).
 ```
 
-<img src="man/figures/README-unnamed-chunk-37-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-38-1.png" width="100%" />
 
 ### 5.2.2 Coverage
 
@@ -822,7 +823,7 @@ domainCov(domain.gr = tad_1_10kb.gr, annot.gr = genes.gr,
 #> `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
 ```
 
-<img src="man/figures/README-unnamed-chunk-38-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-39-1.png" width="100%" />
 Again, we observed a symmetrical genes coverage according to their
 strands. We also observe an increase of genes on the forward strand at
 the beginning of TADs and inversely for the reverse strand.
@@ -846,7 +847,7 @@ domainCov(domain.gr = comp.gr, annot.gr = genes.gr,
 #> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 ```
 
-<img src="man/figures/README-unnamed-chunk-39-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-40-1.png" width="100%" />
 
 As expected the gene density is higher in compartment A (active
 compartments) than B.
@@ -903,7 +904,7 @@ orientation:
 ggplot(data$expression, aes(y = exp, fill = comp))+geom_boxplot()+facet_wrap(.~chr)
 ```
 
-<img src="man/figures/README-unnamed-chunk-42-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-43-1.png" width="100%" />
 
 In our random data set, the median expression level is higher in the B
 compartments. As a result, the PC1 values have been inverted. You can
@@ -921,7 +922,7 @@ names(comp.bedgraph.lst) = c("before", "after")
 mTADplot(tad.lst = comp.gr.lst, bedgraph.lst = comp.bedgraph.lst, chr = 25, start = 13e6, stop = 15e6, tad.id = TRUE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-43-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-44-1.png" width="100%" />
 
 # 7 Clear files
 
