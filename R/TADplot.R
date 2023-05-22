@@ -3,6 +3,7 @@
 #' @description `TADplot()` use `Gviz` package to plot at least 2 tracks:
 #' * All the TADs from a specified chromosome,
 #' * A zoom in the defined area.
+#'
 #' Other tracks can be added:
 #' * bed files with annotations (genes...),
 #' * bigwig files (read depth sequencing...),

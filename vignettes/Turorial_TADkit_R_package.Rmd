@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 # TADkit
 
 The TADkit package has 2 objectives. 
-The first one is to facilitate visualizations of HiC matrices and the data that are generally associated. To this end, two pairs of functions (based on gviz and ggplot packages) have been created to visualize :
+The first one is to facilitate visualizations of HiC matrices and datas that are generally associated. To this end, two pairs of functions (based on gviz and ggplot packages) have been created to visualize :
 
 * domains such as TADs (topological Associated Domain) or compartments (compartment A and B),
 * interaction matrices.

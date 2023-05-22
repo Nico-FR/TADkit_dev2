@@ -1,7 +1,8 @@
 #' Plot domains for multiple individuals
 #'
-#' @description `mTADplot()` is similar to the `TADplot()` but it allows to plot and compare several individuals.
-#' The simplest graph allows you to view the domains of one or more individuals.
+#' @description `mTADplot()` is similar to `TADplot()` function but it allows to plot and compare several individuals.
+#' The simplest graph allows to view the domains of one or more individuals.
+#'
 #' Other tracks can be added:
 #' * bed files with annotations (genes...),
 #' * bigwig files (read depth sequencing...),

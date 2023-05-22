@@ -61,8 +61,9 @@ it is possible to create several bedgraph tracks (each containing 1 or more line
 Plot with domains and other tracks as a list of GenomeGraph tracks (see \code{Gviz::plotTracks} for details).
 }
 \description{
-\code{mTADplot()} is similar to the \code{TADplot()} but it allows to plot and compare several individuals.
-The simplest graph allows you to view the domains of one or more individuals.
+\code{mTADplot()} is similar to \code{TADplot()} function but it allows to plot and compare several individuals.
+The simplest graph allows to view the domains of one or more individuals.
+
 Other tracks can be added:
 \itemize{
 \item bed files with annotations (genes...),

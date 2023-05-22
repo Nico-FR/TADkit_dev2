@@ -36,7 +36,7 @@ matObsExp <- function(matrix) {
   #mat = Matrix::triu(matrix)
   #mat[Matrix::triu(mat == 0)] <- NA
 
-  #using matrix
+  #using matrix (i.e faster)
   mat =  matrix(matrix, nrow = nrow(matrix), ncol = ncol(matrix))
   mat[mat == 0] <- NA
 

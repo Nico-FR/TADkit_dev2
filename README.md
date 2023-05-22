@@ -28,9 +28,9 @@
 # 1 TADkit
 
 The TADkit package has 2 objectives. The first one is to facilitate
-visualizations of HiC matrices and the data that are generally
-associated. To this end, two pairs of functions (based on gviz and
-ggplot packages) have been created to visualize :
+visualizations of HiC matrices and datas that are generally associated.
+To this end, two pairs of functions (based on gviz and ggplot packages)
+have been created to visualize :
 
 - domains such as TADs (topological Associated Domain) or compartments
   (compartment A and B),
@@ -801,10 +801,10 @@ domainHist(domain.gr = TADshuffling(tad_1_10kb.gr), annot.gr = genes.gr,
         ifoverlap = "best", 
         annot.strand = T)
 #> 1381/21861 annotations are outside domains
-#> 2112/21861 annotations are overlapping with a boundary
-#> 18368/21861 annotations are within domains and do not overlap a boundary
-#> Warning: Removed 346 rows containing non-finite values (`stat_bin()`).
-#> Removed 346 rows containing non-finite values (`stat_bin()`).
+#> 2092/21861 annotations are overlapping with a boundary
+#> 18388/21861 annotations are within domains and do not overlap a boundary
+#> Warning: Removed 387 rows containing non-finite values (`stat_bin()`).
+#> Removed 387 rows containing non-finite values (`stat_bin()`).
 #> Warning: Removed 4 rows containing missing values (`geom_path()`).
 ```
 

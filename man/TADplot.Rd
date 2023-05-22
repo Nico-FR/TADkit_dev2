@@ -54,7 +54,10 @@ Plot with domains and other tracks as a list of GenomeGraph tracks (see \code{Gv
 \itemize{
 \item All the TADs from a specified chromosome,
 \item A zoom in the defined area.
+}
+
 Other tracks can be added:
+\itemize{
 \item bed files with annotations (genes...),
 \item bigwig files (read depth sequencing...),
 \item bedgraph with bin values (insulation score...).
