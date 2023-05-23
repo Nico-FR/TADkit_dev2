@@ -5,7 +5,6 @@
 #' The output can be plot with `MATplot(output, log2 = TRUE, scale.colors = "ObsExp")`.
 #'
 #' @details The expected number of interaction corresponds to the average of the interaction counts according to the bin distances.
-#' Bins with zero counts are not considered.
 #' Only the upper part of the matrix is used.
 #'
 #' @param matrix `dgCMatrix` or `matrix` object.
@@ -38,7 +37,7 @@ matObsExp <- function(matrix) {
 
   #using matrix (i.e faster)
   mat =  matrix(matrix, nrow = nrow(matrix), ncol = ncol(matrix))
-  mat[mat == 0] <- NA
+  #mat[mat == 0] <- NA
 
   #mean diag
   mean_diag = sapply(1:(ncol(mat) - 1),
