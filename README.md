@@ -801,10 +801,10 @@ domainHist(domain.gr = TADshuffling(tad_1_10kb.gr), annot.gr = genes.gr,
         ifoverlap = "best", 
         annot.strand = T)
 #> 1381/21861 annotations are outside domains
-#> 2092/21861 annotations are overlapping with a boundary
-#> 18388/21861 annotations are within domains and do not overlap a boundary
-#> Warning: Removed 387 rows containing non-finite values (`stat_bin()`).
-#> Removed 387 rows containing non-finite values (`stat_bin()`).
+#> 2159/21861 annotations are overlapping with a boundary
+#> 18321/21861 annotations are within domains and do not overlap a boundary
+#> Warning: Removed 351 rows containing non-finite values (`stat_bin()`).
+#> Removed 351 rows containing non-finite values (`stat_bin()`).
 #> Warning: Removed 4 rows containing missing values (`geom_path()`).
 ```
 
