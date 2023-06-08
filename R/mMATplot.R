@@ -65,7 +65,7 @@ mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = 
     stop("input matrix is not a matrix or dgCMatrix object")}
 
   #filter matrix area
-  mat1 = Matrix::triu(matrix.upper[from:to, from:to])
+  mat1 = as(Matrix::triu(matrix.upper[from:to, from:to]), "CsparseMatrix")
   mat1[Matrix::triu(mat1 == 0)] <- NA
 
   #get log2
@@ -81,7 +81,7 @@ mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = 
     stop("input matrix is not a matrix or dgCMatrix object")}
 
   #filter matrix area
-  mat2 = Matrix::triu(matrix.lower[from:to, from:to])
+  mat2 = as(Matrix::triu(matrix.lower[from:to, from:to]), "CsparseMatrix")
   mat2[Matrix::triu(mat2 == 0)] <- NA
 
   #get log2
