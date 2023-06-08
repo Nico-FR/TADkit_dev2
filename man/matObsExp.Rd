@@ -19,7 +19,6 @@ The output can be plot with \code{MATplot(output, log2 = TRUE, scale.colors = "O
 }
 \details{
 The expected number of interaction corresponds to the average of the interaction counts according to the bin distances.
-Bins with zero counts are not considered.
 Only the upper part of the matrix is used.
 }
 \examples{

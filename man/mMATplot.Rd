@@ -73,7 +73,7 @@ Two types of annotations can be added:
 -interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
 }
 \details{
-The matrix input must be a \code{dgCMatrix} or a \code{matrix} object for only one chromosome (see \code{coolFetch} function to read cool files).
+The matrix input must be a \code{dgCMatrix} or a \code{matrix} object for only one chromosome (see \code{cool2matrix()} function to read cool files).
 All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (\code{dataframe} or \code{GRanges}) or the path of the files.
 For \code{tad.lines}, another column can be used to specify different classes of domains (e.g compartment A or B). To use those domain classes, specify the column number (of the \code{tad.upper.line} and \code{tad.lower.line} inputs) with \code{tad.line.col} parameter and a custom set of colors with \code{line.colors} parameter.
 Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a \code{dataframe} object or the path of the file.
@@ -83,5 +83,22 @@ Chromosome domains and loops can be filter using \code{tad.chr} parameter.
 mMATplot(matrix.upper = matrix_1_chr25_50kb,
     matrix.lower = matrix_2_chr25_50kb,
     start = 10e6, stop = 30e6,
-    bin.width = 50e3, log2 = TRUE)
+    bin.width = 50e3, log2 = TRUE,
+    tad.upper.tri = tad_1_10kb.bed,
+    tad.lower.tri = tad_2_10kb.bed,
+    tad.chr = 25)
+
+ # add compartement A and B
+ comp_1.gr = PC1calling(PC1_1_50kb.bedgraph)
+ comp_2.gr = PC1calling(PC1_2_50kb.bedgraph)
+mMATplot(matrix.upper = matrix_1_chr25_50kb,
+    matrix.lower = matrix_2_chr25_50kb,
+    start = 10e6, stop = 30e6,
+    bin.width = 50e3, log2 = TRUE,
+    tad.upper.tri = tad_1_10kb.bed,
+    tad.lower.tri = tad_2_10kb.bed,
+    tad.upper.line = comp_1.gr,
+    tad.lower.line = comp_2.gr,
+    tad.line.col = 1, #used first metadata column with compartments A or B
+    tad.chr = 25)
 }
