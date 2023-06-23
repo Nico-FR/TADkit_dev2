@@ -67,6 +67,52 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
                      bedgraph.lst = NULL, bedgraph.name = "bedgraph", bedgraph_outliers = 0,
                      colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")) {
 
+
+  #########################################################"
+  bovin.lst = read.table("/home/nmary/mnt/cytogene/Var_struc/Bovin/indiv.lst",colClasses = "character")
+  tad_bovin.lst = NULL
+  for (ind in bovin.lst$V1) {
+    data1 = read.table(paste0(
+      "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/Hicexplorer/Bovin-",ind,".ARS-UCD1.2.mapq_10.10000_norm_custom_domains.bed"),
+      h=F,sep="\t")
+    assign(paste0("tad_bovin",ind,".gr"), dataframes2grange(data1, chromsize))
+    tad_bovin.lst = append(tad_bovin.lst, list(dataframes2grange(data1, chromsize)))
+  }
+
+  names(tad_bovin.lst) = bovin.lst$V1
+
+
+  DmetricPath_bovin.lst = NULL
+
+  metric = c("CI", "DI", "IS", "SS", "DLR", "IAS", "IES")
+  for (m in metric) {
+    l1=NULL
+    for (ind in bovin.lst$V1) {
+
+      l1 = append(l1, list(paste0(
+        "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/1Dmetrics/Oneindiv_metrics/Bovin-",ind,".ARS-UCD1.2.mapq_10.10000_norm_", m, ".bedGraph")))
+
+    }
+    names(l1) = bovin.lst$V1
+    DmetricPath_bovin.lst = append(DmetricPath_bovin.lst, list(l1))
+  }
+
+  names(DmetricPath_bovin.lst) = metric
+
+  tad.lst=tad_bovin.lst; chr=1; start=2e6; stop=3e6; tad.id = FALSE;
+  bigwigPath.lst = NULL; bigwig.binsize = 1e3; bigwig.xaxis = "mean"; bigwig.chr = NULL; bigwig.yaxis = NULL;
+  annot.lst = NULL; annot.col = NULL;
+  bedgraph.lst = DmetricPath_bovin.lst$DLR[6:7]; bedgraph.name = "bedgraph"; bedgraph_outliers = 0;
+  colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")
+
+
+
+
+
+
+
+
+
   V1 <- V2 <- V3 <- V4 <- . <- NULL
    #sanity check
   if (!is.list(tad.lst)) {
@@ -296,7 +342,7 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
 
         #filter chr
         names(data0) = c(paste0("V", 1:4))
-        data1 <- filter(data0, V1 == chr)
+        data1 <- dplyr::filter(data0, V1 == chr)
 
         #If bedgraph values are all NA (ie no data in that chr)
         if (is.na(summary(data1$V4)[4])) {
@@ -305,11 +351,11 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
 
         #filter outliers
         if (bedgraph_outliers != 0) {
-          data1 <- data1 %>% filter(V4 < stats::quantile(V4, na.rm = TRUE, 1 - bedgraph_outliers))
+          data1 <- data1 %>% dplyr::filter(V4 < stats::quantile(V4, na.rm = TRUE, 1 - bedgraph_outliers))
         }
 
         #filter area (start & stop)
-        data1 <- data1 %>% filter(V4 > stats::quantile(V4, na.rm = TRUE, bedgraph_outliers) &
+        data1 <- data1 %>% dplyr::filter(V4 > stats::quantile(V4, na.rm = TRUE, bedgraph_outliers) &
                                     V3 >= start & V2 <= stop)
 
         if (is.na(summary(data1$V4)[4])) {
@@ -327,7 +373,7 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
         # join dataframes, sort columns according to names (mcols names from GRange must be sorted) and create GRange
         data.gr <- data %>%
           Reduce(function(...) dplyr::full_join(..., by = c("chr", "start", "end")), .) %>%
-          dplyr::select("chr", "start", "end", base::sapply(1:length(bedgraph.lst[[l]]), function(x){names(data[[x]][4])})) %>%
+          dplyr::select("chr", "start", "end", base::sapply(1:length(data), function(x){names(data[[x]][4])})) %>%
           GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
 
         bedgraphTracks.temp <- Gviz::DataTrack(
