@@ -48,6 +48,40 @@
 #'
 TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = NULL, restrict = 2.e6) {
 
+###############################################################
+  #read boundaries files
+  bovin.lst = read.table("/home/nmary/mnt/cytogene/Var_struc/Bovin/indiv.lst",colClasses = "character")
+  bound_bovin.lst = NULL
+  for (ind in bovin.lst$V1) {
+    data1 = read.table(paste0(
+      "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/Hicexplorer/Bovin-",ind,".ARS-UCD1.2.mapq_10.10000_norm_custom_boundaries.bed"),
+      h=F,sep="\t")
+    assign(paste0("bound_bovin",ind,".gr"), dataframes2grange(data1, chromsize))
+    bound_bovin.lst = append(bound_bovin.lst, list(dataframes2grange(data1, chromsize)))
+  }
+
+  names(bound_bovin.lst) = bovin.lst$V1
+
+
+  #read insulation scores
+  insulationPath_bovin.lst = NULL
+  for (ind in bovin.lst$V1) {
+    assign(paste0("insulationPath_bovin",ind), paste0(
+      "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/Hicexplorer/Bovin-",ind,".ARS-UCD1.2.mapq_10.10000_norm_custom_score.bedgraph"))
+    insulationPath_bovin.lst = append(insulationPath_bovin.lst, list(paste0(
+      "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/Hicexplorer/Bovin-",ind,".ARS-UCD1.2.mapq_10.10000_norm_custom_score.bedgraph")))
+  }
+
+  names(insulationPath_bovin.lst) = bovin.lst$V1
+
+  insulation_bovin.lst = sapply(insulationPath_bovin.lst, function(x) {
+    x %>% read.table() %>% dataframes2grange(chromsize, metadata.mcols = 4)
+  })
+
+  boundaries.lst = bound_bovin.lst; score.lst = insulation_bovin.lst
+  bin.width = NULL; window.size = NULL; restrict = 2.e6
+  ############################################################################
+
   #local variables:
   i <- j <- x <- e <- s <- chr <- e2 <- s2 <-start1 <- end1 <- start2 <- end2 <- chr1 <- chr2 <- output <- output.names <- NULL
 
@@ -59,6 +93,14 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = N
   if (is.null(window.size)) {
     window.size <- round(bin.width/2) * 4
   }
+
+  #create matrix for output of % of new boundary
+  l = length(boundaries.lst)
+  mat = matrix(nrow = l, ncol = l)
+  rownames(mat) = names(boundaries.lst)
+  colnames(mat) = names(boundaries.lst)
+  diag(mat)=0
+
 
   message("######################################################")
   message(paste0("Bin width used is: ", bin.width, "bp."))
@@ -80,7 +122,7 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = N
                                   end = GenomeInfoDb::seqlengths(tmp.boundaries.gr) - restrict)
 
     #correct width(boundaries) < bin.width (i.e cut by the restric function)
-    width(ind1_boundaries.gr) = ifelse(width(ind1_boundaries.gr) < bin.width + 1, bin.width + 1, width(ind1_boundaries.gr))
+    BiocGenerics::width(ind1_boundaries.gr) = ifelse(BiocGenerics::width(ind1_boundaries.gr) < bin.width + 1, bin.width + 1, BiocGenerics::width(ind1_boundaries.gr))
 
     #findoverlap between boundary and bedgraph
     bin_hit = GenomicRanges::findOverlaps(subject = ind1_ins.gr,
@@ -112,6 +154,8 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = N
       nb_newBoundary = length(ind1_boundaries.gr[ GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("newBoundary_",ind2)]]==TRUE])
       nb_TAD = length(ind1_boundaries.gr)
       message(paste0(nb_newBoundary , "/", nb_TAD," (", round(nb_newBoundary / nb_TAD * 100), "%)"," new boundaries compared to ", ind2))
+      mat[ind1,ind2] = nb_newBoundary / nb_TAD
+      mat[ind2,ind1] = nb_newBoundary / nb_TAD
     }
 
     output = append(output,list(ind1_boundaries.gr))
@@ -122,5 +166,11 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = N
 
   names(output) = output.names
 
+
+  output = append(output, list(as.data.frame(mat)))
+  names(output) = c(output.names, "summary")
+
   return(output)
 }
+
+
