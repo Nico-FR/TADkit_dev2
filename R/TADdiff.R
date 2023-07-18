@@ -48,40 +48,6 @@
 #'
 TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = NULL, restrict = 2.e6) {
 
-###############################################################
-  #read boundaries files
-  bovin.lst = read.table("/home/nmary/mnt/cytogene/Var_struc/Bovin/indiv.lst",colClasses = "character")
-  bound_bovin.lst = NULL
-  for (ind in bovin.lst$V1) {
-    data1 = read.table(paste0(
-      "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/Hicexplorer/Bovin-",ind,".ARS-UCD1.2.mapq_10.10000_norm_custom_boundaries.bed"),
-      h=F,sep="\t")
-    assign(paste0("bound_bovin",ind,".gr"), dataframes2grange(data1, chromsize))
-    bound_bovin.lst = append(bound_bovin.lst, list(dataframes2grange(data1, chromsize)))
-  }
-
-  names(bound_bovin.lst) = bovin.lst$V1
-
-
-  #read insulation scores
-  insulationPath_bovin.lst = NULL
-  for (ind in bovin.lst$V1) {
-    assign(paste0("insulationPath_bovin",ind), paste0(
-      "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/Hicexplorer/Bovin-",ind,".ARS-UCD1.2.mapq_10.10000_norm_custom_score.bedgraph"))
-    insulationPath_bovin.lst = append(insulationPath_bovin.lst, list(paste0(
-      "/home/nmary/mnt/cytogene/Var_struc/Bovin/Annotations/TAD_calling/Hicexplorer/Bovin-",ind,".ARS-UCD1.2.mapq_10.10000_norm_custom_score.bedgraph")))
-  }
-
-  names(insulationPath_bovin.lst) = bovin.lst$V1
-
-  insulation_bovin.lst = sapply(insulationPath_bovin.lst, function(x) {
-    x %>% read.table() %>% dataframes2grange(chromsize, metadata.mcols = 4)
-  })
-
-  boundaries.lst = bound_bovin.lst; score.lst = insulation_bovin.lst
-  bin.width = NULL; window.size = NULL; restrict = 2.e6
-  ############################################################################
-
   #local variables:
   i <- j <- x <- e <- s <- chr <- e2 <- s2 <-start1 <- end1 <- start2 <- end2 <- chr1 <- chr2 <- output <- output.names <- NULL
 
@@ -164,7 +130,7 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = N
     message("######################################################")
   }
 
-  names(output) = output.names
+  #names(output) = output.names
 
 
   output = append(output, list(as.data.frame(mat)))
