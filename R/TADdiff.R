@@ -71,7 +71,7 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = N
   message("######################################################")
   message(paste0("Bin width used is: ", bin.width, "bp."))
   message(paste0("New boundary is FALSE if there is another boundary in the vicinity +/-", window.size, "bp."))
-  message(paste0("TAD boundaries for the first and last ", restrict, "bp of each chromosomes are removed from the analysis."))
+  message(paste0("Boundaries from the first and last ", restrict, "bp of each chromosomes are removed from the analysis."))
   message("######################################################")
 
   for (ind1 in names(boundaries.lst)) {
