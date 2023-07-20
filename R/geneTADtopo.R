@@ -19,7 +19,7 @@
 #'
 #' @import GenomeInfoDb
 #' @import GenomicRanges
-#' @importFrom dplyr count desc
+#' @importFrom dplyr count desc filter
 #'
 #' @export
 #'

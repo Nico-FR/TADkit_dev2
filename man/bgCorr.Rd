@@ -2,7 +2,7 @@
 % Please edit documentation in R/bgCorr.R
 \name{bgCorr}
 \alias{bgCorr}
-\title{Correlation between bedgraph scrores}
+\title{Correlation between bedgraph scores}
 \usage{
 bgCorr(bedgraph.lst, method = "pearson", rm_chr = "X")
 }

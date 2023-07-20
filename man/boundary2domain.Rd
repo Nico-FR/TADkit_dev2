@@ -23,7 +23,7 @@ Start and end of domains are the middle of boundaries.
 tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
 boundaries = data.frame(chr = tad_1_10kb.bed$chr,
                           start = tad_1_10kb.bed$start - 5e3,
-                          end = tad_1_10kb.bed$end + 5e3)
+                          end = tad_1_10kb.bed$start + 5e3)
 
 boundary2domain(boundaries)
 tad_1_10kb.gr

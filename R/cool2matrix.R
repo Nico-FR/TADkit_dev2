@@ -18,6 +18,7 @@
 #'
 #' @importFrom Matrix triu sparseMatrix
 #' @importFrom rhdf5 h5read
+#' @importFrom dplyr filter
 #' @importFrom methods as
 #' @importFrom magrittr %>%
 #' @examples

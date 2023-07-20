@@ -24,7 +24,7 @@
 #' @return S3 class object with 3 `dataframes`.
 #'
 #' @import GenomeInfoDb
-#' @importFrom dplyr select group_by summarise arrange
+#' @importFrom dplyr select group_by summarise arrange filter
 #' @importFrom tidyr spread
 #' @importFrom stats median
 #' @import GenomicRanges
