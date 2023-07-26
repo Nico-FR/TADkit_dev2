@@ -34,7 +34,8 @@ Imports:
     tidyr,
     viridis,
     Matrix,
-    rhdf5
+    rhdf5,
+    preprocessCore
 Depends: 
     R (>= 4.2.0)
 LazyData: true

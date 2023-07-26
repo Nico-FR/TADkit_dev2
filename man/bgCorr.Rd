@@ -4,7 +4,7 @@
 \alias{bgCorr}
 \title{Correlation between bedgraph scores}
 \usage{
-bgCorr(bedgraph.lst, method = "pearson", rm_chr = "X")
+bgCorr(bedgraph.lst, method = "pearson", rm_chr = "X", Qnorm = TRUE)
 }
 \arguments{
 \item{bedgraph.lst}{list of \code{data.frame}, \code{GRanges} or full path of the bedgraph files (data frame without header and 4 columns tab separated) containing a score for each bin.}
@@ -12,6 +12,8 @@ bgCorr(bedgraph.lst, method = "pearson", rm_chr = "X")
 \item{method}{a character string indicating which correlation coefficient is to be computed. One of "pearson" (default), "kendall", or "spearman": can be abbreviated.}
 
 \item{rm_chr}{chromosome to filter, default = "X".}
+
+\item{Qnorm}{perform quantile normalisation beetween bedgraph files, default = TRUE.}
 }
 \value{
 matrix with correlation values

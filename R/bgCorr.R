@@ -6,18 +6,20 @@
 #' @param bedgraph.lst list of `data.frame`, `GRanges` or full path of the bedgraph files (data frame without header and 4 columns tab separated) containing a score for each bin.
 #' @param method a character string indicating which correlation coefficient is to be computed. One of "pearson" (default), "kendall", or "spearman": can be abbreviated.
 #' @param rm_chr chromosome to filter, default = "X".
+#' @param Qnorm perform quantile normalisation beetween bedgraph files, default = TRUE.
 #'
 #' @return matrix with correlation values
 #'
 #' @import GenomicRanges
 #' @importFrom utils read.table
 #' @importFrom dplyr select full_join filter
+#' @importFrom preprocessCore normalize.quantiles
 #' @examples
 #' bgCorr(list(ind1 = IS_1_10kb.bedgraph, ind2 = IS_2_10kb.bedgraph))
 #'
 #' @export
 #'
-bgCorr <- function(bedgraph.lst, method = "pearson", rm_chr = "X") {
+bgCorr <- function(bedgraph.lst, method = "pearson", rm_chr = "X", Qnorm = TRUE) {
 
   #Stop if bedgraphPath is not a list
   if (!is.list(bedgraph.lst)) {
@@ -47,7 +49,12 @@ bgCorr <- function(bedgraph.lst, method = "pearson", rm_chr = "X") {
   }
 
   #merge bedgraphs
-  data2 = data1 %>% Reduce(function(...) dplyr::full_join(...), .) %>% dplyr::filter(!seqnames %in% rm_chr)
+  data2 = data1 %>% Reduce(function(...) dplyr::full_join(..., by = c("seqnames", "start", "end")), .) %>% dplyr::filter(!seqnames %in% rm_chr) %>% select(-c("seqnames", "start", "end")) %>% as.matrix
+
+  #quantile normalisation
+  if (Qnorm == TRUE) {
+    preprocessCore::normalize.quantiles(data2, copy=FALSE, keep.names=TRUE)
+  }
 
   #create matrix
   mat=matrix(nrow = length(bedgraph.lst), ncol = length(bedgraph.lst))
