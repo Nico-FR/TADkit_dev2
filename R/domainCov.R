@@ -104,7 +104,7 @@ domainCov <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, 
         p1 = ggplot2::ggplot(data2, ggplot2::aes(y = density, x = relative_position, color = annot.col))+
           ggplot2::geom_smooth(se = FALSE)+
           ggplot2::labs(color = names(GenomicRanges::mcols(annot.gr[,annot.col])))
-        print(p1)
+        return(p1)
       }
 
       if (norm == TRUE) {
@@ -114,7 +114,7 @@ domainCov <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, 
         p1 = ggplot2::ggplot(data5, ggplot2::aes(y = zscore, x = relative_position, color = annot.col))+
           ggplot2::geom_smooth(se = FALSE)+
           ggplot2::labs(color = names(GenomicRanges::mcols(annot.gr[,annot.col])))
-        print(p1)
+        return(p1)
       }
 
     }
@@ -126,7 +126,7 @@ domainCov <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, 
         p1 = ggplot2::ggplot(data2, ggplot2::aes(y = density, x = relative_position, color = annot.col))+
           ggplot2::geom_smooth(se = FALSE)+ggplot2::facet_wrap(.~domain, scales = "free_y")+
           ggplot2::labs(color = names(GenomicRanges::mcols(domain.gr[, domain.col])))
-        print(p1)
+        return(p1)
       }
 
       if (norm == TRUE) {
@@ -136,7 +136,7 @@ domainCov <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, 
         p3 = ggplot2::ggplot(data5, ggplot2::aes(y = zscore, x = relative_position, color = annot.col))+
           ggplot2::geom_smooth(se = FALSE)+ggplot2::facet_wrap(.~domain)+
           ggplot2::labs(color = names(GenomicRanges::mcols(annot.gr[,annot.col])))
-        print(p3)
+        return(p3)
       }
     }
   }
