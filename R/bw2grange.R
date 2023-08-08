@@ -6,6 +6,7 @@
 #' @param bigwig.path path of bigwig file.
 #' @param bin.width bin width. Default is NULL to return the bin size as it is in the bigwig file.
 #' @param transformation.method method used to aggregate the coverage within bin.width. Three methods are available: "sum" (default), "mean" and "median".
+#' @param norm normalisation using log2(observed / expected)
 #'
 #' @return `GRanges`
 #' @import GenomicRanges
@@ -22,7 +23,7 @@
 #'
 #' @export
 #'
-bw2grange <- function(bigwig.path, bin.width = NULL, transformation.method = "sum") {
+bw2grange <- function(bigwig.path, bin.width = NULL, transformation.method = "sum", norm = FALSE) {
 
   if (.Platform$OS.type == "windows") {stop("Bigwig file cannot be read on Windows systems")}
 
@@ -37,8 +38,10 @@ bw2grange <- function(bigwig.path, bin.width = NULL, transformation.method = "su
 
     #add missing gaps to input
     gaps.gr = GenomicRanges::gaps(gr)[BiocGenerics::strand(GenomicRanges::gaps(gr))=="*"]
-    if (length(gaps.gr) > 0) {gaps.gr$score = 0}
-    gr = c(gr, gaps.gr)
+    if (length(gaps.gr) > 0) {
+      gaps.gr$score = NA
+      gr = c(gr, gaps.gr)
+      }
 
     # coverage for each bins
     hits <- GenomicRanges::findOverlaps(bin.gr, gr)
@@ -53,8 +56,13 @@ bw2grange <- function(bigwig.path, bin.width = NULL, transformation.method = "su
       agg <- S4Vectors::aggregate(gr, hits, score = sum(score))
     }
 
-    bin.gr$score = agg$score #bin.gr$score = agg$score
-    names(S4Vectors::mcols(bin.gr)) <- paste0(transformation.method, "_score")
+    if (norm == FALSE) {
+      bin.gr$score = agg$score
+      names(S4Vectors::mcols(bin.gr)) <- paste0(transformation.method, "_score")
+    } else {
+      bin.gr$score = log2(agg$score / mean(agg$score, na.rm = TRUE))
+      names(S4Vectors::mcols(bin.gr)) <- paste0(transformation.method, "_OEscore")
+    }
     return(bin.gr)
   }
 
