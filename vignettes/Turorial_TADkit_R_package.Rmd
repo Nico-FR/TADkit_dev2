@@ -378,7 +378,7 @@ mMATplot(matrix.upper = matrix_1_chr25_50kb,
 
 # Analysis
 
-Several functions allow to analyzed and visualized distributions of any annotations, in two different ways:
+Several functions allow to analyzed and visualized distributions of any annotation features, in two different ways:
 
 * on both sides of TAD boundaries,
 * or within TADs.

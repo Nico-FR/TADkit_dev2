@@ -4,12 +4,21 @@
 \alias{bw2grange}
 \title{Convert bigwig file to \code{GRanges}}
 \usage{
-bw2grange(bigwig.path, bin.width = NULL)
+bw2grange(
+  bigwig.path,
+  bin.width = NULL,
+  transformation.method = "sum",
+  norm = FALSE
+)
 }
 \arguments{
 \item{bigwig.path}{path of bigwig file.}
 
-\item{bin.width}{Bin width. Default is NULL to return the bin size as it is in the bigwig file.}
+\item{bin.width}{bin width. Default is NULL to return the bin size as it is in the bigwig file.}
+
+\item{transformation.method}{method used to aggregate the coverage within bin.width. Three methods are available: "sum" (default), "mean" and "median".}
+
+\item{norm}{normalisation using log2(observed / expected)}
 }
 \value{
 \code{GRanges}
@@ -19,11 +28,11 @@ From the full path of a bigwig files, return a \code{GRanges} object. The bin wi
 }
 \examples{
 library("rtracklayer")
-if (.Platform$OS.type != "windows") { #do no not work on window
+if (.Platform$OS.type != "windows") { #does no not work on window
 #translate bedgraph to bigwig file
 export.bw(rna_seq_chr25_13to16mb.bedgraph, "./rna_seq_chr25_13to16mb.bw")
-}
-bw2grange("./rna_seq_chr25_13to16mb.bw")
+print(bw2grange("./rna_seq_chr25_13to16mb.bw"))
 file.remove("./rna_seq_chr25_13to16mb.bw")
+}
 
 }
