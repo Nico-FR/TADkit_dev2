@@ -58,7 +58,7 @@ MATfeatures <- function(matrix, bin.width, annot.gr, chr, annot.boundary = "star
   })
 
   #pileup matrices
-  pil_mat = base::Reduce(`+`, mat.lst) %>% methods::as("generalMatrix")
+  pil_mat = base::Reduce(`+`, mat.lst) %>% methods::as("dgCMatrix")
 
   if (output == "matrix") {return(pil_mat)}
 
