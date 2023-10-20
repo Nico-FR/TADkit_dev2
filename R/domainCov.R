@@ -36,25 +36,33 @@ domainCov <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, 
   #annot.col parameter
   nb_metadatacolumns = length(GenomicRanges::mcols(annot.gr))
   if (is.null(annot.col)) {
+    #mcols needed for analysis: add mcols with "all" for all annotations
     GenomicRanges::mcols(annot.gr)[,nb_metadatacolumns + 1] = "all"
     names(GenomicRanges::mcols(annot.gr))[nb_metadatacolumns + 1] = "type"
     annot.col = nb_metadatacolumns + 1
   }
 
   if (annot.col == "strand") {
+    #add mcols with the stand of annotations
     GenomicRanges::mcols(annot.gr)[,nb_metadatacolumns + 1] = GenomicRanges::strand(annot.gr)
     names(GenomicRanges::mcols(annot.gr))[nb_metadatacolumns + 1] = "strand"
     annot.col = nb_metadatacolumns + 1
   }
 
+  #sanity check of input parameters
   if (length(GenomicRanges::mcols(annot.gr)) < annot.col) {
-    stop(paste0("Wrong annot.col number. There is only ", length(GenomicRanges::mcols(annot.gr)), " column(s) with metadata."))
+    stop(paste0("Wrong annot.col number. There is only ", length(GenomicRanges::mcols(annot.gr)), " column(s) with metadatas."))
+  }
+
+  if (length(GenomicRanges::mcols(domain.gr)) < domain.col) {
+    stop(paste0("Wrong domain.col number. There is only ", length(GenomicRanges::mcols(domain.gr)), " column(s) with metadatas."))
+  }
+
+  if (is.na(mean(GenomeInfoDb::seqlengths(domain.gr)))) {
+    stop("There is no seqlenths in domain.gr, see dataframes2grange function")
   }
 
   #genome binning
-  if (is.na(mean(GenomeInfoDb::seqlengths(annot.gr)))) {
-    stop("There is no seqlenths in domain.gr, see dataframes2grange function")
-  }
   bin.gr = GenomicRanges::tileGenome(GenomeInfoDb::seqlengths(domain.gr), tilewidth = bin.width, cut.last.tile.in.chrom = TRUE)
 
   # add density for each annot.type (annot.col)
