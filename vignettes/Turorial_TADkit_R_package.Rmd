@@ -376,11 +376,13 @@ mMATplot(matrix.upper = matrix_1_chr25_50kb,
 ```
 
 
-# Analysis
+# Distribution of features related to domains
 
-Several functions allow to analyzed and visualized distributions of any annotation features, in two different ways:
+Two distinct approaches allow to analyzed and visualized distributions of any annotation features according to the domains: 
 
-* on both sides of TAD boundaries,
+Thus, the distribution of features can be analyzed:
+
+* on both sides of TAD boundaries (around boudaries),
 * or within TADs.
 
 ## Around boundaries
@@ -536,6 +538,23 @@ domainCov(domain.gr = comp.gr, annot.gr = genes.gr,
 ```
 
 As expected the gene density is higher in compartment A (active compartments) than B.
+
+# Matrix pattern surrounding features
+
+A function allows the quantification and visualization of patterns (of the matrix) surrounding genomic features. 
+
+To illustrate, let's visualized the stacking of the matrices at the TSS (+/- 1Mb) on chromosome 25: 
+
+```{r, fig.height = 5, fig.width = 5}
+MATfeatures(matrix = matrix_1_chr25_50kb, bin.width = 50e3, annot.gr = genes.gr, chr = 25, annot.boundary = "start", window.size = 1e6, output = "plot")
+```
+
+From the TSS, this matrix plot is created in few steps:
+
+* extract matrices around TSS (+/- 1Mb),
+* stack all the matrices (sum of all matrices),
+* calculate the ratio of observed / expected values with `matObsExp` function,
+* plot the log2.
 
 
 # Compartment calling and orientation

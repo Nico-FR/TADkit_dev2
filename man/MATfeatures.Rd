@@ -27,7 +27,7 @@ MATfeatures(
 
 \item{window.size}{Window to analyze the matrix on each side of the features. By default the window is 40 times the \code{bin.width}.}
 
-\item{output}{Default is \code{"plot"} to return a \code{ggplot} of the observed / expected of the pileup of the matrices (i.e. sum of the matrices). Use \code{"data"} to return the \code{matrix}.}
+\item{output}{Default is \code{"plot"} to return a \code{ggplot} of the observed / expected of the pileup of the matrices (i.e. sum of the matrices). Use \code{"matrix"} to return the \code{matrix}.}
 }
 \value{
 A \code{dgCMatrix} object: upper triangular and sparse Matrix
@@ -45,6 +45,8 @@ From genomic features (e.g. start of TADs):
 }
 }
 \examples{
-MATfeatures(matrix = matrix_1_chr25_50kb, bin.width = 25e3, annot.gr = tad_1_10kb.bed, chr = 25, annot.boundary = "start", window.size = NULL, output = "plot")
+tad.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
+MATfeatures(matrix = matrix_1_chr25_50kb, bin.width = 50e3, annot.gr = tad.gr, chr = 25,
+            annot.boundary = "start", window.size = NULL, output = "plot")
 
 }

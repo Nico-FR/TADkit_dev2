@@ -20,11 +20,14 @@
 #'
 #' @examples
 #' tad.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
-#' MATfeatures(matrix = matrix_1_chr25_50kb, bin.width = 50e3, annot.gr = tad.gr, chr = 25, annot.boundary = "start", window.size = NULL, output = "plot")
+#' MATfeatures(matrix = matrix_1_chr25_50kb, bin.width = 50e3, annot.gr = tad.gr, chr = 25,
+#'             annot.boundary = "start", window.size = NULL, output = "plot")
 #'
 #' @export
 #'
 MATfeatures <- function(matrix, bin.width, annot.gr, chr, annot.boundary = "start", window.size = NULL, output = "matrix") {
+
+  i <- j <- x <- NULL
 
   ############################################################
   #sanity check
@@ -35,7 +38,7 @@ MATfeatures <- function(matrix, bin.width, annot.gr, chr, annot.boundary = "star
   ############################################################
 
   #features positions
-  features.gr <- GenomicRanges::resize(annot.gr, 1, fix = annot.boundary) %>% #to remove: [GenomicRanges::seqnames(annot.gr) == as.character(chr)]
+  features.gr <- GenomicRanges::resize(annot.gr, 1, fix = annot.boundary) %>%
     #removed features too close (ie distance < window.size) to the border of the matrix
     GenomicRanges::restrict(start = window.size + bin.width + 1, end = nrow(matrix) * bin.width - window.size -bin.width - 1)
 
@@ -47,18 +50,29 @@ MATfeatures <- function(matrix, bin.width, annot.gr, chr, annot.boundary = "star
 
   bin.matched.lst = S4Vectors::subjectHits(GenomicRanges::findOverlaps(features.gr, bin.matrix.gr))
 
-  mat.lst = sapply(bin.matched.lst, function(x){
+  message(paste0("Staking of ", length(bin.matched.lst), " matrices on chr ", chr, "."))
 
-    #bin to read
-    from = x - window.size %/% bin.width #upstream bin
-    to = x + window.size %/% bin.width + 1 #downstream bin
+  #if no overlap: return empty matrix else: return stacked matrix around each feature
+  if (identical(bin.matched.lst, integer(0))) {
 
-    #filter matrix area
-    Matrix::triu(matrix[from:to, from:to])
-  })
+    warning(paste0("no features on chromosome ", chr))
 
-  #pileup matrices
-  pil_mat = base::Reduce(`+`, mat.lst) %>% methods::as("dgCMatrix")
+    pil_mat = matrix(0, nrow = (window.size %/% bin.width * 2) + 2, ncol = (window.size %/% bin.width * 2) + 2)
+  } else {
+
+    mat.lst = sapply(bin.matched.lst, function(x){
+
+      #bin to read
+      from = x - window.size %/% bin.width #upstream bin
+      to = x + window.size %/% bin.width + 1 #downstream bin
+
+      #filter matrix area
+      Matrix::triu(matrix[from:to, from:to])
+    })
+
+    #staking matrices
+    pil_mat = base::Reduce(`+`, mat.lst) %>% methods::as("dgCMatrix")
+    }
 
   if (output == "matrix") {return(pil_mat)}
 

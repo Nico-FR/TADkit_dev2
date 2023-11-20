@@ -63,7 +63,7 @@ bgCorr <- function(bedgraph.lst, method = "pearson", rm_chr = "X", Qnorm = TRUE)
   for (ind1 in names(bedgraph.lst)) {
     for (ind2 in names(bedgraph.lst)) {
       if (ind1 == ind2) {next}
-      mat[ind1, ind2] = cor(data2[, ind1], data2[, ind2], use = "complete.obs", method = method)
+      mat[ind1, ind2] = stats::cor(data2[, ind1], data2[, ind2], use = "complete.obs", method = method)
     }
   }
   diag(mat) = 1

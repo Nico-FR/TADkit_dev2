@@ -29,7 +29,7 @@
 #'
 cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE, balancing_name = "weight") {
 
-  if (!is.na(bin.width)) {message("\nParsing .mcool file.")} else {message("\nParsing .cool file.")}
+  if (!is.na(bin.width)) {message("Parsing .mcool file.")} else {message("Parsing .cool file.")}
 
   #mcool path
     uri <- function(cool.path) {
