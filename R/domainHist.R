@@ -63,7 +63,7 @@ domainHist <- function(domain.gr, annot.gr, annot.boundary = "start", ifoverlap 
     stop("domain.gr must have seqlengths datas (see dataframes2grange function)")
   }
 
-  # create interTAD annotation and merged them with TADs
+  # create interTAD annotation and merged them with domain.gr
   interdomain.gr <- GenomicRanges::gaps(domain.gr)[BiocGenerics::strand(GenomicRanges::gaps(domain.gr)) == "*"]
   interdomain.gr$TAD <- FALSE
   domain.gr$TAD <- TRUE

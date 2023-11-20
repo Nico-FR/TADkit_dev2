@@ -4,7 +4,7 @@
 #' For example this function allow to visualize the patterns of the matrices around TADs boundary.
 #'
 #' @details From genomic features (e.g. start of TADs):
-#'  - export the matrix +/- `window.size` of the genomic feature,
+#'  - export the matrix +/- `window.size` of each genomic features,
 #'  - pileup the matrices (i.e. sum all the matrices),
 #'  - return the pileup matrix or plot the observed/expected of the pileup matrix.
 #'

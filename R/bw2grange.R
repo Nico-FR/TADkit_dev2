@@ -5,7 +5,7 @@
 #'
 #' @param bigwig.path path of bigwig file.
 #' @param bin.width bin width. Default is NULL to return the bin size as it is in the bigwig file.
-#' @param transformation.method method used to aggregate the coverage within bin.width. Three methods are available: "sum" (default), "mean" and "median".
+#' @param transformation.method method used to aggregate values within bin.width. Three methods are available: "sum" (default), "mean" and "median".
 #' @param norm normalisation using log2(observed / expected)
 #'
 #' @return `GRanges`

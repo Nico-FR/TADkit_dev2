@@ -50,7 +50,7 @@ cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE, balanci
 
       #if bin.width not available
       if (is.na(match(bin.width, as.numeric(ar)))) {
-        stop("\n '", bin.width, "' is not an available resolution.", " Available resolutions are:\n", ar %>% as.numeric %>% sort %>% paste0(collapse = ", "), ".")
+        stop("\n '", bin.width, "' is not an available resolution.", " Resolutions available:\n", ar %>% as.numeric %>% sort %>% paste0(collapse = ", "), ".")
       }
     }
 
@@ -58,7 +58,7 @@ cool2matrix <- function(cool.path, chr, bin.width = NA, balance = FALSE, balanci
     chromosomes = rhdf5::h5read(file = cool.path, name = uri("chroms/name"))
 
     if (!(chr %in% chromosomes)) {
-       stop("\n '", chr, "' is not a valid chromosome.", "\nChromosomes available are: ", paste0(chromosomes, collapse = ", "), ".")
+       stop("\n '", chr, "' is not a valid chromosome.", "\nChromosomes available: ", paste0(chromosomes, collapse = ", "), ".")
     }
 
     # the list of available normalisation names
