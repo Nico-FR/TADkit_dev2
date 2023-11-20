@@ -50,9 +50,9 @@ PC1calling <- function(bedgraph) {
   data1 = S4Vectors::split(grange, grange$comp)
 
   if (length(data1$AB) > 0){
-    B = GenomicRanges::reduce(c(data1$B, GenomicRanges::reduce(data1$AB)[GenomicRanges::countOverlaps(GenomicRanges::reduce(data1$AB), data1$B) == 2]))
+    B = GenomicRanges::reduce(c(data1$B, GenomicRanges::reduce(data1$AB)[GenomicRanges::countOverlaps(GenomicRanges::reduce(data1$AB), data1$B, maxgap = 1) == 2]))
 
-    A = GenomicRanges::reduce(c(data1$A, GenomicRanges::reduce(data1$AB)[GenomicRanges::countOverlaps(GenomicRanges::reduce(data1$AB), data1$A) == 2]))
+    A = GenomicRanges::reduce(c(data1$A, GenomicRanges::reduce(data1$AB)[GenomicRanges::countOverlaps(GenomicRanges::reduce(data1$AB), data1$A, maxgap = 1) == 2]))
   }
 
   if (length(data1$AB) == 0){
