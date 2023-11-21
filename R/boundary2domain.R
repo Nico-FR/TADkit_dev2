@@ -24,7 +24,9 @@
 #'
 boundary2domain <- function(boundaries) {
 
+  seqinfo <- NULL
   if (inherits(boundaries, "GRanges")) {
+    seqinfo = as.data.frame(GenomeInfoDb::seqinfo(boundaries))
     boundaries = as.data.frame(boundaries)[,1:3]}
 
   boundaries$mean = apply(boundaries[,2:3], 1, mean)
@@ -38,5 +40,12 @@ boundary2domain <- function(boundaries) {
     })
   df = do.call("rbind", df.lst)
   rownames(df) = paste0(df$seqnames, "_", df$start)
-  return(GenomicRanges::makeGRangesFromDataFrame(df))
+  gr = GenomicRanges::makeGRangesFromDataFrame(df)
+
+  #add seqinfo if available
+  if (!is.null(seqinfo)) {
+    for (i in 1:length(GenomeInfoDb::seqlengths(gr))) {
+      GenomeInfoDb::seqlengths(gr)[i] <- as.numeric(seqinfo[, 1][rownames(seqinfo) == names(GenomeInfoDb::seqlengths(gr))[i]])
+    }}
+  return(gr)
 }
