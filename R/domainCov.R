@@ -54,7 +54,7 @@ domainCov <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, 
     stop(paste0("Wrong annot.col number. There is only ", length(GenomicRanges::mcols(annot.gr)), " column(s) with metadatas."))
   }
 
-  if (length(GenomicRanges::mcols(domain.gr)) < domain.col) {
+  if (length(GenomicRanges::mcols(domain.gr)) < ifelse(is.null(domain.col), 0 ,domain.col)) {
     stop(paste0("Wrong domain.col number. There is only ", length(GenomicRanges::mcols(domain.gr)), " column(s) with metadatas."))
   }
 
