@@ -34,7 +34,9 @@ PC1calling <- function(bedgraph) {
     grange = bedgraph %>% dplyr::mutate(comp = dplyr::case_when(bedgraph[,4] < 0 ~ 'B', bedgraph[,4] >= 0 ~ 'A', is.na(bedgraph[,4]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
   }
 
+  seqinfo <- NULL
   if (inherits(bedgraph, "GRanges")) {
+    seqinfo = as.data.frame(GenomeInfoDb::seqinfo(bedgraph))
     grange = bedgraph %>% as.data.frame %>% dplyr::mutate(comp = dplyr::case_when(GenomicRanges::mcols(bedgraph)[,1] < 0 ~ 'B', GenomicRanges::mcols(bedgraph)[,1] >= 0 ~ 'A', is.na(GenomicRanges::mcols(bedgraph)[,1]) ~ "AB")) %>% GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = T)
   }
 
@@ -64,6 +66,13 @@ PC1calling <- function(bedgraph) {
 
   A$comp = "A"
   B$comp = "B"
+  output.gr = BiocGenerics::sort(c(A,B))
 
-  return(BiocGenerics::sort(c(A,B)))
+  #add seqinfo if available
+  if (!is.null(seqinfo)) {
+    for (i in 1:length(GenomeInfoDb::seqlengths(output.gr))) {
+      GenomeInfoDb::seqlengths(output.gr)[i] <- as.numeric(seqinfo[, 1][rownames(seqinfo) == names(GenomeInfoDb::seqlengths(output.gr))[i]])
+    }}
+
+  return(output.gr)
 }
