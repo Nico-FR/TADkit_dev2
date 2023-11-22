@@ -63,10 +63,17 @@ domainCov <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, 
   }
 
   #genome binning
-  bin.gr = GenomicRanges::tileGenome(GenomeInfoDb::seqlengths(domain.gr), tilewidth = bin.width, cut.last.tile.in.chrom = TRUE)
+  bin.gr = GenomicRanges::tileGenome(GenomeInfoDb::seqlengths(domain.gr), tilewidth = bin.width, cut.last.tile.in.chrom = TRUE) %>%
+    #keep domain.gr in chromosomes on annot.gr
+    GenomeInfoDb::keepSeqlevels(seqlevels(annot.gr)[seqlevels(annot.gr) %in% seqlevels(domain.gr)],
+                                pruning.mode = "coarse") %>% GenomeInfoDb::sortSeqlevels()
+
+  #keep annot.gr in chromosomes on domain.gr
+  annot2.gr = GenomeInfoDb::keepSeqlevels(annot.gr,
+                                          seqlevels(domain.gr)[seqlevels(domain.gr) %in% seqlevels(annot.gr)],
+                                          pruning.mode = "coarse") %>% GenomeInfoDb::sortSeqlevels()
 
   # add density for each annot.type (annot.col)
-  annot2.gr = GenomeInfoDb::keepSeqlevels(annot.gr, seqlevels(domain.gr), pruning.mode = "coarse") #remove annot.gr outside seqlevels(domain.gr)
   annot.type = GenomicRanges::mcols(annot2.gr)[, annot.col] %>% as.character %>% unique
   for (c in annot.type) {
     bin.gr = GenomicRanges::binnedAverage(bins = bin.gr,
