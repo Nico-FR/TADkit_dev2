@@ -14,7 +14,7 @@
 #' * `dataframe` with expression of each gene (before orientation).
 #' * `dataframe` with median expression of each compartment (before orientation).
 #'
-#' @param bedgraph `GRanges` file with the score to be used for compartment calling (i.e PC1 values).
+#' @param bedgraph.gr `GRanges` file with the score to be used for compartment calling (i.e PC1 values).
 #' @param annot.gr `GRanges` file with gene annotations.
 #' @param expression.data.frame `dataframe` with 3 columns:
 #' * 1: gene IDs: must be identical IDs than `names(annot.gr)`,
@@ -33,10 +33,10 @@
 #'
 #' @examples
 #' # see vignette("Turorial_TADkit_R_package") or on github (https://github.com/Nico-FR/TADkit)
-#' # output <- compOrientation(bedgraph, annot.gr, expression.data.frame)
+#' # output <- compOrientation(bedgraph.gr, annot.gr, expression.data.frame)
 #'
 
-compOrientation <- function(bedgraph, annot.gr, expression.data.frame) {
+compOrientation <- function(bedgraph.gr, annot.gr, expression.data.frame) {
 
   #local variables:
   comp <- chr <- med_exp <- A <- B <- . <- NULL
@@ -57,23 +57,32 @@ compOrientation <- function(bedgraph, annot.gr, expression.data.frame) {
   if (length(expression.data.frame) > 3) {
     warning("expression.data.frame have more than 3 columns, the third column is used for expression values")
   }
-  if (!inherits(bedgraph, "GRanges")) {
-    stop("bedgraph must be a GRange object")
+  if (!inherits(bedgraph.gr, "GRanges")) {
+    stop("bedgraph.gr must be a GRange object")
   }
-  if (is.na(mean(seqlengths(bedgraph), na.rm=T))) {
-    stop("bedgraph must have seqlengths datas (see dataframes2grange function)")
+  if (is.na(mean(seqlengths(bedgraph.gr), na.rm=T))) {
+    stop("bedgraph.gr must have seqlengths datas (see dataframes2grange function)")
   }
-  if (length(S4Vectors::mcols(bedgraph)) != 1) {
-    warning("bedgraph object should have 1 metadata column, additional columns are ignored!")
+  if (length(S4Vectors::mcols(bedgraph.gr)) != 1) {
+    warning("bedgraph.gr object should have 1 metadata column, additional columns are ignored!")
   }
 
-  #compartment calling
-  undirected_comp.gr = TADkit::PC1calling(bedgraph)
+  #call compartments
+  comp.gr = PC1calling(bedgraph.gr)
 
-  # add chromosomes lengths
-  seqlengths(undirected_comp.gr)[sort(names(seqlengths(undirected_comp.gr)))] = seqlengths(bedgraph)[sort(names(seqlengths(bedgraph)))]
+  #keep comp.gr in chromosomes from annot.gr
+  undirected_comp.gr = comp.gr %>% GenomeInfoDb::keepSeqlevels(seqlevels(annot.gr)[seqlevels(annot.gr) %in% seqlevels(bedgraph.gr)],
+                                pruning.mode = "coarse") %>% GenomeInfoDb::sortSeqlevels()
 
-  # add unique names to each domain
+  #keep expression.data.frame IDs from annot.gr IDs
+  expression.data.frame2 = expression.data.frame[expression.data.frame[,1] %in% names(annot.gr),]
+
+  #keep annot.gr in chromosomes from comp.gr
+  annot.gr = GenomeInfoDb::keepSeqlevels(annot.gr,
+                                          seqlevels(comp.gr)[seqlevels(comp.gr) %in% seqlevels(annot.gr)],
+                                          pruning.mode = "coarse") %>% GenomeInfoDb::sortSeqlevels()
+
+    # add unique names to each domain
   names(undirected_comp.gr) = 1:length(undirected_comp.gr)
 
   # position of the genes in relation to each compartment
@@ -88,6 +97,7 @@ compOrientation <- function(bedgraph, annot.gr, expression.data.frame) {
 
   # add comp and chr to expression.df
   for (i in 1:length(data[,1])) {
+    if (nrow(data$gene_exp.lst[[i]]) == 0) {next} #ignore genes without expression datas
     data$gene_exp.lst[[i]]$comp = data$comp[i]
     data$gene_exp.lst[[i]]$chr = data$seqnames[i]
     }
@@ -111,14 +121,14 @@ compOrientation <- function(bedgraph, annot.gr, expression.data.frame) {
   #reverse score
   bedgraph_oriented = NULL
   for (c in unique(medianExp$chr)) {
-    tmp = as.data.frame(bedgraph[GenomeInfoDb::seqnames(bedgraph) == c])
+    tmp = as.data.frame(bedgraph.gr[GenomeInfoDb::seqnames(bedgraph.gr) == c])
     tmp[,6] = tmp[,6] * medianExp$to_be_inverted[medianExp$chr == c]
     bedgraph_oriented = rbind(bedgraph_oriented, tmp)
   }
   bedgraph_oriented.gr = GenomicRanges::makeGRangesFromDataFrame(bedgraph_oriented, keep.extra.columns = T)
 
   # add chromosomes lengths...
-  seqlengths(bedgraph_oriented.gr)[sort(names(seqlengths(bedgraph_oriented.gr)))] = seqlengths(bedgraph)[sort(names(seqlengths(bedgraph)))]
+  seqlengths(bedgraph_oriented.gr)[sort(names(seqlengths(bedgraph_oriented.gr)))] = seqlengths(bedgraph.gr)[sort(names(seqlengths(bedgraph.gr)))]
 
   output = list()
   output$bedgraph_oriented = bedgraph_oriented.gr

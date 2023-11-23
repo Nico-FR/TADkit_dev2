@@ -4,10 +4,10 @@
 \alias{compOrientation}
 \title{Orientation of PC1 score}
 \usage{
-compOrientation(bedgraph, annot.gr, expression.data.frame)
+compOrientation(bedgraph.gr, annot.gr, expression.data.frame)
 }
 \arguments{
-\item{bedgraph}{\code{GRanges} file with the score to be used for compartment calling (i.e PC1 values).}
+\item{bedgraph.gr}{\code{GRanges} file with the score to be used for compartment calling (i.e PC1 values).}
 
 \item{annot.gr}{\code{GRanges} file with gene annotations.}
 
@@ -43,6 +43,6 @@ Return a list with 3 \code{dataframe}.
 }
 \examples{
 # see vignette("Turorial_TADkit_R_package") or on github (https://github.com/Nico-FR/TADkit)
-# output <- compOrientation(bedgraph, annot.gr, expression.data.frame)
+# output <- compOrientation(bedgraph.gr, annot.gr, expression.data.frame)
 
 }

@@ -39,7 +39,7 @@ For example this function allow to visualize the patterns of the matrices around
 \details{
 From genomic features (e.g. start of TADs):
 \itemize{
-\item export the matrix +/- \code{window.size} of the genomic feature,
+\item export the matrix +/- \code{window.size} of each genomic features,
 \item pileup the matrices (i.e. sum all the matrices),
 \item return the pileup matrix or plot the observed/expected of the pileup matrix.
 }

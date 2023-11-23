@@ -81,7 +81,7 @@ geneTADtopo <- function(domain.gr, annot.gr, ifoverlap = "best", expression.data
     message(paste0(
       expression.data.frame[expression.data.frame[,1] %in% (nbgene_TAD$gene_id.lst %>% unlist), 1] %>%
         length(),"/", nbgene_TAD$gene_id.lst %>% unlist %>% length(),
-      " genes have data expression"))
+      " annotations have data expression"))
     nbgene_TAD$gene_exp.lst = lapply(nbgene_TAD$gene_id.lst,
                                      function(x){expression.data.frame %>%
                                          filter(expression.data.frame[,1] %in% x)})

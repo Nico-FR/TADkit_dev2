@@ -42,7 +42,7 @@ BiocManager::install("biocViews")
 install.packages("devtools")
 ```
 
-Now you shoul be abale to install the development version of TADkit from [GitHub](https://github.com/) with:
+Now you should be able to install the development version of TADkit from [GitHub](https://github.com/) with:
 
 ```{r, eval=FALSE}
 devtools::install_github("Nico-FR/TADkit")
@@ -97,7 +97,7 @@ mat1.dgcmat = as(mat1.mat, "dgCMatrix") #translate to dgCMatrix
 
 ### .cool / .mcool
 
-One of the most common HiC array storage formats is the .cool or .mcool format which store matrices for 1 resolution and multiple resolutions respectively. To load HiC matrix for one chromosome from cool/.mcool as a matrix (`dgCMatrix`) use `cool2matrix()`:
+One of the most common HiC matrix storage formats is the .cool or .mcool format which store matrices for 1 resolution and multiple resolutions respectively. To load HiC matrix for one chromosome from cool/.mcool as a matrix (`dgCMatrix`) use `cool2matrix()`:
 ```{r, eval=FALSE}
 #read .cool file
 my_matrix.10kb = cool2matrix("my_matrix.10kb.cool", chr = "chr_name")
@@ -580,7 +580,7 @@ Now, knowing that A compartments are more active than B compartments, we can use
 
 ```{r}
 PC1_1_50kb.gr = suppressWarnings(dataframes2grange(PC1_1_50kb.bedgraph, chromsize, metadata.mcols = 4)) %>% trim #create GRanges from bedgraph and cut bins out-of-bound to suppress warnings
-data = compOrientation(bedgraph = PC1_1_50kb.gr, annot.gr = genes.gr, expression.data.frame = expression.data.frame)
+data = compOrientation(bedgraph.gr = PC1_1_50kb.gr, annot.gr = genes.gr, expression.data.frame = expression.data.frame)
 ```
 
 We can compare the expression level between compartments before orientation:

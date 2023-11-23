@@ -16,7 +16,7 @@ bw2grange(
 
 \item{bin.width}{bin width. Default is NULL to return the bin size as it is in the bigwig file.}
 
-\item{transformation.method}{method used to aggregate the coverage within bin.width. Three methods are available: "sum" (default), "mean" and "median".}
+\item{transformation.method}{method used to aggregate values within bin.width. Three methods are available: "sum" (default), "mean" and "median".}
 
 \item{norm}{normalisation using log2(observed / expected)}
 }
