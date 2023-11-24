@@ -62,5 +62,5 @@ dataframes2grange <- function(annotation.table, chromsize, chr.col = 1, start.co
   for (i in 1:length(GenomeInfoDb::seqlengths(temp))) {
     GenomeInfoDb::seqlengths(temp)[i] <- as.numeric(chromsize[, 2][chromsize[, 1] == names(GenomeInfoDb::seqlengths(temp))[i]])
   }
-  return(sort(temp))
+  return(sort(temp) %>% GenomeInfoDb::sortSeqlevels())
 }

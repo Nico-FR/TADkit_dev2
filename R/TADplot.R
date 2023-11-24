@@ -243,7 +243,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
     bedgraphTrack <- NULL
   } else {
     chromsize = data.frame(chr = GenomeInfoDb::seqlevels(tad.gr),
-                              size = seqlengths(tad.gr))
+                              size = GenomeInfoDb::seqlengths(tad.gr))
     #read bedgraph datas
     ##if dataframe
     if (is.data.frame(bedgraph)) {
@@ -256,7 +256,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
     }
     ##if GRanges
     if (inherits(bedgraph, "GRanges")) {
-      data1 = bedgraph[,1]
+      data1 = bedgraph[,1] %>% GenomeInfoDb::keepSeqlevels(chr, pruning.mode = "coarse")
     }
 
     bedgraphTrack <- DataTrack(range = data1, type = "b", lwd = 1, name = "bg", chromosome = chr)
