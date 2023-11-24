@@ -25,7 +25,7 @@
 #' @inheritParams TADplot
 #' @param tad.lst List of GRange object with domains. Those files must have chromosomes lengths (see dataframes2grange function).
 #' @param bigwigPath.lst List of path for the bigwig file(s) plotted as histogram. Default = NULL (ie no track is plotted). Note that bigwig files can not be read on Windows..
-#' @param bigwig.binsize Bin sizes for the histogram of the bigwig track. Default = 1e3.
+#' @param bigwig.binwidth Bin sizes for the histogram of the bigwig track. Default = 1e3.
 #' @param annot.lst List of GRange file(s) with genomic annotations. Default = NULL (ie no track is plotted).
 #' @param annot.col Column number of the metadata from annot.gr file(s) used to group the annotation tracks. Default = NULL.
 #' @param bedgraph.lst `data.frame`, `GRanges` or list of path for the bedgraph file(s) plotted as line. Default = NULL (i.e no track is plotted).
@@ -62,7 +62,7 @@
 #'   bedgraph.lst = IS.lst, bedgraph.name = "IS")
 #'
 mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
-                     bigwigPath.lst = NULL, bigwig.binsize = 1e3, bigwig.xaxis = "mean", bigwig.chr = NULL, bigwig.yaxis = NULL,
+                     bigwigPath.lst = NULL, bigwig.binwidth = 1e3, bigwig.xaxis = "mean", bigwig.chr = NULL, bigwig.yaxis = NULL,
                      annot.lst = NULL, annot.col = NULL,
                      bedgraph.lst = NULL, bedgraph.name = "bedgraph", bedgraph_outliers = 0,
                      colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")) {
@@ -179,7 +179,7 @@ mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
       bigwigTrack <- Gviz::DataTrack(data.gr,
                                      chr = chr,
                                      type = "hist", aggregation = bigwig.xaxis,
-                                     window = "fixed", windowSize = bigwig.binsize,
+                                     window = "fixed", windowSize = bigwig.binwidth,
                                      fill = colors.lst[i],
                                      name = names(bigwigPath.lst[i]),
                                      transformation = transformation.method
