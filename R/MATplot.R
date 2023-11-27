@@ -72,7 +72,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   #local variables:
   i <- j <- x <- e <- s <- chr <- e2 <- s2 <-start1 <- end1 <- start2 <- end2 <- chr1 <- chr2 <- NULL
   #sanity check
-  if(!inherits(matrix, c("dgCMatrix", "matrix"))) {
+  if(!inherits(matrix, c("Matrix", "matrix"))) {
     stop("input matrix is not a matrix or dgCMatrix object")}
 
   #bin to read

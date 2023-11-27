@@ -31,8 +31,8 @@ MATfeatures <- function(matrix, bin.width, annot.gr, chr, annot.boundary = "star
 
   ############################################################
   #sanity check
-  if(!inherits(matrix, c("dgCMatrix", "matrix"))) {
-    stop("input matrix is not a matrix or dgCMatrix object")}
+  if(!inherits(matrix, c("Matrix", "matrix"))) {
+    stop("input matrix is not a matrix or Matrix object")}
 
   if (is.null(window.size)) {window.size = 40 * bin.width}
   ############################################################

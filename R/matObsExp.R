@@ -28,7 +28,7 @@
 
 matObsExp <- function(matrix) {
 
-  if(!inherits(matrix, c("dgCMatrix", "matrix"))) {
+  if(!inherits(matrix, c("Matrix", "matrix"))) {
     stop("input matrix is not a matrix or dgCMatrix object")}
 
   #using dgcmatrix object
@@ -48,7 +48,7 @@ matObsExp <- function(matrix) {
   output = matrix / mat_expected
 
   return(
-    if(inherits(output, "dgCMatrix")) {output} else {methods::as(output, "dgCMatrix")}
+    if(inherits(output, "Matrix")) {output} else {methods::as(output, "CsparseMatrix")}
     )
   }
 

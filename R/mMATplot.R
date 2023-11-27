@@ -61,8 +61,8 @@ mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = 
 
   ####################
   #mat1
-  if(!inherits(matrix.upper, c("dgCMatrix", "matrix"))) {
-    stop("input matrix is not a matrix or dgCMatrix object")}
+  if(!inherits(matrix.upper, c("Matrix", "matrix"))) {
+    stop("input matrix is not a matrix or Matrix object")}
 
   #filter matrix area
   mat1 = as(Matrix::triu(matrix.upper[from:to, from:to]), "CsparseMatrix")
@@ -77,8 +77,8 @@ mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = 
 
   ####################
   #mat2
-  if(!inherits(matrix.lower, c("dgCMatrix", "matrix"))) {
-    stop("input matrix is not a matrix or dgCMatrix object")}
+  if(!inherits(matrix.lower, c("Matrix", "matrix"))) {
+    stop("input matrix is not a matrix or Matrix object")}
 
   #filter matrix area
   mat2 = as(Matrix::triu(matrix.lower[from:to, from:to]), "CsparseMatrix")
