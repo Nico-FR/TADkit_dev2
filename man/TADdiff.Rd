@@ -39,25 +39,21 @@ Differences analysis (new boundary and delta score at boundary) are performed be
 Because the scores are often not accurate at the extremities of the chromosomes (beginning and the end of each chromosome), these regions can be ignored using \code{restrict} parameters.
 }
 \examples{
-#create boundaries from domains:
-boundary_1_10kb.df = data.frame(chr = tad_1_10kb.bed$chr,
-  start = tad_1_10kb.bed$start - 5e3,
-  end = tad_1_10kb.bed$start + 5e3)
-boundary_2_10kb.df = data.frame(chr = tad_2_10kb.bed$chr,
-  start = tad_2_10kb.bed$start - 5e3,
-  end = tad_2_10kb.bed$start + 5e3)
-
-# create list of GRanges boundaries
-boundary_1_10kb.gr = dataframes2grange(boundary_1_10kb.df, chromsize)
-boundary_2_10kb.gr = dataframes2grange(boundary_2_10kb.df, chromsize)
-boundary.lst=list(boundary_1_10kb.gr, boundary_2_10kb.gr);names(boundary.lst)=c("ind1", "ind2")
 
 # create list of GRanges with insulation scores
-is_1.gr = dataframes2grange(IS_1_10kb.bedgraph, chromsize, metadata.mcols = 4)
-is_2.gr = dataframes2grange(IS_2_10kb.bedgraph, chromsize, metadata.mcols = 4)
-IS.lst=list(is_1.gr, is_2.gr);names(IS.lst)=c("ind1", "ind2")
+IS.gr = dataframes2grange(IS_HCT116_chr19_5kb.bedgraph, human_chromsize, metadata.mcols = 4)
+IS.lst = list(ind1 = IS.gr, ind2 = IS.gr, ind3 = IS.gr)
 
-TADdiff(boundaries.lst = boundary.lst, score.lst = IS.lst)
+# create list of GRanges boundaries
+boundaries.gr = dataframes2grange(tad_HCT116_5kb.bed, human_chromsize)
+boundaries.lst = list(ind1 = boundaries.gr, ind2 = boundaries.gr, ind3 = boundaries.gr)
 
+output = TADdiff(boundaries.lst = boundaries.lst, score.lst = IS.lst)
+
+#example for ind1 boundaries of chr19 between 10 to 12Mb:
+library(GenomicRanges)
+output$TADdiff_ind1[seqnames(output$TADdiff_ind1) == "chr19" &
+    start(output$TADdiff_ind1) >= 10e6 &
+    end(output$TADdiff_ind1) <= 12e6]
 
 }

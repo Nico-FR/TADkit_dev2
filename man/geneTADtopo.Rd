@@ -28,7 +28,7 @@ The first two columns should be used to identify the genes. The 1st one must use
 Others columns give expression count, one column per sample/experiment.}
 }
 \value{
-Return a S3 class object with 3 data frames.
+Return a list with 3 data frames.
 }
 \description{
 From the annotation of TADs and genes, this function return 3 data frames:
@@ -41,17 +41,21 @@ It also return some statistics:
 Return a list of 3 dataframes.
 }
 \examples{
-# not run
-
 # get gene annotation
-# txdb <- makeTxDbFromBiomart(biomart = "ensembl", dataset = "btaurus_gene_ensembl")
-# genomic.gr = genes(txdb)
+library(EnsDb.Hsapiens.v86)
+genomic.gr =  genes(EnsDb.Hsapiens.v86, filter = ~ seq_name == c(1:22))
+seqlevelsStyle(genomic.gr) = "UCSC"
 #
-# create expression data set with random raw count
-# expression.data.frame = data.frame(ID = names(genes.gr), Name = names(genes.gr),
-#   raw_count = sample(1:100, length(genes.gr), replace = TRUE))
+# create expression data
+library("airway")
+library(GenomicFeatures)
+data(airway)
+count = assay(airway, "counts")[, 1]
+expression.data.frame = data.frame(ID = names(count),
+                                  Name = names(count),
+                                   count = count)
 
-# output <- geneTADtopo(dataframes2grange(tad_1_10kb.bed, chromsize),
-#   genomic.gr, expression.data.frame = expression.data.frame)
+output <- geneTADtopo(dataframes2grange(tad_HCT116_5kb.bed, human_chromsize),
+  annot.gr = genomic.gr, ifoverlap = "best", expression.data.frame = expression.data.frame)
 
 }

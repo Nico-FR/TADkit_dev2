@@ -1,13 +1,13 @@
 #' @title observed / expected matrix
 #'
 #' @description For each bin of the matrix (interaction count observed) `matObsExp()` return the ratio: observed / expected.
-#' The input matrix must be a `dgCMatrix` or `matrix` object (i.e matrix with as many rows and columns than the number of bin).
+#' The input matrix must be a `Matrix` or `matrix` object (i.e matrix with as many rows and columns than the number of bin).
 #' The output can be plot with `MATplot(output, log2 = TRUE, scale.colors = "ObsExp")`.
 #'
-#' @details The expected number of interaction corresponds to the average of the interaction counts according to the bin distances.
-#' Only the upper part of the matrix is used.
+#' @details The expected number of interaction corresponds to the average interaction counts according to bin distances.
+#' Note that the expected number is only estimated from the chromosome supplied. Other genome wide approaches may be considered.
 #'
-#' @param matrix `dgCMatrix` or `matrix` object.
+#' @param matrix `Matrix` or `matrix` object.
 #'
 #' @return `dgCMatrix` object: upper triangular and sparse Matrix
 #'
@@ -19,9 +19,9 @@
 #' @export
 #'
 #' @examples
-#' mat_obsexp = matObsExp(matrix_1_chr25_50kb)
+#' mat_obsexp = matObsExp(mat_HCT116_chr19_50kb)
 #' MATplot(matrix = mat_obsexp,
-#'     start = 10e6, stop = 30e6,
+#'     start = 5e6, stop = 15e6,
 #'     bin.width = 50e3,
 #'     log2 = TRUE, scale.colors = "OE")
 #'
@@ -48,7 +48,7 @@ matObsExp <- function(matrix) {
   output = matrix / mat_expected
 
   return(
-    if(inherits(output, "Matrix")) {output} else {methods::as(output, "CsparseMatrix")}
+    if(inherits(output, "CsparseMatrix")) {output} else {methods::as(output, "CsparseMatrix")}
     )
   }
 

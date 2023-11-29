@@ -20,7 +20,10 @@ From an ordered set of TADs, this function return un random set of TADs.
 The TADs input should not have gaps (region between two TADs) excepted for the extremities of chromosomes.
 }
 \examples{
-tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
-TADshuffling(tad_1_10kb.gr)
+#get domains from boundaries:
+boundaries.gr = dataframes2grange(tad_HCT116_5kb.bed, human_chromsize)
+domains.gr = boundary2domain(boundaries.gr)
+
+TADshuffling(domains.gr)
 
 }

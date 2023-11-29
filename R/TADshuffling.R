@@ -17,8 +17,11 @@
 #' @export
 #'
 #' @examples
-#' tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
-#' TADshuffling(tad_1_10kb.gr)
+#' #get domains from boundaries:
+#' boundaries.gr = dataframes2grange(tad_HCT116_5kb.bed, human_chromsize)
+#' domains.gr = boundary2domain(boundaries.gr)
+#'
+#' TADshuffling(domains.gr)
 #'
 TADshuffling <- function(tad.gr) {
 

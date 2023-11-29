@@ -15,7 +15,8 @@
 #' @importFrom dplyr select full_join filter
 #' @importFrom preprocessCore normalize.quantiles
 #' @examples
-#' bgCorr(list(ind1 = IS_1_10kb.bedgraph, ind2 = IS_2_10kb.bedgraph))
+#' bedgraphs.lst = list(ind1 = IS_HCT116_chr19_5kb.bedgraph, ind2 = IS_HCT116_chr19_5kb.bedgraph)
+#' bgCorr(bedgraphs.lst)
 #'
 #' @export
 #'

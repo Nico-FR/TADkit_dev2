@@ -7,24 +7,24 @@
 matObsExp(matrix)
 }
 \arguments{
-\item{matrix}{\code{dgCMatrix} or \code{matrix} object.}
+\item{matrix}{\code{Matrix} or \code{matrix} object.}
 }
 \value{
 \code{dgCMatrix} object: upper triangular and sparse Matrix
 }
 \description{
 For each bin of the matrix (interaction count observed) \code{matObsExp()} return the ratio: observed / expected.
-The input matrix must be a \code{dgCMatrix} or \code{matrix} object (i.e matrix with as many rows and columns than the number of bin).
+The input matrix must be a \code{Matrix} or \code{matrix} object (i.e matrix with as many rows and columns than the number of bin).
 The output can be plot with \code{MATplot(output, log2 = TRUE, scale.colors = "ObsExp")}.
 }
 \details{
-The expected number of interaction corresponds to the average of the interaction counts according to the bin distances.
-Only the upper part of the matrix is used.
+The expected number of interaction corresponds to the average interaction counts according to bin distances.
+Note that the expected number is only estimated from the chromosome supplied. Other genome wide approaches may be considered.
 }
 \examples{
-mat_obsexp = matObsExp(matrix_1_chr25_50kb)
+mat_obsexp = matObsExp(mat_HCT116_chr19_50kb)
 MATplot(matrix = mat_obsexp,
-    start = 10e6, stop = 30e6,
+    start = 5e6, stop = 15e6,
     bin.width = 50e3,
     log2 = TRUE, scale.colors = "OE")
 

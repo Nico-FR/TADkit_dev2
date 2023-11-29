@@ -22,6 +22,7 @@ matrix with correlation values
 Computes the correlations between bin scores (e.g. between insulation scores...) from 2 or more individuals.
 }
 \examples{
-bgCorr(list(ind1 = IS_1_10kb.bedgraph, ind2 = IS_2_10kb.bedgraph))
+bedgraphs.lst = list(ind1 = IS_HCT116_chr19_5kb.bedgraph, ind2 = IS_HCT116_chr19_5kb.bedgraph)
+bgCorr(bedgraphs.lst)
 
 }

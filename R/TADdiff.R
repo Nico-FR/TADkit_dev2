@@ -22,26 +22,22 @@
 #' @importFrom GenomeInfoDb seqnames seqlengths
 #' @import GenomicRanges
 #' @examples
-#' #create boundaries from domains:
-#' boundary_1_10kb.df = data.frame(chr = tad_1_10kb.bed$chr,
-#'   start = tad_1_10kb.bed$start - 5e3,
-#'   end = tad_1_10kb.bed$start + 5e3)
-#' boundary_2_10kb.df = data.frame(chr = tad_2_10kb.bed$chr,
-#'   start = tad_2_10kb.bed$start - 5e3,
-#'   end = tad_2_10kb.bed$start + 5e3)
-#'
-#' # create list of GRanges boundaries
-#' boundary_1_10kb.gr = dataframes2grange(boundary_1_10kb.df, chromsize)
-#' boundary_2_10kb.gr = dataframes2grange(boundary_2_10kb.df, chromsize)
-#' boundary.lst=list(boundary_1_10kb.gr, boundary_2_10kb.gr);names(boundary.lst)=c("ind1", "ind2")
 #'
 #' # create list of GRanges with insulation scores
-#' is_1.gr = dataframes2grange(IS_1_10kb.bedgraph, chromsize, metadata.mcols = 4)
-#' is_2.gr = dataframes2grange(IS_2_10kb.bedgraph, chromsize, metadata.mcols = 4)
-#' IS.lst=list(is_1.gr, is_2.gr);names(IS.lst)=c("ind1", "ind2")
+#' IS.gr = dataframes2grange(IS_HCT116_chr19_5kb.bedgraph, human_chromsize, metadata.mcols = 4)
+#' IS.lst = list(ind1 = IS.gr, ind2 = IS.gr, ind3 = IS.gr)
 #'
-#' TADdiff(boundaries.lst = boundary.lst, score.lst = IS.lst)
+#' # create list of GRanges boundaries
+#' boundaries.gr = dataframes2grange(tad_HCT116_5kb.bed, human_chromsize)
+#' boundaries.lst = list(ind1 = boundaries.gr, ind2 = boundaries.gr, ind3 = boundaries.gr)
 #'
+#' output = TADdiff(boundaries.lst = boundaries.lst, score.lst = IS.lst)
+#'
+#' #example for ind1 boundaries of chr19 between 10 to 12Mb:
+#' library(GenomicRanges)
+#' output$TADdiff_ind1[seqnames(output$TADdiff_ind1) == "chr19" &
+#'     start(output$TADdiff_ind1) >= 10e6 &
+#'     end(output$TADdiff_ind1) <= 12e6]
 #'
 #' @export
 #'
@@ -95,7 +91,7 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = N
                                           query = ind1_boundaries.gr,
                                           ignore.strand=TRUE, select = "arbitrary",
                                           minoverlap = bin.width/2)
-    GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind1)]] = GenomicRanges::mcols(ind1_ins.gr[bin_hit])[,1]
+    GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind1)]] = sapply(bin_hit, function(x)ifelse(is.na(x),NA,GenomicRanges::mcols(ind1_ins.gr[x])[,1]))
 
 
     for (ind2 in names(boundaries.lst)) {
@@ -109,7 +105,7 @@ TADdiff <- function(boundaries.lst, score.lst, bin.width = NULL, window.size = N
 
       #findoverlap between boundary and bedgraph
       bin_hit = GenomicRanges::findOverlaps(subject = ind2_ins.gr, query = ind1_boundaries.gr, ignore.strand=TRUE, select="arbitrary", minoverlap = bin.width/2)
-      GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind2)]] = GenomicRanges::mcols(ind2_ins.gr[bin_hit])[,1]
+      GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("score_",ind2)]] =  sapply(bin_hit, function(x)ifelse(is.na(x),NA,GenomicRanges::mcols(ind2_ins.gr[x])[,1]))
 
       # #add column to specify if there is a TAD in the other sample (+/- window.size). "newBoundary" means no TAD boundaries in the vicinity i.e. +/- window.size_value.
       GenomicRanges::mcols(ind1_boundaries.gr)[[paste0("newBoundary_",ind2)]] = ind1_boundaries.gr %outside% (ind2_boundaries.gr + window.size - 1) # "minus 1" to count TAD with start(indiv1) = end(indiv2)+window.size or end(indiv1) = start(indiv2)-window.size as new TAD

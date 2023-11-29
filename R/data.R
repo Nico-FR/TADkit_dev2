@@ -1,92 +1,52 @@
-#' Matrix of bovine 1 and chromosome 25.
-#' @format ## `matrix_1_chr25_50kb`
-#' A dgCMatrix object with 847 rows and columns containing the raw counts (number of interactions).
-#' For bovine 1, chromosome 25 with a bin width of 50kb.
-#' Only the upper matrix and non zero count are stored.
-"matrix_1_chr25_50kb"
+#' HiC matrix of Human HCT116 cell.
+#' @format ## `mat_HCT116_chr19_50kb`
+#' A dgCMatrix object with 1173 rows and columns containing the raw counts (number of interactions).
+#' For chromosome 19 from Human HCT116 cells with a bin width of 50kb.
+#' Downloaded from the 4DN portal with accession number 4DNESNSTBMBY.
+"mat_HCT116_chr19_50kb"
 #'
-#' Matrix of bovine 2 and chromosome 25.
-#' @format ## `matrix_2_chr25_50kb`
-#' A dgCMatrix object with 847 rows and columns containing the raw counts (number of interactions).
-#' For bovine 2, chromosome 25 with a bin width of 50kb.
-#' Only the upper matrix and non zero count are stored.
-"matrix_2_chr25_50kb"
-#'
-#'TAD of bovine 1.
-#' @format ## `tad_1_10kb.bed`
-#' A data frame containing TADs (domains) predicted by HiCExplorer on 10kb matrix.
+#'TADs of Human HCT116 cell.
+#' @format ## `tad_HCT116_5kb.bed`
+#' A data frame containing TAD bounaries.
+#' For autosomes from Human HCT116 cells with a bin width of 50kb.
+#' Downloaded from the 4DN portal with accession number 4DNESNSTBMBY.
 #' \describe{
 #'   \item{chr}{chromosome name}
-#'   \item{start}{TAD start}
-#'   \item{end}{TAD end}
+#'   \item{start}{boundary start}
+#'   \item{end}{boundary end}
 #' }
-"tad_1_10kb.bed"
+"tad_HCT116_5kb.bed"
 #'
-#'TAD of bovine 2.
-#' @format ## `tad_2_10kb.bed`
-#' A data frame containing TADs (domains) predicted by HiCExplorer on 10kb matrix.
+#' Size of Human autosomes.
+#' @format ## `human_chromsize`
+#' A data frame containing the size in base pair of human autosomes
 #' \describe{
 #'   \item{chr}{chromosome name}
-#'   \item{start}{TAD start}
-#'   \item{end}{TAD end}
+#'   \item{size}{chromosome size in base pair}
 #' }
-"tad_2_10kb.bed"
+"human_chromsize"
 #'
-#' Insulation score of bovine 1 and chromosome 25.
-#' @format ## `IS_1_10kb.bedgraph`
-#' A data frame containing insulation score calculated by HiCExplorer on 10kb matrix.
+#' Insulation score of Human chromosome 19.
+#' @format ## `IS_HCT116_chr19_5kb.bedgraph`
+#' A data frame containing insulation score.
+#' For chromosome 19 from Human HCT116 cells with a bin width of 5kb.
+#' Downloaded from the 4DN portal with accession number 4DNESNSTBMBY.
 #' \describe{
 #'   \item{chr}{chromosome name}
 #'   \item{start}{bin start}
 #'   \item{end}{bin end}
 #'   \item{IS}{insulation score}
 #' }
-"IS_1_10kb.bedgraph"
+"IS_HCT116_chr19_5kb.bedgraph"
 #'
-#' Insulation score of bovine 2 and chromosome 25.
-#' @format ## `IS_2_10kb.bedgraph`
-#' A data frame containing insulation score calculated by HiCExplorer on 10kb matrix.
-#' \describe{
-#'   \item{chr}{chromosome name}
-#'   \item{start}{bin start}
-#'   \item{end}{bin end}
-#'   \item{IS}{insulation score}
-#' }
-"IS_2_10kb.bedgraph"
+#' RNA seq coverage for Human chr 19 download on Ensembl
+#' "http://ftp.ensembl.org/pub/release-104/bamcov/homo_sapiens/genebuild/GRCh38.illumina.colon.1.bam.bw.
+#' @format ## `rna_seq_chr19_10.1to10.6mb.gr`
+#' Grange with RNA coverage.
+"rna_seq_chr19_10.1to10.6mb.gr"
 #'
-#' First principal component score of bovine 1.
+#' First principal of Human chromosomes.
 #' @format ## `PC1_1_50kb.bedgraph`
-#' A data frame containing PC1 score calculated by dcHiC on 50kb matrix.
-#' \describe{
-#'   \item{chr}{chromosome name}
-#'   \item{start}{bin start}
-#'   \item{end}{bin end}
-#'   \item{PC1}{principal component score}
-#' }
-"PC1_1_50kb.bedgraph"
-#'
-#' First principal component score of bovine 2.
-#' @format ## `PC1_2_50kb.bedgraph`
-#' A data frame containing PC1 score calculated by dcHiC on 50kb matrix.
-#' \describe{
-#'   \item{chr}{chromosome name}
-#'   \item{start}{bin start}
-#'   \item{end}{bin end}
-#'   \item{PC1}{principal component score}
-#' }
-"PC1_2_50kb.bedgraph"
-#'
-#' Size of cow autosomes.
-#' @format ## `chromsize`
-#' A data frame containing the size in base pair of bovine chromosomes
-#' \describe{
-#'   \item{chr}{chromosome name}
-#'   \item{size}{sine in base pair}
-#' }
-"chromsize"
-#'
-#' RNA seq datas for chr 25 download on Ensembl
-#' "http://ftp.ensembl.org/pub/release-104/bamcov/bos_taurus/genebuild/ARS-UCD1.2.ENA.heart.1.bam.bw).
-#' @format ## `rna_seq_chr25_13to16mb.bedgraph`
-#' Grange with mean coverage.
-"rna_seq_chr25_13to16mb.bedgraph"
+#' A GRanges containing PC1 score from Human HCT116 cells with a bin width of 250kb.
+#' Downloaded from the 4DN portal with accession number 4DNESNSTBMBY.
+"PC1_250kb.gr"

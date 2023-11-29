@@ -45,8 +45,9 @@ From genomic features (e.g. start of TADs):
 }
 }
 \examples{
-tad.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
-MATfeatures(matrix = matrix_1_chr25_50kb, bin.width = 50e3, annot.gr = tad.gr, chr = 25,
-            annot.boundary = "start", window.size = NULL, output = "plot")
+boundaries.gr = dataframes2grange(tad_HCT116_5kb.bed, human_chromsize)
+domains.gr = boundary2domain(boundaries.gr)
+MATfeatures(matrix = mat_HCT116_chr19_50kb, bin.width = 50e3, annot.gr = domains.gr, chr = "chr19",
+            annot.boundary = "start", window.size = 1e6, output = "plot")
 
 }

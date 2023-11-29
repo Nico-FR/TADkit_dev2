@@ -20,7 +20,7 @@
 #' @export
 #'
 #' @examples
-#' PC1calling(PC1_1_50kb.bedgraph)
+#' PC1calling(PC1_250kb.gr)
 #'
 
 PC1calling <- function(bedgraph) {

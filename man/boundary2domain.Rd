@@ -13,19 +13,16 @@ boundary2domain(boundaries)
 \code{GRanges} object with domains
 }
 \description{
-From datas with each boundaries stored by line (chromosome, start and end), \code{boundary2domain()} return \code{GRanges} with domains.
+From datas with boundaries stored by line (chromosome, start and end), \code{boundary2domain()} return \code{GRanges} with domains.
 }
 \details{
 Start and end of domains are the middle of boundaries.
 }
 \examples{
 #create GRanges with chr sizes:
-tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
-boundaries = data.frame(chr = tad_1_10kb.bed$chr,
-                          start = tad_1_10kb.bed$start - 5e3,
-                          end = tad_1_10kb.bed$start + 5e3)
+boundaries.gr = dataframes2grange(tad_HCT116_5kb.bed, human_chromsize)
 
-boundary2domain(boundaries)
-tad_1_10kb.gr
+domains.gr = boundary2domain(boundaries.gr)
+domains.gr
 
 }

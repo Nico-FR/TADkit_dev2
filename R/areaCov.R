@@ -6,7 +6,7 @@
 #'
 #' @param data.gr Output of `boundArea()`.
 #' @param annot.strand Logical. If `TRUE` (default): separate coverage according to their strands.
-#' @param bin.width Size of the sliding window in base pair to calculate the mean coverage. Default is `NULL` to to use a size in 10 time smaller than `window.size` parameter of `boundArea()`.
+#' @param bin.width Size of the sliding window in base pair to calculate the mean coverage. Default is `NULL` to use a size 10 times smaller than `window.size` parameter of `boundArea()`.
 #' @param norm Logical. Normalized density using relative content (zscore of density). Default is `FALSE`.
 #'
 #' @return `ggplot`

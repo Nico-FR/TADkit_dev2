@@ -11,7 +11,7 @@ areaCov(data.gr, annot.strand = TRUE, bin.width = NULL, norm = FALSE)
 
 \item{annot.strand}{Logical. If \code{TRUE} (default): separate coverage according to their strands.}
 
-\item{bin.width}{Size of the sliding window in base pair to calculate the mean coverage. Default is \code{NULL} to to use a size in 10 time smaller than \code{window.size} parameter of \code{boundArea()}.}
+\item{bin.width}{Size of the sliding window in base pair to calculate the mean coverage. Default is \code{NULL} to use a size 10 times smaller than \code{window.size} parameter of \code{boundArea()}.}
 
 \item{norm}{Logical. Normalized density using relative content (zscore of density). Default is \code{FALSE}.}
 }

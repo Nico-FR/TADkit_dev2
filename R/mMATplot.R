@@ -5,7 +5,7 @@
 #' -domains (e.g. TADs or compartments) are plot as triangles or lines on the upper or/and lower part of the matrix.
 #' -interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
 #'
-#' @details The matrix input must be a `dgCMatrix` or a `matrix` object for only one chromosome (see `cool2matrix()` function to read cool files).
+#' @details The matrix input must be a `Matrix` or a `matrix` object for only one chromosome (see `cool2matrix()` function to read cool files).
 #' All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (`dataframe` or `GRanges`) or the path of the files.
 #' For `tad.lines`, another column can be used to specify different classes of domains (e.g compartment A or B). To use those domain classes, specify the column number (of the `tad.upper.line` and `tad.lower.line` inputs) with `tad.line.col` parameter and a custom set of colors with `line.colors` parameter.
 #' Loop are stored in bedpe files (6 columns: chr1, start1, end, chr2, start2 and end2) and can be a `dataframe` object or the path of the file.
@@ -26,27 +26,31 @@
 #' @export
 #'
 #' @examples
-#' mMATplot(matrix.upper = matrix_1_chr25_50kb,
-#'     matrix.lower = matrix_2_chr25_50kb,
-#'     start = 10e6, stop = 30e6,
+#' # get domains from boundaries:
+#' boundaries.gr = dataframes2grange(tad_HCT116_5kb.bed, human_chromsize)
+#' domains.gr = boundary2domain(boundaries.gr)
+#'
+#' mMATplot(matrix.upper = mat_HCT116_chr19_50kb,
+#'     matrix.lower = mat_HCT116_chr19_50kb,
+#'     start = 5e6, stop = 15e6,
 #'     bin.width = 50e3, log2 = TRUE,
-#'     tad.upper.tri = tad_1_10kb.bed,
-#'     tad.lower.tri = tad_2_10kb.bed,
-#'     tad.chr = 25)
+#'     tad.upper.tri = domains.gr,
+#'     tad.lower.tri = domains.gr,
+#'     tad.chr = "chr19")
 #'
 #'  # add compartement A and B
-#'  comp_1.gr = PC1calling(PC1_1_50kb.bedgraph)
-#'  comp_2.gr = PC1calling(PC1_2_50kb.bedgraph)
-#' mMATplot(matrix.upper = matrix_1_chr25_50kb,
-#'     matrix.lower = matrix_2_chr25_50kb,
-#'     start = 10e6, stop = 30e6,
+#'  comp.gr = PC1calling(PC1_250kb.gr)
+#'
+#' mMATplot(matrix.upper = mat_HCT116_chr19_50kb,
+#'     matrix.lower = mat_HCT116_chr19_50kb,
+#'     start = 5e6, stop = 15e6,
 #'     bin.width = 50e3, log2 = TRUE,
-#'     tad.upper.tri = tad_1_10kb.bed,
-#'     tad.lower.tri = tad_2_10kb.bed,
-#'     tad.upper.line = comp_1.gr,
-#'     tad.lower.line = comp_2.gr,
-#'     tad.line.col = 1, #used first metadata column with compartments A or B
-#'     tad.chr = 25)
+#'     tad.upper.tri = domains.gr,
+#'     tad.lower.tri = domains.gr,
+#'     tad.chr = "chr19",
+#'     tad.upper.line = comp.gr,
+#'     tad.lower.line = comp.gr,
+#'     tad.line.col = 1)
 
 mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = TRUE, scale.colors = "H",
                     matrix.upper.txt = NULL, matrix.lower.txt = NULL,

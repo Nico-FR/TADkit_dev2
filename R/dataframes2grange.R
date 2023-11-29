@@ -26,7 +26,7 @@
 #' chromsize.df = data.frame(chr = "1", size = 400e3)
 #' dataframes2grange(bed.df, chromsize.df, strand.col = 4,name.col = 5)
 #'
-#' dataframes2grange(TADkit::tad_1_10kb.bed, TADkit::chromsize)
+#' dataframes2grange(tad_HCT116_5kb.bed, human_chromsize)
 
 
 dataframes2grange <- function(annotation.table, chromsize, chr.col = 1, start.col = 2, end.col = 3, strand.col = NULL, name.col = NULL, metadata.mcols = NULL) {

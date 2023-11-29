@@ -21,6 +21,6 @@ From bedgraph as input (\code{GRanges} object or path) output a \code{GRanges} w
 Otherwise (if \code{NA} are between compartment A and B) they are not called, thus leaving a gap between two compartments.
 }
 \examples{
-PC1calling(PC1_1_50kb.bedgraph)
+PC1calling(PC1_250kb.gr)
 
 }

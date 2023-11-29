@@ -33,9 +33,27 @@
 #'
 #' @examples
 #' # see vignette("Turorial_TADkit_R_package") or on github (https://github.com/Nico-FR/TADkit)
-#' # output <- compOrientation(bedgraph.gr, annot.gr, expression.data.frame)
 #'
-
+#' #expression count from airway package
+#' library("airway")
+#' library(GenomicFeatures)
+#' library(EnsDb.Hsapiens.v86)
+#' data(airway)
+#' count = assay(airway, "counts")[, 1]
+#' expression.data.frame = data.frame(ID = names(count),
+#'                                   Name = names(count),
+#'                                    count = count)
+#'
+#' #gene annotations
+#' genomic.gr =  genes(EnsDb.Hsapiens.v86, filter = ~ seq_name == c(1:22))
+#' seqlevelsStyle(genomic.gr) = "UCSC" #use UCSC chromosome names
+#' genes.gr = genomic.gr[as.character(genomic.gr$gene_biotype) == "protein_coding"]
+#'
+#' data <- compOrientation(PC1_250kb.gr, genes.gr, expression.data.frame)
+#'
+#' library("ggplot2")
+#' ggplot(data$expression, aes(y = log2(exp + 1), fill = comp))+geom_boxplot()+facet_wrap(.~chr)
+#'
 compOrientation <- function(bedgraph.gr, annot.gr, expression.data.frame) {
 
   #local variables:
@@ -115,7 +133,7 @@ compOrientation <- function(bedgraph.gr, annot.gr, expression.data.frame) {
 
   # if exp A == exp B ==> warning
   if (length((medianExp %>% filter(A == B))[,1])) {
-    message(paste0("median expression of chromosome(s) ", ((medianExp %>% filter(A == B))[,1]), " are identical between compartments A and B"))
+    message(paste0("median expression levels of chromosome ", ((medianExp %>% filter(A == B))[,1]), " are identical between compartments A and B\n"))
   }
 
   #reverse score

@@ -11,7 +11,7 @@ mTADplot(
   stop,
   tad.id = FALSE,
   bigwigPath.lst = NULL,
-  bigwig.binsize = 1000,
+  bigwig.binwidth = 1000,
   bigwig.xaxis = "mean",
   bigwig.chr = NULL,
   bigwig.yaxis = NULL,
@@ -35,7 +35,7 @@ mTADplot(
 
 \item{bigwigPath.lst}{List of path for the bigwig file(s) plotted as histogram. Default = NULL (ie no track is plotted). Note that bigwig files can not be read on Windows..}
 
-\item{bigwig.binsize}{Bin sizes for the histogram of the bigwig track. Default = 1e3.}
+\item{bigwig.binwidth}{Bin sizes for the histogram of the bigwig track. Default = 1e3.}
 
 \item{bigwig.xaxis}{Function used to transform the x-axis of the bigwig values among each bigwig.binwidth. Defaults = \code{"median"}.
 Alternatively, other predefined functions can be supplied as character (\code{"mean"}, \code{"median"}, \code{"sum"}, \code{"min"}, \code{"max"} or \code{"extreme"}).}
@@ -87,18 +87,21 @@ Another track from a list of bedgraph file(s) (file of 4 columns, chr, stat, sto
 It is also possible to use a list containing another list of bedgraph path. In this case, the first level of list will be represented in a different track.
 }
 \examples{
-#list of TADs
-tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
-tad_2_10kb.gr = dataframes2grange(tad_2_10kb.bed, chromsize)
-tad.lst = list(tad_1_10kb.gr, tad_2_10kb.gr)
-names(tad.lst) = c("bov1", "bov2")
+library(IRanges)
 
-#insulation score (path) list
-IS.lst = list(IS_1_10kb.bedgraph, IS_2_10kb.bedgraph)
-names(IS.lst) = c("bov1", "bov2")
+# get domains from boundaries:
+boundaries.gr = dataframes2grange(tad_HCT116_5kb.bed, human_chromsize)
+domains.gr = boundary2domain(boundaries.gr)
 
-mTADplot(tad.lst = tad.lst, chr = 25,
-  start = 13e6, stop = 15e6,
+#create list of TADs
+tad.lst = tad.lst = list(ind1 = domains.gr, ind2 = shift(domains.gr, 50e3))
+
+#insulation score (data frame) list
+IS.gr = dataframes2grange(IS_HCT116_chr19_5kb.bedgraph, human_chromsize, metadata.mcols = 4)
+IS.lst = list(ind1 = IS.gr, ind2 = shift(IS.gr, 50e3))
+
+mTADplot(tad.lst = tad.lst, chr = "chr19",
+  start = 10e6, stop = 12e6,
   bedgraph.lst = IS.lst, bedgraph.name = "IS")
 
 }

@@ -26,6 +26,21 @@
 #' @importFrom magrittr %>%
 #' @examples
 #' # see vignette("Turorial_TADkit_R_package") or on github (https://github.com/Nico-FR/TADkit)
+#'
+#' library(EnsDb.Hsapiens.v86)
+#' library(GenomicFeatures)
+#'
+#' # get gene annotations
+#' genomic.gr =  genes(EnsDb.Hsapiens.v86, filter = ~ seq_name == c(1:22))
+#' seqlevelsStyle(genomic.gr) = "UCSC"
+#' genes.gr = genomic.gr[as.character(genomic.gr$gene_biotype) == "protein_coding"]
+#'
+#' # get compartments annotations
+#' comp.gr = PC1calling(PC1_250kb.gr)
+#'
+#' domainCov(domain.gr = comp.gr, annot.gr = genes.gr,
+#'           domain.col = 1,
+#'           bin.width = 50e3, norm = TRUE)
 #' @export
 #'
 domainCov <- function(domain.gr, annot.gr, domain.col = NULL, annot.col = NULL, bin.width = 50e3, norm = FALSE, output = "plot") {

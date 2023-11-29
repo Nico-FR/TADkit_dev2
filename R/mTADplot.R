@@ -43,22 +43,26 @@
 #' @importFrom dplyr select full_join filter
 #' @importFrom utils read.table
 #' @import Gviz
+#' @import rtracklayer
 #'
 #' @export
 #'
 #' @examples
-#' #list of TADs
-#' tad_1_10kb.gr = dataframes2grange(tad_1_10kb.bed, chromsize)
-#' tad_2_10kb.gr = dataframes2grange(tad_2_10kb.bed, chromsize)
-#' tad.lst = list(tad_1_10kb.gr, tad_2_10kb.gr)
-#' names(tad.lst) = c("bov1", "bov2")
+#' library(IRanges)
 #'
-#' #insulation score (path) list
-#' IS.lst = list(IS_1_10kb.bedgraph, IS_2_10kb.bedgraph)
-#' names(IS.lst) = c("bov1", "bov2")
+#' # get domains from boundaries:
+#' boundaries.gr = dataframes2grange(tad_HCT116_5kb.bed, human_chromsize)
+#' domains.gr = boundary2domain(boundaries.gr)
 #'
-#' mTADplot(tad.lst = tad.lst, chr = 25,
-#'   start = 13e6, stop = 15e6,
+#' #create list of TADs
+#' tad.lst = tad.lst = list(ind1 = domains.gr, ind2 = shift(domains.gr, 50e3))
+#'
+#' #insulation score (data frame) list
+#' IS.gr = dataframes2grange(IS_HCT116_chr19_5kb.bedgraph, human_chromsize, metadata.mcols = 4)
+#' IS.lst = list(ind1 = IS.gr, ind2 = shift(IS.gr, 50e3))
+#'
+#' mTADplot(tad.lst = tad.lst, chr = "chr19",
+#'   start = 10e6, stop = 12e6,
 #'   bedgraph.lst = IS.lst, bedgraph.name = "IS")
 #'
 mTADplot <- function(tad.lst, chr, start, stop, tad.id = FALSE,
