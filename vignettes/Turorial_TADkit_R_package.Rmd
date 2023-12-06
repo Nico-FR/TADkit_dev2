@@ -44,7 +44,7 @@ BiocManager::install("biocViews")
 install.packages("devtools")
 ```
 
-Now you should be able to install the development version of TADkit from [GitHub](https://github.com/) with:
+Now you should be able to install TADkit from [GitHub](https://github.com/) with:
 
 ```{r, eval=FALSE}
 devtools::install_github("Nico-FR/TADkit")
@@ -52,7 +52,7 @@ devtools::install_github("Nico-FR/TADkit")
 
 # Data format
 
-First, we will see the different types of data and their formats that can be visualized with TADkit. Datas from 2 cows are available within the package.
+First, we will see the different types of data and their formats that can be visualized with TADkit.
 Let's start by loading the packages needed for that tutorial.
 ```{r setup, warning=FALSE, message=FALSE}
 library(TADkit)
