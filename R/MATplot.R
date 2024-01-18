@@ -16,8 +16,7 @@
 #' @param bin.width Bin width of the matrix in base pair.
 #' @param matrix.diag logical. Weather or not to plot diagonal values of the matrix. Default = `TRUE`.
 #' @param log2 logical. Use the log2 of the matrix values. Default is `TRUE`.
-#' @param scale.colors A character string indicating the color map option to use. Eight colors palettes are available from `viridis` package. Another palette `"OE"` is made for data centered on 0 (e.g log2 of observed/expected matrix). Default is `"H"`:
-#' * `"ObsExp"` (or `"OE"`),
+#' @param scale.colors A character string indicating the color map option to use. Eight colors palettes are available from `viridis` package. Two supplementary palettes `"OE"` and  `"OE2"` (blue to red and purple to green respectively) are made for data centered on 0 (e.g log2 of observed/expected matrix). Default is `"H"`:
 #' * `"magma"` (or `"A"`),
 #' * `"inferno"` (or `"B"`),
 #' * `"plasma"` (or `"C"`),
@@ -25,7 +24,9 @@
 #' * `"cividis"` (or `"E"`),
 #' * `"rocket"` (or `"F"`),
 #' * `"mako"` (or `"G"`),
-#' * `"turbo"` (or `"H"`).
+#' * `"turbo"` (or `"H"`),
+#' * `"ObsExp"` (or `"OE"`),
+#' * `"ObsExp2"` (or `"OE2"`).
 #' @param tad.upper.tri,tad.lower.tri `data.frame`, `GRanges` or the bed files path with the TAD to plot as triangle in the upper or lower part of the matrix. Default is `NULL`.
 #' @param tad.upper.line,tad.lower.line `data.frame`, `GRanges` or the bed files path with the TAD to plot as line in the upper or lower parts of the matrix. Default is `NULL`.
 #' @param tad.line.col Column number of `tad.upper.line` and `tad.lower.line` files that contain factors used to color upper and lower lines. Default is `NULL`.
@@ -105,20 +106,21 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
   melted_mat$j = (melted_mat$j + from - 1) * bin.width - bin.width / 2
   melted_mat$i = (melted_mat$i + from - 1) * - bin.width + bin.width / 2
 
-  if (scale.colors == "OE" | scale.colors == "ObsExp") {
-    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(y = i, x = j, fill = x))+
-      ggplot2::scale_fill_gradient2(low = "blue", high ="red",midpoint = 0, mid="white", na.value = "white")+
-      ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
-      ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
-      ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
+  #geom_tile
+  p = ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(y = i, x = j, fill = x))+
+    ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
+    ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
+    ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
 
+  #scale_fill_gradient2
+  if (scale.colors == "OE" | scale.colors == "ObsExp" | scale.colors == "OE2" | scale.colors == "ObsExp2") {
+    p <- p + ggplot2::scale_fill_gradient2(
+      low = ifelse(scale.colors %in% c("OE" ,"ObsExp"), "blue", "purple4"),
+      high = ifelse(scale.colors %in% c("OE" ,"ObsExp"), "red", "darkgreen"),
+      midpoint = 0, mid="white", na.value = "white")
   } else {
-    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(y = i, x = j, fill = x))+
-      viridis::scale_fill_viridis(na.value = "black", option = scale.colors)+
-      ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
-      ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
-      ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
-  }
+    p <- p + viridis::scale_fill_viridis(na.value = "black", option = scale.colors)
+    }
 
 
   #upper tri

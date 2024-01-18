@@ -103,19 +103,14 @@ mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = 
   melted_mat$j = (melted_mat$j + from - 1) * bin.width - bin.width / 2
   melted_mat$i = (melted_mat$i + from - 1) * - bin.width + bin.width / 2
 
-  if (scale.colors == "OE" | scale.colors == "ObsExp") {
-    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(y = i, x = j, fill = x))+
-      ggplot2::scale_fill_gradient2(low = "blue", high = "red",midpoint = 0, mid="white", na.value = "white")+
-      ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
-      ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
-      ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
-
+  #scale_fill_gradient2
+  if (scale.colors == "OE" | scale.colors == "ObsExp" | scale.colors == "OE2" | scale.colors == "ObsExp2") {
+    p <- p + ggplot2::scale_fill_gradient2(
+      low = ifelse(scale.colors %in% c("OE" ,"ObsExp"), "blue", "purple4"),
+      high = ifelse(scale.colors %in% c("OE" ,"ObsExp"), "red", "darkgreen"),
+      midpoint = 0, mid="white", na.value = "white")
   } else {
-    p <- ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(y = i, x = j, fill = x))+
-      viridis::scale_fill_viridis(na.value = "black", option = scale.colors)+
-      ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
-      ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
-      ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
+    p <- p + viridis::scale_fill_viridis(na.value = "black", option = scale.colors)
   }
 
 
