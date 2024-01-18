@@ -26,6 +26,7 @@ The first one is to facilitate visualizations of HiC matrices and datas that are
 * interaction matrices.
 
 The second objective of the package is to analysed and visualized distributions of genomic annotations in the light of the 3D organisation, either:
+
 * around boundaries,
 * within domains.
 

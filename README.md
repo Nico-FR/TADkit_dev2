@@ -43,7 +43,10 @@ have been created to visualize :
 
 The second objective of the package is to analysed and visualized
 distributions of genomic annotations in the light of the 3D
-organisation, either: \* around boundaries, \* within domains.
+organisation, either:
+
+- around boundaries,
+- within domains.
 
 ## 1.1 Installation
 
@@ -57,7 +60,7 @@ BiocManager::install("biocViews")
 install.packages("devtools")
 ```
 
-Now you should be able to install the development version of TADkit from
+Now you should be able to install TADkit from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -67,9 +70,8 @@ devtools::install_github("Nico-FR/TADkit")
 # 2 Data format
 
 First, we will see the different types of data and their formats that
-can be visualized with TADkit. Datas from 2 cows are available within
-the package. Let’s start by loading the packages needed for that
-tutorial.
+can be visualized with TADkit. Let’s start by loading the packages
+needed for that tutorial.
 
 ``` r
 library(TADkit)
@@ -775,10 +777,10 @@ domainHist(domain.gr = TADshuffling(tad_domains.gr), annot.gr = genes.gr,
         ifoverlap = "best", 
         annot.strand = T)
 #> 685/19025 annotations are outside domains
-#> 1792/19025 annotations are overlapping with a boundary
-#> 16548/19025 annotations are within domains and do not overlap a boundary
-#> Warning: Removed 293 rows containing non-finite values (`stat_bin()`).
-#> Removed 293 rows containing non-finite values (`stat_bin()`).
+#> 1832/19025 annotations are overlapping with a boundary
+#> 16508/19025 annotations are within domains and do not overlap a boundary
+#> Warning: Removed 311 rows containing non-finite values (`stat_bin()`).
+#> Removed 311 rows containing non-finite values (`stat_bin()`).
 #> Warning: Removed 4 rows containing missing values (`geom_path()`).
 ```
 
