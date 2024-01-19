@@ -32,9 +32,8 @@ MATplot(
 
 \item{log2}{logical. Use the log2 of the matrix values. Default is \code{TRUE}.}
 
-\item{scale.colors}{A character string indicating the color map option to use. Eight colors palettes are available from \code{viridis} package. Another palette \code{"OE"} is made for data centered on 0 (e.g log2 of observed/expected matrix). Default is \code{"H"}:
+\item{scale.colors}{A character string indicating the color map option to use. Eight colors palettes are available from \code{viridis} package. Two supplementary palettes \code{"OE"} and  \code{"OE2"} (blue to red and purple to green respectively) are made for data centered on 0 (e.g log2 of observed/expected matrix). Default is \code{"H"}:
 \itemize{
-\item \code{"ObsExp"} (or \code{"OE"}),
 \item \code{"magma"} (or \code{"A"}),
 \item \code{"inferno"} (or \code{"B"}),
 \item \code{"plasma"} (or \code{"C"}),
@@ -42,7 +41,9 @@ MATplot(
 \item \code{"cividis"} (or \code{"E"}),
 \item \code{"rocket"} (or \code{"F"}),
 \item \code{"mako"} (or \code{"G"}),
-\item \code{"turbo"} (or \code{"H"}).
+\item \code{"turbo"} (or \code{"H"}),
+\item \code{"ObsExp"} (or \code{"OE"}),
+\item \code{"ObsExp2"} (or \code{"OE2"}).
 }}
 
 \item{matrix.diag}{logical. Weather or not to plot diagonal values of the matrix. Default = \code{TRUE}.}
@@ -66,8 +67,10 @@ MATplot(
 }
 \description{
 \code{MATplot} allow to plot matrix with 2 types of annotations:
-* domains (e.g. TADs or compartments) are plot as triangles and/or lines on the upper or/and lower part of the matrix.
-* interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
+\itemize{
+\item domains (e.g. TADs or compartments): plot as triangles and/or lines on the upper or/and lower part of the matrix.
+\item interactions between domains/bins (e.g. loops): plot as squares on the upper and lower part of the matrix.
+}
 }
 \details{
 The matrix input must be a \code{Matrix} or a \code{matrix} object for only one chromosome (see \code{cool2matrix()} function to read cool files).

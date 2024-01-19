@@ -251,7 +251,7 @@ tad_domains.gr
 
 In addition to TADs, we can also plot any type of annotations. For this
 tutorial we will use Human annotations available as a package
-(TxDb.Btaurus.UCSC.bosTau9.refGene):
+(EnsDb.Hsapiens.v86):
 
 ``` r
 #filter protein coding genes
@@ -777,10 +777,10 @@ domainHist(domain.gr = TADshuffling(tad_domains.gr), annot.gr = genes.gr,
         ifoverlap = "best", 
         annot.strand = T)
 #> 685/19025 annotations are outside domains
-#> 1832/19025 annotations are overlapping with a boundary
-#> 16508/19025 annotations are within domains and do not overlap a boundary
-#> Warning: Removed 311 rows containing non-finite values (`stat_bin()`).
-#> Removed 311 rows containing non-finite values (`stat_bin()`).
+#> 1858/19025 annotations are overlapping with a boundary
+#> 16482/19025 annotations are within domains and do not overlap a boundary
+#> Warning: Removed 348 rows containing non-finite values (`stat_bin()`).
+#> Removed 348 rows containing non-finite values (`stat_bin()`).
 #> Warning: Removed 4 rows containing missing values (`geom_path()`).
 ```
 
@@ -858,19 +858,19 @@ MATfeatures(matrix = mat_HCT116_chr19_50kb, bin.width = 50e3, annot.gr = tad_dom
 
 # 7 Compartment calling and orientation
 
-Many algorithms allow to compute from an HiC matrix values of a
-principal component which allows to identify compartments A or B. The
-orientation of these values is random and generally it is secondly
-oriented using gene density or GC percent between compartments A and B.
-In this package `PC1calling()` allows to call the compartments from the
-PC1 values and `compOrientation()` allows to orient these values
-according to gene expressions.
+Algorithms has develop to perform principal component analysis on HiC
+matrices which allows to identify compartments A or B. The orientation
+of the principal component scores are random and then can be oriented
+using gene density or GC percent between compartments A and B. In this
+package `PC1calling()` allows to call the compartments from the
+princiapl component scores (PC1) and `compOrientation()` allows to
+orient these values according to gene expressions.
 
-To do so, we will use the package “airway” which gives read counts in
-genes for an RNA-Seq experiment human airway smooth muscle cell lines.
-Although the cell line has little to do with the HiC data used, the 3D
-organization is sufficiently consistent between cell types to verify the
-orientation of compartments.
+To do so, we will use the package “airway” which gives read counts of
+the genes from an RNA-Seq experiment in human airway smooth muscle cell
+lines. Although the cell line has little to do with the HiC data used,
+the 3D organization is sufficiently consistent between cell types to
+check proper orientation of compartments.
 
 ``` r
 #BiocManager::install("airway")

@@ -138,7 +138,7 @@ tad_domains.gr = boundary2domain(tad_boundaries.gr)
 tad_domains.gr
 ```
 
-In addition to TADs, we can also plot any type of annotations. For this tutorial we will use Human annotations available as a package (TxDb.Btaurus.UCSC.bosTau9.refGene):
+In addition to TADs, we can also plot any type of annotations. For this tutorial we will use Human annotations available as a package (EnsDb.Hsapiens.v86):
 ```{r}
 #filter protein coding genes
 genomic.gr =  genes(EnsDb.Hsapiens.v86, filter = ~ seq_name == c(1:22))
@@ -549,10 +549,10 @@ MATfeatures(matrix = mat_HCT116_chr19_50kb, bin.width = 50e3, annot.gr = tad_dom
 
 # Compartment calling and orientation
 
-Many algorithms allow to compute from an HiC matrix values of a principal component which allows to identify compartments A or B. The orientation of these values is random and generally it is secondly oriented using gene density or GC percent between compartments A and B. 
-In this package `PC1calling()` allows to call the compartments from the PC1 values and `compOrientation()` allows to orient these values according to gene expressions.
+Algorithms has develop to perform principal component analysis on HiC matrices which allows to identify compartments A or B. The orientation of the principal component scores are random and then can be oriented using gene density or GC percent between compartments A and B. 
+In this package `PC1calling()` allows to call the compartments from the princiapl component scores (PC1)  and `compOrientation()` allows to orient these values according to gene expressions.
 
-To do so, we will use the package "airway" which gives read counts in genes for an RNA-Seq experiment human airway smooth muscle cell lines. Although the cell line has little to do with the HiC data used, the 3D organization is sufficiently consistent between cell types to verify the orientation of compartments.
+To do so, we will use the package "airway" which gives read counts of the genes from an RNA-Seq experiment in human airway smooth muscle cell lines. Although the cell line has little to do with the HiC data used, the 3D organization is sufficiently consistent between cell types to check proper orientation of compartments.
 
 ```{r}
 #BiocManager::install("airway")
