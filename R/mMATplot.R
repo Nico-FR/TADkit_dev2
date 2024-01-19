@@ -2,8 +2,8 @@
 #'
 #' @description Same as `MATplot()` function but `mMATplot()` allow to plot 2 different matrices on the upper and lower part of the plot.
 #' Two types of annotations can be added:
-#' -domains (e.g. TADs or compartments) are plot as triangles or lines on the upper or/and lower part of the matrix.
-#' -interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
+#' * domains (e.g. TADs or compartments): plot as triangles or lines on the upper or/and lower part of the matrix.
+#' * interactions between domains/bins (e.g. loops): plot as rectangles on the upper and lower part of the matrix.
 #'
 #' @details The matrix input must be a `Matrix` or a `matrix` object for only one chromosome (see `cool2matrix()` function to read cool files).
 #' All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (`dataframe` or `GRanges`) or the path of the files.
@@ -102,6 +102,12 @@ mMATplot <- function(matrix.upper, matrix.lower, start, stop, bin.width, log2 = 
   #add genomic coordinates
   melted_mat$j = (melted_mat$j + from - 1) * bin.width - bin.width / 2
   melted_mat$i = (melted_mat$i + from - 1) * - bin.width + bin.width / 2
+
+  #geom_tile
+  p = ggplot2::ggplot()+ggplot2::geom_tile(data = melted_mat, ggplot2::aes(y = i, x = j, fill = x))+
+    ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(start, stop))+
+    ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
+    ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
 
   #scale_fill_gradient2
   if (scale.colors == "OE" | scale.colors == "ObsExp" | scale.colors == "OE2" | scale.colors == "ObsExp2") {

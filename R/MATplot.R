@@ -1,8 +1,8 @@
 #' @title Plot interaction matrix
 #'
 #' @description `MATplot` allow to plot matrix with 2 types of annotations:
-#'     * domains (e.g. TADs or compartments) are plot as triangles and/or lines on the upper or/and lower part of the matrix.
-#'     * interactions between domains/bins (loop) are plot as squares on the upper and lower part of the matrix.
+#' * domains (e.g. TADs or compartments): plot as triangles and/or lines on the upper or/and lower part of the matrix.
+#' * interactions between domains/bins (e.g. loops): plot as squares on the upper and lower part of the matrix.
 #'
 #' @details The matrix input must be a `Matrix` or a `matrix` object for only one chromosome (see `cool2matrix()` function to read cool files).
 #' All domains (TADs or compartments) are bed files (3 columns: chr, start and end) and can be R object (`dataframe` or `GRanges`) or the path of the files.
@@ -112,7 +112,7 @@ MATplot <- function(matrix, start, stop, bin.width, log2 = T, scale.colors = "H"
     ggplot2::scale_y_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), limits = c(-stop, -start))+
     ggplot2::coord_fixed()+ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(), legend.title = ggplot2::element_blank())
 
-  #scale_fill_gradient2
+  #scales colors
   if (scale.colors == "OE" | scale.colors == "ObsExp" | scale.colors == "OE2" | scale.colors == "ObsExp2") {
     p <- p + ggplot2::scale_fill_gradient2(
       low = ifelse(scale.colors %in% c("OE" ,"ObsExp"), "blue", "purple4"),
