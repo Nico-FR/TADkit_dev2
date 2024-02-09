@@ -28,7 +28,7 @@ orca2matrix(
 \item{df_normmats.path}{Optional. Background distance-based expected balanced contact matrices. Only needed to return observed counts.}
 }
 \value{
-A \code{dgCMatrix} object: upper triangular and sparse Matrix
+A \code{Matrix} class object: upper triangular and sparse Matrix
 }
 \description{
 This function create an empty matrix of the full chromosome which is then filled by Orca matrix (i.e. 250x250 bins).

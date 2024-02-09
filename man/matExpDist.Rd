@@ -2,7 +2,7 @@
 % Please edit documentation in R/matExpDist.R
 \name{matExpDist}
 \alias{matExpDist}
-\title{interactions observed versus genetic distances}
+\title{expected interactions versus genetic distances}
 \usage{
 matExpDist(
   matrix.lst,
