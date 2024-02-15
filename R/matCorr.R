@@ -94,7 +94,8 @@ matCorr <- function(matrice.lst, log2 = TRUE, output = "corr", self_interaction 
       if (j > ncol(merge)) {next}
       df = merge[,c(i,j)]  %>% tidyr::drop_na()
       if(nrow(df) > 1e6) {df = dplyr::sample_n(df, 2e5)}
-        p =  ggplot2::ggplot()+ggplot2::geom_point(aes(x=df[,1], y=df[,2]), alpha=0.1)+
+        p =  ggplot2::ggplot(data = df, aes_string(x=df[,1], y=df[,2]))+
+          ggplot2::geom_point(alpha=0.1)+
           ggplot2::ylab(names(matrice.lst)[j - 2])+ggplot2::xlab(names(matrice.lst)[i - 2])+
           ggplot2::annotate("text", x = min(df[,1], na.rm = TRUE), y =  max(df[,2], na.rm = TRUE),
                    label = corr[names(matrice.lst)[i - 2], names(matrice.lst)[j - 2]],
