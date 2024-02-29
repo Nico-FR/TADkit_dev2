@@ -1,6 +1,6 @@
 #' plot view point interaction
 #'
-#' @description This function calculates the average number of interactions (i.e. expected number of interaction) as a function of the distance between bins.
+#' @description This function (also known as virtual4C) calculates the average number of interactions of a region of interest (e.g. a TAD) with respect to the rest of the matrix.
 #'
 #' @inheritParams mMATplot
 #' @param matrix.lst List of `dgCMatrix` or `matrix` object for only one chromosome.
@@ -8,7 +8,7 @@
 #' @param vp.start Start of the view point in base pair.
 #' @param vp.stop Stop/end of the view point in base pair.
 #' @param self_interaction logical. Whether or not to add interactions within the view-point.
-#' @param norm Normalized the interaction count by the average interaction of the view point (mean interaction along the chromosome). Default is FALSE.
+#' @param norm Normalized the interaction count by the average interaction of the view point (mean interaction along the matrix). Default is FALSE.
 #' @param log2 logical. Use the log2 of the matrix values. Default is `FALSE`. Note that if TRUE, interaction with 0 count are removed from the analysis.
 #' @return ggplot
 #'
