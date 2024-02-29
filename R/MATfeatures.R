@@ -13,7 +13,7 @@
 #' @param chr The selected chromosome used to filter `annot.gr`.
 #' @param annot.boundary Type of feature to analyzed. `"Start"`, `"end"` or `"center"` of each `annot.gr`.
 #' @param window.size Window to analyze the matrix on each side of the features. By default the window is 40 times the `bin.width`.
-#' @param output Default is `"plot"` to return a `ggplot` of the observed / expected of the pileup of the matrices (i.e. sum of the matrices). Use `"matrix"` to return the `matrix`.
+#' @param output Default is `"matrix"` to return the `matrix` (i.e sum of matrices). Use `"plot"` to return a `ggplot` of the observed / expected of the pileup of the matrices, i.e. ObsExp(sum of matrices).
 
 #'
 #' @return A `dgCMatrix` object: upper triangular and sparse Matrix
@@ -72,7 +72,7 @@ MATfeatures <- function(matrix, bin.width, annot.gr, chr, annot.boundary = "star
     })
 
     #staking matrices
-    pil_mat = base::Reduce(`+`, mat.lst) %>% methods::as("dgCMatrix")
+    pil_mat = base::Reduce(`+`, mat.lst) %>% as.matrix %>% methods::as("CsparseMatrix")
     }
 
   if (output == "matrix") {return(pil_mat)}
