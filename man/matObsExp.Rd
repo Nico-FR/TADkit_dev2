@@ -4,10 +4,12 @@
 \alias{matObsExp}
 \title{observed / expected matrix}
 \usage{
-matObsExp(matrix)
+matObsExp(matrix, output = "OE")
 }
 \arguments{
 \item{matrix}{\code{Matrix} or \code{matrix} object.}
+
+\item{output}{default is "OE" to return observed / expected matrix. Use "E" or "Exp" to return expected matrix.}
 }
 \value{
 \code{dgCMatrix} object: upper triangular and sparse Matrix

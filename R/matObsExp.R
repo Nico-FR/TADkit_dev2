@@ -8,6 +8,7 @@
 #' Note that the expected number is only estimated from the chromosome supplied. Other genome wide approaches may be considered.
 #'
 #' @param matrix `Matrix` or `matrix` object.
+#' @param output default is "OE" to return observed / expected matrix. Use "E" or "Exp" to return expected matrix.
 #'
 #' @return `dgCMatrix` object: upper triangular and sparse Matrix
 #'
@@ -26,7 +27,7 @@
 #'     log2 = TRUE, scale.colors = "OE")
 #'
 
-matObsExp <- function(matrix) {
+matObsExp <- function(matrix, output = "OE") {
 
   if(!inherits(matrix, c("Matrix", "matrix"))) {
     stop("input matrix is not a matrix or dgCMatrix object")}
@@ -45,10 +46,12 @@ matObsExp <- function(matrix) {
 
   mat_expected = stats::toeplitz(c(mean_diag, mat[1,ncol(mat)])) #create expected matrix
 
-  output = matrix / mat_expected
+  ifelse(output == "OE",
+         out = matrix / mat_expected,
+         out = mat_expected)
 
   return(
-    if(inherits(output, "CsparseMatrix")) {output} else {methods::as(output, "CsparseMatrix")}
+    if(inherits(out, "CsparseMatrix")) {out} else {methods::as(out, "CsparseMatrix")}
     )
   }
 
