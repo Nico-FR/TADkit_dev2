@@ -6,7 +6,7 @@
 \usage{
 orca2matrix(
   df_prediction.path,
-  sep = " ",
+  sep = "\\t",
   mpos,
   scale,
   chromsize,
@@ -17,7 +17,7 @@ orca2matrix(
 \arguments{
 \item{df_prediction.path}{The full path of the Orca matrix. Data frame without header which contains orca predictions, i.e. log(Obseved/Expected).}
 
-\item{mpos}{The coordinate to zoom into for multiscale prediction.}
+\item{mpos}{The coordinate to zoom into for multiscale prediction. By default mpos is the center of the 32Mb sequence provided (i.e. start + 16Mb).}
 
 \item{scale}{Size of the scale (i.e. window) of the predictions in base pair (i.e. 32Mb, 16Mb, 8Mb, 4Mb, 2Mb and 1Mb).}
 
@@ -31,7 +31,7 @@ orca2matrix(
 A \code{Matrix} class object: upper triangular and sparse Matrix
 }
 \description{
-This function create an empty matrix of the full chromosome which is then filled by Orca matrix (i.e. 250x250 bins).
+This function create an empty matrix of the full chromosome which is then filled with Orca matrix (i.e. 250x250 bins).
 }
 \details{
 From the matrices produced by orca_predict.genomepredict function.
