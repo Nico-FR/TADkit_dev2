@@ -46,9 +46,9 @@ matObsExp <- function(matrix, output = "OE") {
 
   mat_expected = stats::toeplitz(c(mean_diag, mat[1,ncol(mat)])) #create expected matrix
 
-  ifelse(output == "OE",
-         out = matrix / mat_expected,
-         out = mat_expected)
+  out = ifelse(output == "OE",
+         matrix / mat_expected,
+         mat_expected)
 
   return(
     if(inherits(out, "CsparseMatrix")) {out} else {methods::as(out, "CsparseMatrix")}
