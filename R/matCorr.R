@@ -32,12 +32,19 @@ matCorr <- function(matrice.lst, log2 = TRUE, output = "corr", self_interaction 
     stop("matrice.lst must be a list")
   }
 
+  #stop if list uname
+  if(is.null(names(matrice.lst))) {
+    stop("matrice.lst must have names")}
+
   #stop if not a matrix
   if(!inherits(matrice.lst[[1]], c("Matrix", "matrix"))) {
     stop("input matrix is not a matrix or Matrix object")}
 
   #warning if matrices with diff size
-  if(!lapply(matrice.lst, nrow) %>% unname %>% do.call(identical, .)) {
+  if(!lapply(matrice.lst, nrow) %>% unname %>% unlist() %>% unique %>% length() == 1) {
+    warning("matrices do not have the same size!")
+  }
+  if(!lapply(matrice.lst, ncol) %>% unname %>% unlist() %>% unique %>% length() == 1) {
     warning("matrices do not have the same size!")
   }
 
