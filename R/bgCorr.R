@@ -33,17 +33,17 @@ bgCorr <- function(bedgraph.lst, method = "pearson", rm_chr = "X", Qnorm = TRUE)
   ##if dataframe
   if (is.data.frame(bedgraph.lst[[1]])) {
     data1 =  base::lapply(bedgraph.lst, function(bg){
-      bg[,1:4]})
+      bg[,1:4] %>% mutate_at(4, as.numeric)})
   }
   ##if path
   if (is.character(bedgraph.lst[[1]])) {
     data1 = base::lapply(bedgraph.lst, function(bg){
-      utils::read.table(bg, header = FALSE, sep = "\t")[,1:4]})
+      utils::read.table(bg, header = FALSE, sep = "\t")[,1:4] %>% mutate_at(4, as.numeric)})
   }
   ##if GRanges
   if (inherits(bedgraph.lst[[1]], "GRanges")) {
     data1 = base::lapply(bedgraph.lst, function(bg){
-      as.data.frame(bg) %>% dplyr::select("seqnames", "start", "end", "V4")})
+      as.data.frame(bg) %>% dplyr::select("seqnames", "start", "end", "V4") %>% mutate_at(4, as.numeric)})
   }
 
   #add name to V4
