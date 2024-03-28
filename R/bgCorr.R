@@ -12,7 +12,7 @@
 #'
 #' @import GenomicRanges
 #' @importFrom utils read.table
-#' @importFrom dplyr select full_join filter
+#' @importFrom dplyr select full_join filter mutate_at
 #' @importFrom preprocessCore normalize.quantiles
 #' @examples
 #' bedgraphs.lst = list(ind1 = IS_HCT116_chr19_5kb.bedgraph, ind2 = IS_HCT116_chr19_5kb.bedgraph)
@@ -33,17 +33,17 @@ bgCorr <- function(bedgraph.lst, method = "pearson", rm_chr = "X", Qnorm = TRUE)
   ##if dataframe
   if (is.data.frame(bedgraph.lst[[1]])) {
     data1 =  base::lapply(bedgraph.lst, function(bg){
-      bg[,1:4] %>% mutate_at(4, as.numeric)})
+      bg[,1:4] %>% mutate_at(4, as.numeric) %>% mutate_at(1, as.character)})
   }
   ##if path
   if (is.character(bedgraph.lst[[1]])) {
     data1 = base::lapply(bedgraph.lst, function(bg){
-      utils::read.table(bg, header = FALSE, sep = "\t")[,1:4] %>% mutate_at(4, as.numeric)})
+      utils::read.table(bg, header = FALSE, sep = "\t")[,1:4] %>% mutate_at(4, as.numeric) %>% mutate_at(1, as.character)})
   }
   ##if GRanges
   if (inherits(bedgraph.lst[[1]], "GRanges")) {
     data1 = base::lapply(bedgraph.lst, function(bg){
-      as.data.frame(bg) %>% dplyr::select("seqnames", "start", "end", "V4") %>% mutate_at(4, as.numeric)})
+      as.data.frame(bg) %>% dplyr::select("seqnames", "start", "end", "V4") %>% mutate_at(4, as.numeric) %>% mutate_at(1, as.character)})
   }
 
   #add name to V4
