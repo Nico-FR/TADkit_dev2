@@ -38,10 +38,10 @@ matExpDist <- function(matrix.lst, bin.width,
   if (is.null(names(matrix.lst))) {names(df) = c(1:length(matrix.lst), "distance")}
 
   p = ggplot2::ggplot(data = tidyr::gather(df, "matrix", "expected", 1:length(matrix.lst)),
-                      aes(y = expected, x = distance, color = matrix))+
-    ggplot2::geom_line()+scale_color_manual(values = colors.lst)+
-    scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), trans = "log10")+
-    scale_y_continuous(trans = "log10")
+                      ggplot2::aes(y = expected, x = distance, color = matrix))+
+    ggplot2::geom_line()+ggplot2::scale_color_manual(values = colors.lst)+
+    ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), trans = "log10")+
+    ggplot2::scale_y_continuous(trans = "log10")
 
   return(p)
 }
