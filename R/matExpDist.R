@@ -8,6 +8,9 @@
 #' @return ggplot
 #'
 #' @importFrom scales unit_format
+#' @importFrom dplyr mutate filter group_by summarise
+#' @importFrom matrix summary
+#' @importFrom tidyr complete
 #' @import ggplot2
 #'
 #' @export
@@ -19,26 +22,27 @@
 matExpDist <- function(matrix.lst, bin.width,
                        colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")) {
 
+  i <- j <- expected <- distance <- matrix <- NULL
   #sanity check
   if (!is.list(matrix.lst)) {
     stop("matrix.lst must be a list")
   }
 
-  message(paste0("Analysis of ", length(matrix.lst), " matrix/matrices..."))
-
-  output = lapply(matrix.lst, function(m) {
-    sapply(1:(ncol(m) - 1), function (x){
-      mean(diag(matrix(m, nrow = nrow(m), ncol = ncol(m))[,x:ncol(m)]), na.rm = T)}
-      )
+  output = lapply(1:length(matrix.lst), function(INT) {
+    Matrix::summary(matrix.lst[[INT]]) %>%
+      dplyr::mutate(i = factor(i, levels = 1:ncol(matrix.lst[[INT]]))) %>% #add missing index as levels
+      dplyr::mutate(j = factor(j, levels = 1:ncol(matrix.lst[[INT]]))) %>% #add missing index as levels
+      tidyr::complete(., i, j, fill = list(x = 0), explicit = FALSE) %>% #add value 0 to missing bins
+      dplyr::filter(as.numeric(i) <= as.numeric(j)) %>% #filter lower matrix
+      dplyr::mutate(distance = abs(as.numeric(i) - as.numeric(j)) * bin_width) %>% #add distances between bins
+      dplyr::group_by(distance) %>% dplyr::summarise(expected = mean(x, na.rm = TRUE)) %>% # mean according to distances
+      dplyr::filter(!expected == 0) %>%
+      dplyr::mutate(matrix = ifelse(is.null(names(matrix.lst[INT])), paste0("matrix", INT), names(matrix.lst[INT])))
     })
 
-  df = do.call(data.frame, output)
-  df$distance = 1:(ncol(matrix.lst[[1]]) - 1) * bin.width / 2
+  df = do.call(rbind, output)
 
-  if (is.null(names(matrix.lst))) {names(df) = c(1:length(matrix.lst), "distance")}
-
-  p = ggplot2::ggplot(data = tidyr::gather(df, "matrix", "expected", 1:length(matrix.lst)),
-                      ggplot2::aes(y = expected, x = distance, color = matrix))+
+  p = ggplot2::ggplot(data = df, ggplot2::aes(y = expected, x = distance, color = matrix))+
     ggplot2::geom_line()+ggplot2::scale_color_manual(values = colors.lst)+
     ggplot2::scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6), trans = "log10")+
     ggplot2::scale_y_continuous(trans = "log10")
