@@ -40,11 +40,11 @@ orca2matrix <- function(df_prediction.path, sep = "\t", mpos, scale, chromsize, 
 
   #read orca output
   if (output == "OE") {
-    orca = read.table(df_prediction.path, h=F, sep=sep) %>% as.matrix() %>% exp
+    orca = read.table(df_prediction.path, h=FALSE, sep=sep) %>% as.matrix() %>% exp
   }
   if (output == "Obs") {
-    predictions = read.table(df_prediction.path, h=F, sep=sep) %>% as.matrix() %>% exp
-    normats = read.table(df_normmats.path, h=F, sep=sep) %>% as.matrix()
+    predictions = read.table(df_prediction.path, h=FALSE, sep=sep) %>% as.matrix() %>% exp
+    normats = read.table(df_normmats.path, h=FALSE, sep=sep) %>% as.matrix()
     orca = predictions * normats
   }
 
