@@ -30,6 +30,8 @@
 
 matObsExp <- function(matrix, output = "OE") {
 
+  i <- j <- . <- dist <- x <- NULL
+
   if(!inherits(matrix, c("Matrix", "matrix"))) {
     stop("input matrix is not a matrix or dgCMatrix object")}
 
