@@ -13,7 +13,8 @@
 #' @return `dgCMatrix` object: upper triangular and sparse Matrix
 #'
 #' @importFrom stats toeplitz
-#' @importFrom Matrix triu
+#' @importFrom Matrix triu summary
+#' @importFrom dplyr mutate filter group_by summarise
 #' @importClassesFrom Matrix dgCMatrix
 #' @importFrom methods as
 #' @importFrom tidyr complete
