@@ -21,7 +21,7 @@ The output can be plot with \code{MATplot(output, log2 = TRUE, scale.colors = "O
 }
 \details{
 The expected number of interaction corresponds to the average interaction counts according to bin distances.
-Note that the expected number is only estimated from the chromosome supplied. Other genome wide approaches may be considered.
+Note that the expected number of interaction is only estimated from the chromosome supplied. Other genome wide approaches may be considered.
 }
 \examples{
 mat_obsexp = matObsExp(mat_HCT116_chr19_50kb)
