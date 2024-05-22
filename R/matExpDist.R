@@ -9,7 +9,7 @@
 #'
 #' @importFrom scales unit_format
 #' @importFrom dplyr mutate filter group_by summarise
-#' @importFrom matrix summary
+#' @importFrom Matrix summary
 #' @importFrom tidyr complete
 #' @import ggplot2
 #'
@@ -22,7 +22,7 @@
 matExpDist <- function(matrix.lst, bin.width,
                        colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")) {
 
-  i <- j <- expected <- distance <- matrix <- NULL
+  i <- j <- expected <- distance <- matrix <- . <- x <- NULL
   #sanity check
   if (!is.list(matrix.lst)) {
     stop("matrix.lst must be a list")
@@ -34,7 +34,7 @@ matExpDist <- function(matrix.lst, bin.width,
       dplyr::mutate(j = factor(j, levels = 1:ncol(matrix.lst[[INT]]))) %>% #add missing index as levels
       tidyr::complete(., i, j, fill = list(x = 0), explicit = FALSE) %>% #add value 0 to missing bins
       dplyr::filter(as.numeric(i) <= as.numeric(j)) %>% #filter lower matrix
-      dplyr::mutate(distance = abs(as.numeric(i) - as.numeric(j)) * bin_width) %>% #add distances between bins
+      dplyr::mutate(distance = abs(as.numeric(i) - as.numeric(j)) * bin.width) %>% #add distances between bins
       dplyr::group_by(distance) %>% dplyr::summarise(expected = mean(x, na.rm = TRUE)) %>% # mean according to distances
       dplyr::filter(!expected == 0) %>%
       dplyr::mutate(matrix = ifelse(is.null(names(matrix.lst[INT])), paste0("matrix", INT), names(matrix.lst[INT])))
