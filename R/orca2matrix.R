@@ -10,6 +10,7 @@
 #' @param chromsize Chromosome size in base pair of the related chromosome.
 #' @param output Character: Default is "OE" to return observed / expected counts. "Obs" to return observed counts.
 #' @param df_normmats.path Optional. Background distance-based expected balanced contact matrices. Only needed to return observed counts.
+#' @param sep separator between matrix field (df_prediction.path or df_normmats.path), default = "\t" (tabulation).
 #'
 #' @return A `Matrix` class object: upper triangular and sparse Matrix
 #'
@@ -40,11 +41,11 @@ orca2matrix <- function(df_prediction.path, sep = "\t", mpos, scale, chromsize, 
 
   #read orca output
   if (output == "OE") {
-    orca = read.table(df_prediction.path, h=FALSE, sep=sep) %>% as.matrix() %>% exp
+    orca = read.table(df_prediction.path, header = FALSE, sep = sep) %>% as.matrix() %>% exp
   }
   if (output == "Obs") {
-    predictions = read.table(df_prediction.path, h=FALSE, sep=sep) %>% as.matrix() %>% exp
-    normats = read.table(df_normmats.path, h=FALSE, sep=sep) %>% as.matrix()
+    predictions = read.table(df_prediction.path, header = FALSE, sep = sep) %>% as.matrix() %>% exp
+    normats = read.table(df_normmats.path, header = FALSE, sep = sep) %>% as.matrix()
     orca = predictions * normats
   }
 
