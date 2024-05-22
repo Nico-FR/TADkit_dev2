@@ -24,7 +24,7 @@
 #'
 matCorr <- function(matrice.lst, log2 = TRUE, output = "corr", self_interaction = FALSE, max.distance = NULL, bin.width = NULL, method = "pearson") {
 
-  . <- NULL
+  . <- i <- j <- bin1 <- bin2 <- a <- b <- NULL
   ########################################"
   #Sanity check
   ########################################"
