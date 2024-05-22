@@ -10,6 +10,7 @@
 #' @param self_interaction logical. Whether or not to add interactions within the view-point.
 #' @param norm Normalized the interaction count by the average interaction of the view point (mean interaction along the matrix). Default is FALSE.
 #' @param log2 logical. Use the log2 of the matrix values. Default is `FALSE`. Note that if TRUE, interaction with 0 count are removed from the analysis.
+#' @param colors.lst Set of 8 colors used for plot.
 #' @return ggplot
 #'
 #' @importFrom scales unit_format
@@ -39,6 +40,7 @@
 viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, start = NULL, stop = NULL, self_interaction = FALSE, norm = FALSE, log2 = FALSE,
                        colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")) {
 
+  vp_interaction_avg <- vp_interaction_avg <- NULL
   #sanity check
   if (!is.list(matrix.lst)) {
     stop("matrix.lst must be a list")
