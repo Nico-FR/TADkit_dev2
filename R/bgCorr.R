@@ -43,7 +43,12 @@ bgCorr <- function(bedgraph.lst, method = "pearson", rm_chr = "X", Qnorm = TRUE)
   ##if GRanges
   if (inherits(bedgraph.lst[[1]], "GRanges")) {
     data1 = base::lapply(bedgraph.lst, function(bg){
-      as.data.frame(bg) %>% dplyr::select("seqnames", "start", "end", "V4") %>% mutate_at(4, as.numeric) %>% mutate_at(1, as.character)})
+    as.data.frame(bg) %>% dplyr::select(c(1:3,6)) %>% mutate_at(4, as.numeric)})
+  }
+
+  ##if names is null
+  if (is.null(names(bedgraph.lst))) {
+    names(data1) = 1:length(names(bedgraph.lst))
   }
 
   #add name to V4
