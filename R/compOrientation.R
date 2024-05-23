@@ -24,7 +24,7 @@
 #' @return S3 class object with 3 `dataframes`.
 #'
 #' @import GenomeInfoDb
-#' @importFrom dplyr select group_by summarise arrange filter
+#' @importFrom dplyr select group_by summarise arrange filter rename
 #' @importFrom tidyr spread
 #' @importFrom stats median
 #' @import GenomicRanges
@@ -73,7 +73,7 @@ compOrientation <- function(bedgraph.gr, annot.gr, expression.data.frame) {
     stop("expression.data.frame must have 3 columns")
   }
   if (length(expression.data.frame) > 3) {
-    warning("expression.data.frame have more than 3 columns, the third column is used for expression values")
+    warning("expression.data.frame have more than 3 columns, only the third column is used\n")
   }
   if (!inherits(bedgraph.gr, "GRanges")) {
     stop("bedgraph.gr must be a GRange object")
@@ -86,14 +86,14 @@ compOrientation <- function(bedgraph.gr, annot.gr, expression.data.frame) {
   }
 
   #call compartments
-  comp.gr = PC1calling(bedgraph.gr)
+  comp.gr = suppressWarnings(PC1calling(bedgraph.gr))
 
   #keep comp.gr in chromosomes from annot.gr
   undirected_comp.gr = comp.gr %>% GenomeInfoDb::keepSeqlevels(seqlevels(annot.gr)[seqlevels(annot.gr) %in% seqlevels(bedgraph.gr)],
                                 pruning.mode = "coarse") %>% GenomeInfoDb::sortSeqlevels()
 
   #keep expression.data.frame IDs from annot.gr IDs
-  expression.data.frame2 = expression.data.frame[expression.data.frame[,1] %in% names(annot.gr),]
+  expression.data.frame2 = expression.data.frame[expression.data.frame[,1] %in% names(annot.gr),1:3]
 
   #keep annot.gr in chromosomes from comp.gr
   annot.gr = GenomeInfoDb::keepSeqlevels(annot.gr,
@@ -104,7 +104,9 @@ compOrientation <- function(bedgraph.gr, annot.gr, expression.data.frame) {
   names(undirected_comp.gr) = 1:length(undirected_comp.gr)
 
   # position of the genes in relation to each compartment
-  geneTopo <- TADkit::geneTADtopo(domain.gr = undirected_comp.gr, annot.gr = annot.gr, expression.data.frame = expression.data.frame, ifoverlap = "remove")
+  geneTopo <- suppressWarnings(
+    geneTADtopo(domain.gr = undirected_comp.gr, annot.gr = annot.gr, expression.data.frame = expression.data.frame2, ifoverlap = "remove")
+  )
 
   # merge gene, domain and expression datas
   undirected_comp.df = undirected_comp.gr %>% as.data.frame() %>% dplyr::select(seqnames, comp)
@@ -121,9 +123,8 @@ compOrientation <- function(bedgraph.gr, annot.gr, expression.data.frame) {
     }
 
   # merge expression.df list
-  data = do.call(rbind, data$gene_exp.lst)
-
-  names(data) = c(names(data)[1:2], "exp", names(data)[4:5]) # add "comp" to the column with expression values
+  data = do.call(rbind, data$gene_exp.lst) %>%
+    dplyr::rename("exp" = 3)
 
   # stats
   medianExp = data %>% dplyr::group_by(comp, chr) %>% dplyr::summarise(med_exp = median(exp)) %>% dplyr::arrange(chr) %>% tidyr::spread(., comp, med_exp) %>% as.data.frame()
@@ -146,11 +147,12 @@ compOrientation <- function(bedgraph.gr, annot.gr, expression.data.frame) {
   bedgraph_oriented.gr = GenomicRanges::makeGRangesFromDataFrame(bedgraph_oriented, keep.extra.columns = T)
 
   # add chromosomes lengths...
-  seqlengths(bedgraph_oriented.gr)[sort(names(seqlengths(bedgraph_oriented.gr)))] = seqlengths(bedgraph.gr)[sort(names(seqlengths(bedgraph.gr)))]
+  suppressWarnings(
+    seqlengths(test)[sort(names(seqlengths(test)))] <- seqlengths(bedgraph.gr)[sort(names(seqlengths(bedgraph.gr)))])
 
   output = list()
   output$bedgraph_oriented = bedgraph_oriented.gr
-  output$expression = data
+  output$expression = data %>% `colnames<-`(c(names(data)[1:2], names(expression.data.frame2)[3], names(data)[4:5]))
   output$medianExp = medianExp[,1:3]
   return(output)
 }
