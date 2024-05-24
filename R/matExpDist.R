@@ -30,7 +30,7 @@ matExpDist <- function(matrix.lst, bin.width,
 
   matrix.lst = lapply(matrix.lst, function(MAT) {
     if(inherits(MAT, "matrix")) {
-      methods::as(MAT, "CsparseMatrix")}
+      methods::as(MAT, "CsparseMatrix")} else {MAT}
   })
 
   output = lapply(1:length(matrix.lst), function(INT) {
