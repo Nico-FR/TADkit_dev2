@@ -148,7 +148,7 @@ compOrientation <- function(bedgraph.gr, annot.gr, expression.data.frame) {
 
   # add chromosomes lengths...
   suppressWarnings(
-    seqlengths(test)[sort(names(seqlengths(test)))] <- seqlengths(bedgraph.gr)[sort(names(seqlengths(bedgraph.gr)))])
+    seqlengths(bedgraph_oriented.gr)[sort(names(seqlengths(bedgraph_oriented.gr)))] <- seqlengths(bedgraph.gr)[sort(names(seqlengths(bedgraph.gr)))])
 
   output = list()
   output$bedgraph_oriented = bedgraph_oriented.gr
