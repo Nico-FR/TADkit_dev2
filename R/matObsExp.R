@@ -36,6 +36,9 @@ matObsExp <- function(matrix, output = "OE") {
   if(!inherits(matrix, c("Matrix", "matrix"))) {
     stop("input matrix is not a matrix or dgCMatrix object")}
 
+  if(inherits(matrix, "matrix")) {
+    matrix = methods::as(matrix, "CsparseMatrix")}
+
   diag_mean.df = Matrix::summary(matrix) %>%
     dplyr::mutate(i = factor(i, levels = 1:ncol(matrix))) %>% #add missing index as levels
     dplyr::mutate(j = factor(j, levels = 1:ncol(matrix))) %>% #add missing index as levels
