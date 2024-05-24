@@ -28,6 +28,11 @@ matExpDist <- function(matrix.lst, bin.width,
     stop("matrix.lst must be a list")
   }
 
+  matrix.lst = lapply(matrix.lst, function(MAT) {
+    if(inherits(MAT, "matrix")) {
+      methods::as(MAT, "CsparseMatrix")}
+  })
+
   output = lapply(1:length(matrix.lst), function(INT) {
     Matrix::summary(matrix.lst[[INT]]) %>%
       dplyr::mutate(i = factor(i, levels = 1:ncol(matrix.lst[[INT]]))) %>% #add missing index as levels
