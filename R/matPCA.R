@@ -46,8 +46,8 @@ matPCA <- function(matrix, bin.width, input = "OE", seqname = "1", nb_PC = 1) {
   matrix[is.na(matrix)] <- 1
 
   matCorr = suppressWarnings(cor(matrix, method = "pearson"))
-  diag(matCorr) <- NA
-  matCorr[is.na(matCorr)] <- mean(matCorr, na.rm = T)
+  #diag(matCorr) <- 0
+  matCorr[is.na(matCorr)] <- 0
 
   eigen_result <- stats::prcomp(matCorr, rank. = nb_PC)
   df = data.frame(
