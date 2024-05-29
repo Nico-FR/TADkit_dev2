@@ -42,23 +42,25 @@ matPCA <- function(matrix, bin.width, input = "OE", seqname = "1", nb_PC = 1) {
 
   gap = colMeans(matrix, na.rm = TRUE) %in% c(0, "NaN", "NA") #bin without data
 
+  #replace unknown nb interaction by 1
   matrix[matrix == 0] <- 1
   matrix[is.na(matrix)] <- 1
 
-  matCorr = suppressWarnings(cor(matrix, method = "pearson"))
-  #diag(matCorr) <- 0
-  matCorr[is.na(matCorr)] <- 0
+  matCorr = cor(matrix[!gap,!gap], method = "pearson")
 
   eigen_result <- stats::prcomp(matCorr, rank. = nb_PC)
-  df = data.frame(
+
+  #create empty (NA) PCs values
+  PCs.df = matrix(NA, nrow = nrow(matrix), ncol = ncol(eigen_result$rotation)) %>%
+    as.data.frame() %>% `colnames<-`(colnames(eigen_result$rotation))
+  PCs.df[!gap,] <- eigen_result$rotation #fill in with PC values
+
+  #merge with bedgraph
+  gr = data.frame(
     seqnames = seqname,
-    start = (1:length(eigen_result$rotation[,1]) - 1) * bin.width,
-    stop = 1:length(eigen_result$rotation[,1]) * bin.width)
-
-  eigen_result$rotation[gap] <- NA #filter bin without data
-  df = cbind(df, eigen_result$rotation)
-
-  gr = GenomicRanges::makeGRangesFromDataFrame(df, keep.extra.columns = TRUE)
+    start = (1:nrow(matrix) - 1) * bin.width,
+    stop = 1:nrow(matrix) * bin.width) %>% cbind(., PCs.df) %>%
+    GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE)
 
   return(gr)
 }
