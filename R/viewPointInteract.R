@@ -4,14 +4,17 @@
 #'
 #' @inheritParams mMATplot
 #' @param matrix.lst List of `dgCMatrix` or `matrix` object for only one chromosome.
-#' @param start,stop Region of interest in base pair. Default is NULL to use the entire chromosome (i.e. entire matrix).
+#' @param start,stop Area in bp of the chromosome to be analyzed. Default is NULL to use the entire chromosome (i.e. entire matrix).
+#' @param output "GRanges" (default) to return a bedgraph with the average interaction of the view point with the area analyzed and "plot" to return a graph.
 #' @param vp.start Start of the view point in base pair.
 #' @param vp.stop Stop/end of the view point in base pair.
 #' @param self_interaction logical. Whether or not to add interactions within the view-point.
-#' @param norm Normalized the interaction count by the average interaction of the view point (mean interaction along the matrix). Default is FALSE.
+#' @param norm Normalized interaction counts by the average interaction of the view point (mean interaction along the matrix). Default is FALSE.
+#' This parameter is useful for the graph, as it allows a better comparison of interaction number distributions between matrices with different average interaction numbers
 #' @param log2 logical. Use the log2 of the matrix values. Default is `FALSE`. Note that if TRUE, interaction with 0 count are removed from the analysis.
 #' @param colors.lst Set of 8 colors used for plot.
-#' @return ggplot
+#' @param seqname chromosome names as character, default = "1".
+#' @return `GRanges` bedgraph with average interaction.
 #'
 #' @importFrom scales unit_format
 #' @import ggplot2
@@ -28,7 +31,7 @@
 #'     bin.width = 50e3, log2 = TRUE,
 #'     tad.upper.tri = domains.gr["chr19_11597500",])
 #'
-#' #plot interactions of the domain above, between 10Mb and 15Mb
+#' #plot interactions of the domain above, between 7Mb and 15Mb
 #' viewPointInteract(matrix.lst = list(HCT116 = mat_HCT116_chr19_50kb), bin.width = 50e3,
 #'   vp.start = 11597500, vp.stop = 12672500,
 #'   start = 7e6, stop = 15e6,
@@ -37,8 +40,8 @@
 #'
 #'
 #'
-viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, start = NULL, stop = NULL, self_interaction = FALSE, norm = FALSE, log2 = FALSE,
-                       colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")) {
+viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output = "GRanges", start = NULL, stop = NULL, self_interaction = FALSE, norm = FALSE, log2 = FALSE,
+                              seqname = "1", colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")) {
 
   vp_interaction_avg <- vp_interaction_avg <- NULL
   #sanity check
@@ -46,12 +49,18 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, start = 
     stop("matrix.lst must be a list")
   }
 
+  if (is.null(names(matrix.lst))) {names(matrix.lst) = 1:length(matrix.lst)}
+
   #matrix coordinate of limits
-  if (is.null(start) & is.null(stop)) {
-    stop = nrow(matrix.lst[[1]])} else {
-      l.start = start %/% bin.width + 1
-      l.stop = stop %/% bin.width
-    }
+  if (is.null(start)) {
+    l.start = 1}
+  if (is.null(stop)) {
+    l.stop = nrow(matrix.lst[[1]])}
+
+  if (!is.null(start)) {
+    l.start = start %/% bin.width + 1}
+  if (!is.null(stop)) {
+    l.stop = stop %/% bin.width}
 
   #matrix coordinate of view point
   if ((vp.start %/% bin.width == vp.start / bin.width) & (vp.stop %/% bin.width == vp.stop / bin.width)) {
@@ -63,13 +72,16 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, start = 
                      " and ", vp.stop * bin.width, " (i.e. ", vp.stop + 1 - vp.start, " bins)."))
     }
 
-  #upper matrix to symetrical matrix (need to be improve by skeeping symetrical matrix)
-  matrix2.lst = lapply(matrix.lst, function(m) {
-    mat = as.matrix(m)
-    mat[lower.tri(mat)] = t(mat)[lower.tri(mat)]
-    #diag(mat) <- NA
-    return(mat[vp.start:vp.stop,])
-    })
+  #upper matrix to symmetrical matrix
+  matrix2.lst = lapply(matrix.lst, function(MAT) {
+
+    mat = as.matrix(MAT)
+
+    if (!isSymmetric(mat)) {
+      mat[lower.tri(mat)] <- t(mat)[lower.tri(mat)]
+    }
+
+    return(mat[vp.start:vp.stop,])})
 
   #norm = TRUE
   if (isTRUE(norm)) {
@@ -79,11 +91,9 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, start = 
 
   #log2 = TRUE: remove 0 counts
   if (isTRUE(log2)) {
-    matrix2.lst = lapply(matrix2.lst, function(m) {
-      m[m == 0] <- NA
-      return(m)}) #remove 0 count
-    matrix2.lst = lapply(matrix2.lst, function(m) {log2(m)})
-  }
+    matrix2.lst = lapply(matrix2.lst, function(MAT) {
+      MAT[MAT == 0] <- NA
+      return(log2(MAT))})}
 
   #colwise mean
   mean_interact.lst = if (vp.start == vp.stop) {
@@ -92,30 +102,51 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, start = 
       lapply(matrix2.lst, function(m) {colMeans(m[,l.start:l.stop], na.rm = TRUE)})
       }
 
-  #list to data frame
-  df = do.call(data.frame, mean_interact.lst)
+  df.lst = lapply(1:length(mean_interact.lst), function(i) {
+    df = data.frame(seqname = seqname,
+               start = (l.start:l.stop - 1) * bin.width,
+               stop = l.start:l.stop * bin.width,
+               mean_interact = mean_interact.lst[[i]])
+  })
 
-  #self_interaction = TRUE
+  names(df.lst) = names(matrix.lst)
+
+  #option
+  #self_interaction
   if (isFALSE(self_interaction)) {
     #remove view point self interaction
-    df[(vp.start - l.start + 1):(vp.stop - l.start + 1), ] <- NA
+    df.lst = lapply(df.lst, function(DF) {
+      DF[(vp.start - l.start + 1):(vp.stop - l.start + 1), "mean_interact"] <- NA
+      DF
+    })
   }
 
-  df[nrow(df) + 1,] = df[nrow(df),] #copy last bin to visualized the last bin in the graph (geom_step)
-  df$distance = (l.start:(l.stop + 1) - 1) * bin.width #bin start
+  if (output == "GRanges") {return(
+    lapply(df.lst, function(DF) {
+      if(isTRUE(log2)){
+        DF %>% rename("log2_mean_interact" = "mean_interact") %>%
+          GenomicRanges::makeGRangesFromDataFrame(., keep.extra.columns = TRUE)} else {
+            DF %>% GenomicRanges::makeGRangesFromDataFrame(., keep.extra.columns = TRUE)}})
+  )}
 
-
-
-  if (is.null(names(matrix.lst))) {names(df) = c(1:length(matrix.lst), "distance")}
-
-  p = ggplot2::ggplot(data = tidyr::gather(df, "matrix",  "vp_interaction_avg", 1:length(matrix.lst)),
-                      aes(y = vp_interaction_avg, x = distance, color = matrix))+
-    ggplot2::geom_step()+scale_color_manual(values = colors.lst)+
-    scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6))+
-    geom_vline(xintercept = c((vp.start - 1) * bin.width, vp.stop * bin.width), linetype = "dotted")+
-    ylab(ifelse(isTRUE(log2), "log2(vp_interaction_avg)", "vp_interaction_avg"))
-
-  return(p)
+  if (output == "plot") {
+    lapply(1:length(df.lst), function(INT) {
+      df.lst[[INT]] %>%
+        dplyr::add_row(seqname = seqname,
+                       start = df.lst[[INT]][nrow(df.lst[[INT]]), 3],
+                       stop = df.lst[[INT]][nrow(df.lst[[INT]]), 3],
+                       mean_interact = df.lst[[INT]][nrow(df.lst[[INT]]), 4]) %>% #copy last row to visualized the last bin in the graph (geom_step)
+        dplyr::mutate(matrix = names(gr.lst[INT])) %>%
+        dplyr::rename("distance" = "start")
+      }) %>%
+      do.call(rbind, .) %>%
+      ggplot2::ggplot(., aes(y = mean_interact, x = distance, color = matrix))+
+      ggplot2::geom_step()+scale_color_manual(values = colors.lst)+
+      scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6))+
+      geom_vline(xintercept = c((vp.start - 1) * bin.width, vp.stop * bin.width), linetype = "dotted")+
+      ylab(ifelse(isTRUE(log2), "log2(mean_interact)", "mean_interact")) -> p
+    return(p)
+    }
 }
 
 
