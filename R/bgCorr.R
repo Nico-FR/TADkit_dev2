@@ -6,7 +6,7 @@
 #' @param bedgraph.lst list of `data.frame`, `GRanges` or full path of the bedgraph files (data frame without header and 4 columns tab separated) containing a score for each bin.
 #' @param method a character string indicating which correlation coefficient is to be computed. One of "pearson" (default), "kendall", or "spearman": can be abbreviated.
 #' @param rm_chr chromosome to filter, default = "X".
-#' @param Qnorm perform quantile normalisation beetween bedgraph files, default = TRUE.
+#' @param Qnorm perform quantile normalisation beetween bedgraph files, default = FALSE.
 #'
 #' @return matrix with correlation values
 #'
@@ -20,7 +20,7 @@
 #'
 #' @export
 #'
-bgCorr <- function(bedgraph.lst, method = "pearson", rm_chr = "X", Qnorm = TRUE) {
+bgCorr <- function(bedgraph.lst, method = "pearson", rm_chr = "X", Qnorm = FALSE) {
 
   . <- NULL
 
