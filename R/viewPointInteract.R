@@ -4,13 +4,13 @@
 #'
 #' @inheritParams mMATplot
 #' @param matrix.lst List of `dgCMatrix` or `matrix` object for only one chromosome.
-#' @param start,stop Area in bp of the chromosome to be analyzed. Default is NULL to use the entire chromosome (i.e. entire matrix).
 #' @param output "GRanges" (default) to return a bedgraph with the average interaction of the view point with the area analyzed and "plot" to return a graph.
 #' @param vp.start Start of the view point in base pair.
 #' @param vp.stop Stop/end of the view point in base pair.
 #' @param self_interaction logical. Whether or not to add interactions within the view-point.
-#' @param norm Normalized interaction counts by the average interaction of the view point (mean interaction along the matrix). Default is FALSE.
-#' This parameter is useful for the graph, as it allows a better comparison of interaction number distributions between matrices with different average interaction numbers
+#' @param start,stop Area in bp of the chromosome to be analyzed. Default is NULL to use the entire chromosome (i.e. entire matrix).
+#' @param Qnorm Quantile normalization of the average interaction. Default is FALSE.
+#' This parameter can be useful for the graph, as it allows a better comparison of distributions between matrices. Note that normalization is best performed on the entire chromosome than anly on an area.
 #' @param log2 logical. Use the log2 of the matrix values. Default is `FALSE`. Note that if TRUE, interaction with 0 count are removed from the analysis.
 #' @param colors.lst Set of 8 colors used for plot.
 #' @param seqname chromosome names as character, default = "1".
@@ -35,15 +35,13 @@
 #' viewPointInteract(matrix.lst = list(HCT116 = mat_HCT116_chr19_50kb), bin.width = 50e3,
 #'   vp.start = 11597500, vp.stop = 12672500,
 #'   start = 7e6, stop = 15e6,
-#'   self_interaction = FALSE) #FALSE to not plot intra-TAD interactions
+#'   self_interaction = FALSE, #FALSE to not plot intra-TAD interactions
+#'   output = "plot")
 #'
 #'
-#'
-#'
-viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output = "GRanges", start = NULL, stop = NULL, self_interaction = FALSE, norm = FALSE, log2 = FALSE,
+viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output = "GRanges", start = NULL, stop = NULL, self_interaction = FALSE, Qnorm = FALSE, log2 = FALSE,
                               seqname = "1", colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")) {
 
-  vp_interaction_avg <- vp_interaction_avg <- NULL
   #sanity check
   if (!is.list(matrix.lst)) {
     stop("matrix.lst must be a list")
@@ -72,7 +70,7 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output =
                      " and ", vp.stop * bin.width, " (i.e. ", vp.stop + 1 - vp.start, " bins)."))
     }
 
-  #upper matrix to symmetrical matrix
+  #crop matrix to vp
   matrix2.lst = lapply(matrix.lst, function(MAT) {
 
     mat = as.matrix(MAT)
@@ -83,12 +81,6 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output =
 
     return(mat[vp.start:vp.stop,])})
 
-  #norm = TRUE
-  if (isTRUE(norm)) {
-    #observed / expected (expected = mean interaction of all view point bins)
-    matrix2.lst = mapply("/", matrix2.lst, mapply(base::mean, matrix2.lst, SIMPLIFY = FALSE), SIMPLIFY = FALSE)
-  }
-
   #log2 = TRUE: remove 0 counts
   if (isTRUE(log2)) {
     matrix2.lst = lapply(matrix2.lst, function(MAT) {
@@ -96,38 +88,47 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output =
       return(log2(MAT))})}
 
   #colwise mean
-  mean_interact.lst = if (vp.start == vp.stop) {
-    lapply(matrix2.lst, function(m) {m[l.start:l.stop]})
+  mean_interact.mat = if (vp.start == vp.stop) {
+    sapply(matrix2.lst, function(m) {m[l.start:l.stop]})
     } else {
-      lapply(matrix2.lst, function(m) {colMeans(m[,l.start:l.stop], na.rm = TRUE)})
+      sapply(matrix2.lst, function(m) {colMeans(m[,l.start:l.stop], na.rm = TRUE)})
       }
 
-  df.lst = lapply(1:length(mean_interact.lst), function(i) {
-    df = data.frame(seqname = seqname,
-               start = (l.start:l.stop - 1) * bin.width,
-               stop = l.start:l.stop * bin.width,
-               mean_interact = mean_interact.lst[[i]])
-  })
-
-  names(df.lst) = names(matrix.lst)
-
   #option
+  #quantile normalization
+  if (Qnorm == TRUE) {
+    preprocessCore::normalize.quantiles(mean_interact.mat, copy=FALSE, keep.names=TRUE)
+  }
   #self_interaction
   if (isFALSE(self_interaction)) {
     #remove view point self interaction
-    df.lst = lapply(df.lst, function(DF) {
-      DF[(vp.start - l.start + 1):(vp.stop - l.start + 1), "mean_interact"] <- NA
-      DF
-    })
+    mean_interact.mat[(vp.start - l.start + 1):(vp.stop - l.start + 1), ] <- NA
   }
 
-  if (output == "GRanges") {return(
-    lapply(df.lst, function(DF) {
-      if(isTRUE(log2)){
-        DF %>% rename("log2_mean_interact" = "mean_interact") %>%
-          GenomicRanges::makeGRangesFromDataFrame(., keep.extra.columns = TRUE)} else {
-            DF %>% GenomicRanges::makeGRangesFromDataFrame(., keep.extra.columns = TRUE)}})
-  )}
+  mean_interact.df = data.frame(seqname = seqname,
+                      start = (l.start:l.stop - 1) * bin.width,
+                      stop = l.start:l.stop * bin.width) %>%
+    cbind.data.frame(as.data.frame(mean_interact.mat))
+
+  df.lst = lapply(1:ncol(mean_interact.mat), function(i) {
+    df = data.frame(seqname = seqname,
+               start = (l.start:l.stop - 1) * bin.width,
+               stop = l.start:l.stop * bin.width,
+               mean_interact = mean_interact.mat[,i])
+  })
+  names(df.lst) = colnames(mean_interact.mat)
+
+  colname = if(isTRUE(log2) & isFALSE(Qnorm)){"log2_mean_interact"
+  } else if(isTRUE(log2) & isTRUE(Qnorm)){"log2_Qnorm_mean_interact"
+  } else if(isFALSE(log2) & isTRUE(Qnorm)){"Qnorm_mean_interact"
+  } else if(isFALSE(log2) & isFALSE(Qnorm)){"mean_interact"}
+
+  if (output == "GRanges") {
+    gr.lst = lapply(df.lst, function(DF) {
+      DF %>% `colnames<-`(c(names(df.lst[[1]][1:3]), colname)) %>%
+          GenomicRanges::makeGRangesFromDataFrame(., keep.extra.columns = TRUE)})
+    return(gr.lst)
+      }
 
   if (output == "plot") {
     lapply(1:length(df.lst), function(INT) {
@@ -136,7 +137,7 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output =
                        start = df.lst[[INT]][nrow(df.lst[[INT]]), 3],
                        stop = df.lst[[INT]][nrow(df.lst[[INT]]), 3],
                        mean_interact = df.lst[[INT]][nrow(df.lst[[INT]]), 4]) %>% #copy last row to visualized the last bin in the graph (geom_step)
-        dplyr::mutate(matrix = names(gr.lst[INT])) %>%
+        dplyr::mutate(matrix = names(df.lst[INT])) %>%
         dplyr::rename("distance" = "start")
       }) %>%
       do.call(rbind, .) %>%
@@ -144,24 +145,10 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output =
       ggplot2::geom_step()+scale_color_manual(values = colors.lst)+
       scale_x_continuous(labels = scales::unit_format(unit = "Mb", scale = 1e-6))+
       geom_vline(xintercept = c((vp.start - 1) * bin.width, vp.stop * bin.width), linetype = "dotted")+
-      ylab(ifelse(isTRUE(log2), "log2(mean_interact)", "mean_interact")) -> p
+      ylab(colname) -> p
     return(p)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
