@@ -1,6 +1,6 @@
 #' @title MD plot between matrices
 #'
-#' @description Plot log2(mat1 / mat2) between interactions values of 2 matrices according to bin distances. Note that only 1e6 interaction pairs are randomly selected to produce the plot.
+#' @description Plot of log2(mat1 / mat2) between interactions values of 2 matrices according to bin distances. Note that only 1e6 interaction pairs are randomly selected to produce the plot.
 #'
 #' @param matrix.lst list of `dgCMatrix` or `matrix` object for only one chromosome.
 #' @param bin.width Default is NULL, but if bin size is set, real distances between interactions is used on the x axis.
@@ -59,7 +59,6 @@ MDplot <- function(matrix.lst, bin.width = NULL, centered = FALSE) {
   mat = if (!inherits(mat, "CsparseMatrix")) {
     as(Matrix::triu(mat), "CsparseMatrix")} else {
       Matrix::triu(mat)}
-
 
   #melted
   df = Matrix::summary(mat) %>%
