@@ -2,7 +2,7 @@
 % Please edit documentation in R/matPCA.R
 \name{matPCA}
 \alias{matPCA}
-\title{perform principal component analysis f}
+\title{perform principal component analysis on HiC matrix}
 \usage{
 matPCA(matrix, bin.width, input = "OE", seqname = "1", nb_PC = 1)
 }
@@ -21,7 +21,8 @@ matPCA(matrix, bin.width, input = "OE", seqname = "1", nb_PC = 1)
 \code{GRanges} bedgraph with PC score.
 }
 \description{
-perform principal component analysis f
+Two input matrices is allowed. If matrix with observed count is provided, the function compute the observed / expected matrices and compute PCA.
+Principal component values are returned as a bedgraph in GRanges object.
 }
 \examples{
 matPCA(matrix = mat_HCT116_chr19_50kb,

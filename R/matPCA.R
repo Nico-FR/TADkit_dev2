@@ -11,7 +11,7 @@
 #'
 #' @return `GRanges` bedgraph with PC score.
 #'
-#' @importFrom stats prcomp c
+#' @importFrom stats prcomp cor
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #'
 #' @export
