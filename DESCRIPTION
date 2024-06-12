@@ -1,6 +1,6 @@
 Package: TADkitdev2
 Title: TAD and HiC matrix visualisation tool kit
-Version: 0.1.0.1300
+Version: 0.1.0.2000
 Authors@R: 
     person("Nicolas", "MARY", , "nicolas.mary@envt.fr", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-7304-5555 "))
 URL: https://github.com/Nico-FR/TADkit
