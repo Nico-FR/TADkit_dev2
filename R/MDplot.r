@@ -4,7 +4,7 @@
 #'
 #' @param matrix.lst list of `dgCMatrix` or `matrix` object for only one chromosome.
 #' @param bin.width Default is NULL, but if bin size is set, real distances between interactions is used on the x axis.
-#' @param centered Logical, default is FALSE. Whether or not center y-axis on zero.
+#' @param mean_centering Logical, default is FALSE. Whether or to subtracting the mean.
 #' @return ggplot
 #'
 #' @importFrom Matrix triu summary
@@ -20,11 +20,11 @@
 #' #create list of matrices
 #' matrix.lst = list(ind1 = mat_HCT116_chr19_50kb, ind2 = mat2)
 #'
-#' MDplot(matrix.lst, bin.width = 50e3, centered = TRUE)
+#' MDplot(matrix.lst, bin.width = 50e3, mean_centering = TRUE)
 #'
 #' @export
 #'
-MDplot <- function(matrix.lst, bin.width = NULL, centered = FALSE) {
+MDplot <- function(matrix.lst, bin.width = NULL, mean_centering = FALSE) {
 
   i <- j <- x <- y <- NULL
   ########################################"
@@ -73,7 +73,7 @@ MDplot <- function(matrix.lst, bin.width = NULL, centered = FALSE) {
   ind1 = names(matrix.lst)[1]
   ind2 = names(matrix.lst)[2]
 
-  if (isTRUE(centered)) {
+  if (isTRUE(mean_centering)) {
     m = mean(df$y)
     df$y = df$y - m
   }
