@@ -10,7 +10,7 @@
 #' @param chromsize Chromosome size in base pair of the related chromosome.
 #' @param output Character: Default is "OE" to return observed / expected counts. "Obs" to return observed counts.
 #' @param df_normmats.path Optional. Background distance-based expected balanced contact matrices. Only needed to return observed counts.
-#' @param sep separator between matrix field (df_prediction.path or df_normmats.path), default = "\t" (tabulation).
+#' @param sep separator between matrix field (df_prediction.path or df_normmats.path), default is tabulation.
 #'
 #' @return A `Matrix` class object: upper triangular and sparse Matrix
 #'
