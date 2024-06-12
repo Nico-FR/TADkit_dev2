@@ -17,6 +17,8 @@ orca2matrix(
 \arguments{
 \item{df_prediction.path}{The full path of the Orca matrix. Data frame without header which contains orca predictions, i.e. log(Obseved/Expected).}
 
+\item{sep}{separator between matrix field (df_prediction.path or df_normmats.path), default = "\t" (tabulation).}
+
 \item{mpos}{The coordinate to zoom into for multiscale prediction. By default mpos is the center of the 32Mb sequence provided (i.e. start + 16Mb).}
 
 \item{scale}{Size of the scale (i.e. window) of the predictions in base pair (i.e. 32Mb, 16Mb, 8Mb, 4Mb, 2Mb and 1Mb).}
