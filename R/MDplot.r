@@ -26,7 +26,7 @@
 #'
 MDplot <- function(matrix.lst, bin.width = NULL, centered = FALSE) {
 
-  i <- j <- NULL
+  i <- j <- x <- y <- NULL
   ########################################"
   #Sanity check
   ########################################"
@@ -80,7 +80,7 @@ MDplot <- function(matrix.lst, bin.width = NULL, centered = FALSE) {
 
   if(nrow(df) > 1e6) {df = dplyr::sample_n(df, 1e6)}
 
-  p <- ggplot2::ggplot(df, aes(y=y, x = distance))+stat_bin_2d(bins = 50)+
+  p <- ggplot2::ggplot(df, aes(y = y, x = distance))+stat_bin_2d(bins = 50)+
     ggplot2::geom_hline(yintercept = mean(df$y), col = "red")+
     ggplot2::stat_smooth(se=FALSE, col="white", span = 0.5)+
     viridis::scale_fill_viridis(option = "D")+
