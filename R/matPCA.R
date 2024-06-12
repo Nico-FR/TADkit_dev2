@@ -1,8 +1,7 @@
-#' @title perform principal component analysis f
+#' @title perform principal component analysis on HiC matrix
 #'
-#' @description
-#'
-#' @details
+#' @description Two input matrices is allowed. If matrix with observed count is provided, the function compute the observed / expected matrices and compute PCA.
+#' Principal component values are returned as a bedgraph in GRanges object.
 #'
 #' @param matrix `Matrix` or `matrix` object.
 #' @param intput input matrix: "Obs" for observed count or "OE" (default) for Observed / Expected counts.
@@ -12,7 +11,7 @@
 #'
 #' @return `GRanges` bedgraph with PC score.
 #'
-#' @importFrom stats prcomp
+#' @importFrom stats prcomp c
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #'
 #' @export
@@ -42,25 +41,23 @@ matPCA <- function(matrix, bin.width, input = "OE", seqname = "1", nb_PC = 1) {
 
   gap = colMeans(matrix, na.rm = TRUE) %in% c(0, "NaN", "NA") #bin without data
 
-  #replace unknown nb interaction by 1
   matrix[matrix == 0] <- 1
   matrix[is.na(matrix)] <- 1
 
-  matCorr = cor(matrix[!gap,!gap], method = "pearson")
+  matCorr = suppressWarnings(stats::cor(matrix, method = "pearson"))
+  diag(matCorr) <- NA
+  matCorr[is.na(matCorr)] <- mean(matCorr, na.rm = T)
 
   eigen_result <- stats::prcomp(matCorr, rank. = nb_PC)
-
-  #create empty (NA) PCs values
-  PCs.df = matrix(NA, nrow = nrow(matrix), ncol = ncol(eigen_result$rotation)) %>%
-    as.data.frame() %>% `colnames<-`(colnames(eigen_result$rotation))
-  PCs.df[!gap,] <- eigen_result$rotation #fill in with PC values
-
-  #merge with bedgraph
-  gr = data.frame(
+  df = data.frame(
     seqnames = seqname,
-    start = (1:nrow(matrix) - 1) * bin.width,
-    stop = 1:nrow(matrix) * bin.width) %>% cbind(., PCs.df) %>%
-    GenomicRanges::makeGRangesFromDataFrame(keep.extra.columns = TRUE)
+    start = (1:length(eigen_result$rotation[,1]) - 1) * bin.width,
+    stop = 1:length(eigen_result$rotation[,1]) * bin.width)
+
+  eigen_result$rotation[gap] <- NA #filter bin without data
+  df = cbind(df, eigen_result$rotation)
+
+  gr = GenomicRanges::makeGRangesFromDataFrame(df, keep.extra.columns = TRUE)
 
   return(gr)
 }
