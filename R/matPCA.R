@@ -1,8 +1,7 @@
-#' @title perform principal component analysis f
+#' @title perform principal component analysis on HiC matrix
 #'
-#' @description
-#'
-#' @details
+#' @description Two input matrices is allowed. If matrix with observed count is provided, the function compute the observed / expected matrices and compute PCA.
+#' Principal component values are returned as a bedgraph in GRanges object.
 #'
 #' @param matrix `Matrix` or `matrix` object.
 #' @param intput input matrix: "Obs" for observed count or "OE" (default) for Observed / Expected counts.
@@ -12,7 +11,7 @@
 #'
 #' @return `GRanges` bedgraph with PC score.
 #'
-#' @importFrom stats prcomp
+#' @importFrom stats prcomp c
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #'
 #' @export
@@ -45,7 +44,7 @@ matPCA <- function(matrix, bin.width, input = "OE", seqname = "1", nb_PC = 1) {
   matrix[matrix == 0] <- 1
   matrix[is.na(matrix)] <- 1
 
-  matCorr = suppressWarnings(cor(matrix, method = "pearson"))
+  matCorr = suppressWarnings(stats::cor(matrix, method = "pearson"))
   diag(matCorr) <- NA
   matCorr[is.na(matCorr)] <- mean(matCorr, na.rm = T)
 
