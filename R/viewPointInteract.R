@@ -63,10 +63,11 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output =
 
   #matrix coordinate of view point
   if ((vp.start %/% bin.width == vp.start / bin.width) & (vp.stop %/% bin.width == vp.stop / bin.width)) {
-    vp.start = vp.start / bin.width
-    vp.stop = vp.stop / bin.width} else {
+    vp.start = vp.start / bin.width + 1 #+1 because bin 1 start to 0 and stop to bin.width
+    vp.stop = vp.stop / bin.width
+    } else {
       vp.start = round(vp.start / bin.width) + 1 # +1 because matrix coordinates start to 1. So first nucleotide (i.e. vp.start = 1bp) is bin nb 1.
-      vp.stop = ifelse((round(vp.stop / bin.width) + 1) <= vp.start, vp.start, round(vp.stop / bin.width))
+      vp.stop = ifelse((round(vp.stop / bin.width)) <= vp.start, vp.start, round(vp.stop / bin.width))
       message(paste0("vp.start/vp.stop are not multiples of bin.width, round to ", (vp.start - 1) * bin.width,
                      " and ", vp.stop * bin.width, " (i.e. ", vp.stop + 1 - vp.start, " bins)."))
     }
