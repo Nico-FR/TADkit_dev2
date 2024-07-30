@@ -4,14 +4,14 @@
 \alias{MDplot}
 \title{MD plot between matrices}
 \usage{
-MDplot(matrix.lst, bin.width = NULL, centered = FALSE)
+MDplot(matrix.lst, bin.width = NULL, mean_centering = FALSE)
 }
 \arguments{
 \item{matrix.lst}{list of \code{dgCMatrix} or \code{matrix} object for only one chromosome.}
 
 \item{bin.width}{Default is NULL, but if bin size is set, real distances between interactions is used on the x axis.}
 
-\item{centered}{Logical, default is FALSE. Whether or not center y-axis on zero.}
+\item{mean_centering}{Logical, default is FALSE. Whether or to subtracting the mean.}
 }
 \value{
 ggplot
@@ -27,6 +27,6 @@ mat2 = matrix(abs(rnorm(nrow*nrow)), nrow, nrow)
 #create list of matrices
 matrix.lst = list(ind1 = mat_HCT116_chr19_50kb, ind2 = mat2)
 
-MDplot(matrix.lst, bin.width = 50e3, centered = TRUE)
+MDplot(matrix.lst, bin.width = 50e3, mean_centering = TRUE)
 
 }

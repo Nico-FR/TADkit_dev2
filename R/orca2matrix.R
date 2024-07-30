@@ -21,12 +21,12 @@
 #' @export
 #'
 #'
-orca2matrix <- function(df_prediction.path, sep = "\t", mpos, scale, chromsize, output = "OE", df_normmats.path = NULL) {
+orca2matrix <- function(df_prediction.path, sep = "\t", mpos, scale, chromsize, output = "OE", df_normmats.path = NULL, model = 32e6) {
 
   #matrix specifications
   bin.width = scale / 250
   nbins = ifelse(chromsize %/% bin.width == chromsize / bin.width, chromsize %/% bin.width, chromsize %/% bin.width + 1)  #nb bins of the final matrix
-  mpos2 = ifelse(scale == 32e6, mpos, mpos - bin.width)
+  mpos2 = ifelse(scale == model, mpos, mpos - bin.width)
   bin_start = ifelse(mpos2 %/% bin.width <= 124,
                      1, mpos2 %/% bin.width - 124) #bin number of the first bin of orca matrix
   bin_end = bin_start + 249 #position of the last bin

@@ -11,7 +11,8 @@ orca2matrix(
   scale,
   chromsize,
   output = "OE",
-  df_normmats.path = NULL
+  df_normmats.path = NULL,
+  model = 3.2e+07
 )
 }
 \arguments{
