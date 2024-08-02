@@ -42,6 +42,12 @@
 viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output = "GRanges", start = NULL, stop = NULL, self_interaction = FALSE, Qnorm = FALSE, log2 = FALSE,
                               seqname = "1", colors.lst = c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854", "#FFD92F", "#E5C494", "#B3B3B3")) {
 
+  #matrix.lst = mat.lst
+  #bin.width = 4e3
+  #vp.start = 2380000; vp.stop = 2730000
+  #output = "plot"; self_interaction = F; Qnorm = F;log2 = TRUE
+  #start = 2.06e6; stop = 3.06e6
+
   mean_interact <- . <- NULL
   #sanity check
   if (!is.list(matrix.lst)) {
@@ -75,13 +81,13 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output =
   #crop matrix to vp
   matrix2.lst = lapply(matrix.lst, function(MAT) {
 
-    mat = as.matrix(MAT)
+    mat = as.matrix(MAT[l.start:l.stop, l.start:l.stop])
 
     if (!isSymmetric(mat)) {
       mat[lower.tri(mat)] <- t(mat)[lower.tri(mat)]
     }
 
-    return(mat[vp.start:vp.stop,])})
+    return(mat[(vp.start - l.start + 1):(vp.stop - l.start + 1),])})
 
   #log2 = TRUE: remove 0 counts
   if (isTRUE(log2)) {
@@ -91,9 +97,9 @@ viewPointInteract <- function(matrix.lst, bin.width, vp.start, vp.stop, output =
 
   #colwise mean
   mean_interact.mat = if (vp.start == vp.stop) {
-    sapply(matrix2.lst, function(m) {m[l.start:l.stop]})
+    sapply(matrix2.lst, function(m) {m})
     } else {
-      sapply(matrix2.lst, function(m) {colMeans(m[,l.start:l.stop], na.rm = TRUE)})
+      sapply(matrix2.lst, function(m) {colMeans(m, na.rm = TRUE)})
       }
 
   #option
