@@ -26,13 +26,16 @@ orca2matrix <- function(df_prediction.path, sep = "\t", mpos, scale, chromsize, 
   #matrix specifications
   bin.width = scale / 250
   nbins = ifelse(chromsize %/% bin.width == chromsize / bin.width, chromsize %/% bin.width, chromsize %/% bin.width + 1)  #nb bins of the final matrix
-  mpos2 = ifelse(scale == model, mpos, mpos - bin.width)
-  bin_start = ifelse(mpos2 %/% bin.width <= 124,
-                     1, mpos2 %/% bin.width - 124) #bin number of the first bin of orca matrix
+
+  start.tmp = ifelse(mpos - scale / 2 < 0, 0, mpos - scale / 2) # theoretical start (>= 0)
+
+  #rounded start according to parent matrix
+  start = ifelse(scale == model, start.tmp,
+         start.tmp %/% (bin.width * 2) * (bin.width * 2)) #(start.tmp %/% (bin.width * 2) + 1) * (bin.width * 2) - (bin.width * 2))
+
+  bin_start = start / bin.width #bin number of the first bin of orca matrix
   bin_end = bin_start + 249 #position of the last bin
-  #orca_start_bp = (mpos - 126 * bin.width)
-  #orca_start_bin = (mpos - 126 * bin.width) / bin.width + 1
-  #orca_end_bp = mpos + 124 * bin.width
+
   message("Creating matrix of ", nbins, "x", nbins, " bins with ", output, " counts of bins ", bin_start, " to ", bin_end,
           " at ", bin.width / 1e3, "kb resolution (i.e. from ", (bin_start - 1) * bin.width / 1e6, "Mb to ", (bin_end) * bin.width / 1e6, "Mb).")
 
