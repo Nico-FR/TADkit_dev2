@@ -27,17 +27,23 @@ orca2matrix <- function(df_prediction.path, sep = "\t", mpos, scale, chromsize, 
   bin.width = scale / 250
   nbins = ifelse(chromsize %/% bin.width == chromsize / bin.width, chromsize %/% bin.width, chromsize %/% bin.width + 1)  #nb bins of the final matrix
 
-  start.tmp = ifelse(mpos - scale / 2 < 0, 0, mpos - scale / 2) # theoretical start (>= 0)
+  start.tmp = ifelse(mpos - scale / 2 < 0, 0, mpos - scale / 2) # theoretical start in bp (>= 0)
 
-  #rounded start according to parent matrix
+  #shift (- 1 bin) start.tmp if model != scale
   start = ifelse(scale == model, start.tmp,
-         start.tmp %/% (bin.width * 2) * (bin.width * 2)) #(start.tmp %/% (bin.width * 2) + 1) * (bin.width * 2) - (bin.width * 2))
+                 start.tmp - bin.width) #(start.tmp %/% (bin.width * 2) + 1) * (bin.width * 2) - (bin.width * 2))  #start.tmp %/% (bin.width * 2) * (bin.width * 2)
 
-  bin_start = start / bin.width #bin number of the first bin of orca matrix
+  bin_start = round(start / bin.width + 1) #bin number of the first bin of orca matrix
   bin_end = bin_start + 249 #position of the last bin
 
+
+  if (start / bin.width != start %/% bin.width) {
+    message("Start/stop (ie ", start / 1e6, "Mb/", (start + scale)/1e6, "Mb) are not a multple of bin.width, rounded to ",
+            (bin_start - 1) * bin.width/1e6, "Mb/", bin_end * bin.width / 1e6, "Mb.")
+  }
+
   message("Creating matrix of ", nbins, "x", nbins, " bins with ", output, " counts of bins ", bin_start, " to ", bin_end,
-          " at ", bin.width / 1e3, "kb resolution (i.e. from ", (bin_start - 1) * bin.width / 1e6, "Mb to ", (bin_end) * bin.width / 1e6, "Mb).")
+          " at ", bin.width / 1e3, "kb resolution (i.e. from ", (bin_start - 1) * bin.width/1e6, "Mb to ", bin_end * bin.width / 1e6, "Mb).")
 
   #create empty matrix
   mat = Matrix::Matrix(0, nrow = nbins, ncol = nbins, sparse = TRUE)
