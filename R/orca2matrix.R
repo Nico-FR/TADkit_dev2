@@ -23,9 +23,6 @@
 #'
 orca2matrix <- function(df_prediction.path, sep = "\t", mpos, scale, chromsize, output = "OE", df_normmats.path = NULL, model = 32e6) {
 
-  df_prediction.path = "/home/nmary/mnt/cytogene/Nicolas/inSilMut/CNV_2/OrcaPredictions/CT_2560000_predictions_8000000_HFF.txt"
-  scale = 8e6; mpos = 2.56e6; chromsize = 158534110 ; sep = "\t" ;  output = "OE"; df_normmats.path = NULL; model = 32e6
-
   #matrix specifications
   bin.width = scale / 250
   nbins = ifelse(chromsize %/% bin.width == chromsize / bin.width, chromsize %/% bin.width, chromsize %/% bin.width + 1)  #nb bins of the final matrix
