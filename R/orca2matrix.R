@@ -23,6 +23,9 @@
 #'
 orca2matrix <- function(df_prediction.path, sep = "\t", mpos, scale, chromsize, output = "OE", df_normmats.path = NULL, model = 32e6) {
 
+  df_prediction.path = "/home/nmary/mnt/cytogene/Nicolas/inSilMut/CNV_2/OrcaPredictions/CT_2560000_predictions_8000000_HFF.txt"
+  scale = 8e6; mpos = 2.56e6; chromsize = 158534110 ; sep = "\t" ;  output = "OE"; df_normmats.path = NULL; model = 32e6
+
   #matrix specifications
   bin.width = scale / 250
   nbins = ifelse(chromsize %/% bin.width == chromsize / bin.width, chromsize %/% bin.width, chromsize %/% bin.width + 1)  #nb bins of the final matrix
@@ -32,7 +35,7 @@ orca2matrix <- function(df_prediction.path, sep = "\t", mpos, scale, chromsize, 
   #shift (- 1 bin) start.tmp if model != scale
   start = ifelse(scale == model, start.tmp,
                  start.tmp - bin.width) #(start.tmp %/% (bin.width * 2) + 1) * (bin.width * 2) - (bin.width * 2))  #start.tmp %/% (bin.width * 2) * (bin.width * 2)
-
+  if(start < 0) {start = 0} #do not shift start.tmp if we are at the edge
   bin_start = round(start / bin.width + 1) #bin number of the first bin of orca matrix
   bin_end = bin_start + 249 #position of the last bin
 
