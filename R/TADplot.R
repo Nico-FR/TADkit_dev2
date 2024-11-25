@@ -70,12 +70,14 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
                     bigwig.path = NULL, bigwig.binwidth = 1e3, bigwig.xaxis = "mean", bigwig.chr = NULL, bigwig.yaxis = NULL,
                     annot.gr = NULL, annot.col = NULL, bedgraph = NULL) {
 
+  options(ucscChromosomeNames=FALSE)
+
   ##############################
   # Ideotrack
   ##############################
   data <- tad.gr[GenomeInfoDb::seqnames(tad.gr) == chr]
   data$gieStain <- ifelse(1:length(data) %% 2, "gpos100", "gpos25") # alternate colors for TAD
-
+  paste0("chr", gsub('chr','', chr))
   gaps <- GenomicRanges::gaps(data)
   gaps <- gaps[GenomeInfoDb::seqnames(gaps) == chr & BiocGenerics::strand(gaps) == "*"]
   if (length(gaps) != 0) {gaps$gieStain <- "gpos1"} # color for interTAD
@@ -90,7 +92,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
     gieStain = data2$gieStain
   )
 
-  ideoTrack <- Gviz::IdeogramTrack(genome = "custom", chromosome = chr, fontsize = 10, ucscChromosomeNames = T, bands = d1)
+  ideoTrack <- Gviz::IdeogramTrack(genome = "custom", chromosome = paste0("chr", gsub('chr','', chr)), fontsize = 10, bands = d1)
 
   ##############################
   # tadTrack
@@ -174,13 +176,15 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
     temp <- S4Vectors::aggregate(cov.rle[[as.character(bigwig.chr)]], bins2, FUN = bigwig.xaxis)
     bins2$median_cov <- temp # create metadata with the median values
 
+    GenomeInfoDb::seqlevels(bins2) = paste0("chr", gsub('chr','', GenomeInfoDb::seqlevels(bins2)))
+
     bigwigTrack <- Gviz::DataTrack(bins2,
-      chr = chr,
-      type = "hist",
-      fill = "grey50",
-      name = "bw",
-      col.histogram = "grey25",
-      transformation = transformation.method
+                                   chr =  paste0("chr", gsub('chr','', chr)),
+                                   type = "hist",
+                                   fill = "grey50",
+                                   name = "bw",
+                                   col.histogram = "grey25",
+                                   transformation = transformation.method
     )
   }
 
@@ -201,7 +205,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
         annotTrack <- Gviz::AnnotationTrack(
           start = GenomicRanges::start(data1),
           width = BiocGenerics::width(data1),
-          chromosome = as.character(chr),
+          chromosome = paste0("chr", gsub('chr','', chr)),
           strand = BiocGenerics::strand(data1),
           id = names(data1), groupAnnotation = "id",
           genome = "custom", name = "Annot", col = "deepskyblue4"
@@ -225,7 +229,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
         annotTrack <- Gviz::AnnotationTrack(
           start = GenomicRanges::start(data1),
           width = BiocGenerics::width(data1),
-          chromosome = as.character(chr),
+          chromosome = paste0("chr", gsub('chr','', chr)),
           strand = BiocGenerics::strand(data1),
           group = GenomicRanges::mcols(data1)[,annot.col], groupAnnotation = "group",
           genome = "custom", name = "Annot", col = "deepskyblue4",
@@ -259,7 +263,9 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
       data1 = bedgraph[,1] %>% GenomeInfoDb::keepSeqlevels(chr, pruning.mode = "coarse")
     }
 
-    bedgraphTrack <- DataTrack(range = data1, type = "b", lwd = 1, name = "bg", chromosome = chr)
+    GenomeInfoDb::seqlevels(data1) = paste0("chr", gsub('chr','', GenomeInfoDb::seqlevels(data1)))
+
+    bedgraphTrack <- DataTrack(range = data1, type = "b", lwd = 1, name = "bg", chromosome =  paste0("chr", gsub('chr','', chr)))
   }
 
   #####################################
@@ -271,7 +277,7 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
   ht <- Gviz::HighlightTrack(trackList = c(tadTrack, bedgraphTrack, bigwigTrack, annotTrack),
                              start = unique(sort(c(GenomicRanges::start(data),extended_start, BiocGenerics::end(data),extended_stop))),
                              end = unique(sort(c(GenomicRanges::start(data),extended_start, BiocGenerics::end(data),extended_stop))),
-                             chr = chr, col = "grey70", fill = "white")
+                             chr = paste0("chr", gsub('chr','', chr)), col = "grey70", fill = "white")
 
   #####################################
   # Plot
