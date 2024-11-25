@@ -77,7 +77,6 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
   ##############################
   data <- tad.gr[GenomeInfoDb::seqnames(tad.gr) == chr]
   data$gieStain <- ifelse(1:length(data) %% 2, "gpos100", "gpos25") # alternate colors for TAD
-  paste0("chr", gsub('chr','', chr))
   gaps <- GenomicRanges::gaps(data)
   gaps <- gaps[GenomeInfoDb::seqnames(gaps) == chr & BiocGenerics::strand(gaps) == "*"]
   if (length(gaps) != 0) {gaps$gieStain <- "gpos1"} # color for interTAD
