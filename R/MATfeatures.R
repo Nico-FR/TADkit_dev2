@@ -79,7 +79,7 @@ MATfeatures <- function(matrix, bin.width, annot.gr, chr, annot.boundary = "star
 
   if (output == "plot") {
 
-    mat = TADkit::matObsExp(pil_mat)
+    mat = TADkitdev2::matObsExp(pil_mat)
     mat[Matrix::triu(mat == 0)] <- NA
     mat@x = log2(mat@x)
 

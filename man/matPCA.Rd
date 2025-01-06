@@ -11,11 +11,11 @@ matPCA(matrix, bin.width, input = "OE", seqname = "1", nb_PC = 1)
 
 \item{bin.width}{Bin width of the matrix in base pair.}
 
+\item{input}{input matrix: "Obs" for observed count or "OE" (default) for Observed / Expected counts.}
+
 \item{seqname}{chromosome names as character, default = "1".}
 
 \item{nb_PC}{number of principal component to compute, default = 1.}
-
-\item{intput}{input matrix: "Obs" for observed count or "OE" (default) for Observed / Expected counts.}
 }
 \value{
 \code{GRanges} bedgraph with PC score.

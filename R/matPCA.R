@@ -4,7 +4,7 @@
 #' Principal component values are returned as a bedgraph in GRanges object.
 #'
 #' @param matrix `Matrix` or `matrix` object.
-#' @param intput input matrix: "Obs" for observed count or "OE" (default) for Observed / Expected counts.
+#' @param input input matrix: "Obs" for observed count or "OE" (default) for Observed / Expected counts.
 #' @param bin.width Bin width of the matrix in base pair.
 #' @param seqname chromosome names as character, default = "1".
 #' @param nb_PC number of principal component to compute, default = 1.

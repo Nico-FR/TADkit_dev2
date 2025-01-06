@@ -47,7 +47,7 @@ TADshuffling <- function(tad.gr) {
     output = rbind(output, data)
   }
 
-output.gr = TADkit::dataframes2grange(output, data.frame(chr = as.character(levels(seqnames(tad.gr))),
+output.gr = TADkitdev2::dataframes2grange(output, data.frame(chr = as.character(levels(seqnames(tad.gr))),
                                                  size = as.numeric(seqlengths(tad.gr))),
                               metadata.mcols = if (length(output)>4) {5:length(output)} else {NULL})
 

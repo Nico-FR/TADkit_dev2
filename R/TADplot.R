@@ -250,12 +250,12 @@ TADplot <- function(tad.gr, chr, start, stop, tad.id = FALSE,
     #read bedgraph datas
     ##if dataframe
     if (is.data.frame(bedgraph)) {
-      data1 = TADkit::dataframes2grange(bedgraph, chromsize, metadata.mcols = 4)
+      data1 = TADkitdev2::dataframes2grange(bedgraph, chromsize, metadata.mcols = 4)
     }
     ##if path
     if (is.character(bedgraph)) {
       data0 = utils::read.table(bedgraph, header = FALSE, sep = "\t")[,1:4]
-      data1 = TADkit::dataframes2grange(data0, chromsize, metadata.mcols = 4)
+      data1 = TADkitdev2::dataframes2grange(data0, chromsize, metadata.mcols = 4)
     }
     ##if GRanges
     if (inherits(bedgraph, "GRanges")) {

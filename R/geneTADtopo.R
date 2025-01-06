@@ -25,21 +25,21 @@
 #'
 #' @examples
 #' # get gene annotation
-#' library(EnsDb.Hsapiens.v86)
-#' genomic.gr =  genes(EnsDb.Hsapiens.v86, filter = ~ seq_name == c(1:22))
-#' seqlevelsStyle(genomic.gr) = "UCSC"
+#' #library(EnsDb.Hsapiens.v86)
+#' #genomic.gr =  genes(EnsDb.Hsapiens.v86, filter = ~ seq_name == c(1:22))
+#' #seqlevelsStyle(genomic.gr) = "UCSC"
 #' #
 #' # create expression data
-#' library("airway")
-#' library(GenomicFeatures)
-#' data(airway)
-#' count = assay(airway, "counts")[, 1]
-#' expression.data.frame = data.frame(ID = names(count),
-#'                                   Name = names(count),
-#'                                    count = count)
+#' #library("airway")
+#' #library(GenomicFeatures)
+#' #data(airway)
+#' #count = assay(airway, "counts")[, 1]
+#' #expression.data.frame = data.frame(ID = names(count),
+#'  #                                 Name = names(count),
+#'  #                                 count = count)
 #'
-#' output <- geneTADtopo(dataframes2grange(tad_HCT116_5kb.bed, human_chromsize),
-#'   annot.gr = genomic.gr, ifoverlap = "best", expression.data.frame = expression.data.frame)
+#' #output <- geneTADtopo(dataframes2grange(tad_HCT116_5kb.bed, human_chromsize),
+#'  # annot.gr = genomic.gr, ifoverlap = "best", expression.data.frame = expression.data.frame)
 #'
 geneTADtopo <- function(domain.gr, annot.gr, ifoverlap = "best", expression.data.frame = NULL) {
 

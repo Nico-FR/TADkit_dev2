@@ -37,11 +37,11 @@ matExpDist <- function(matrix.lst, bin.width,
     Matrix::summary(matrix.lst[[INT]]) %>%
       dplyr::mutate(i = factor(i, levels = 1:ncol(matrix.lst[[INT]]))) %>% #add missing index as levels
       dplyr::mutate(j = factor(j, levels = 1:ncol(matrix.lst[[INT]]))) %>% #add missing index as levels
-      tidyr::complete(., i, j, fill = list(x = 0), explicit = FALSE) %>% #add value 0 to missing bins
+      tidyr::complete(., i, j, fill = list(x = NA), explicit = FALSE) %>% #add NA values to missing bins
       dplyr::filter(as.numeric(i) <= as.numeric(j)) %>% #filter lower matrix
       dplyr::mutate(distance = abs(as.numeric(i) - as.numeric(j)) * bin.width) %>% #add distances between bins
       dplyr::group_by(distance) %>% dplyr::summarise(expected = mean(x, na.rm = TRUE)) %>% # mean according to distances
-      dplyr::filter(!expected == 0) %>%
+      dplyr::filter(!is.na(expected)) %>%
       dplyr::mutate(matrix = ifelse(is.null(names(matrix.lst[INT])), paste0("matrix", INT), names(matrix.lst[INT])))
     })
 

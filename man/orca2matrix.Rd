@@ -29,6 +29,8 @@ orca2matrix(
 \item{output}{Character: Default is "OE" to return observed / expected counts. "Obs" to return observed counts.}
 
 \item{df_normmats.path}{Optional. Background distance-based expected balanced contact matrices. Only needed to return observed counts.}
+
+\item{model}{orca prediction model (32e6 or 1e6). Default is 32e6.}
 }
 \value{
 A \code{Matrix} class object: upper triangular and sparse Matrix
